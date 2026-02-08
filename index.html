@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Akash Academy - Exam Portal</title>
+    <script src="https://cdn.tailwindcss.com "></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css " rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .main-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .exam-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            max-width: 900px;
+            width: 100%;
+        }
+
+        .exam-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .exam-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 30px 80px rgba(0,0,0,0.4);
+        }
+
+        .exam-header {
+            padding: 30px;
+            text-align: center;
+            color: white;
+        }
+
+        .exam-header.roaro {
+            background: linear-gradient(135deg, #003366 0%, #004080 100%);
+        }
+
+        .exam-header.nta {
+            background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%);
+        }
+
+        .exam-icon {
+            font-size: 60px;
+            margin-bottom: 15px;
+        }
+
+        .exam-header h2 {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .exam-header p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .exam-body {
+            padding: 30px;
+        }
+
+        .feature-list {
+            list-style: none;
+            margin-bottom: 25px;
+        }
+
+        .feature-list li {
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+            color: #555;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .feature-list li:last-child {
+            border-bottom: none;
+        }
+
+        .feature-list i {
+            color: #28a745;
+        }
+
+        .start-btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .start-btn.roaro {
+            background: linear-gradient(135deg, #003366 0%, #004080 100%);
+        }
+
+        .start-btn.nta {
+            background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%);
+        }
+
+        .start-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        }
+
+        .secure-badge {
+            text-align: center;
+            margin-top: 40px;
+            color: white;
+            opacity: 0.8;
+            font-size: 0.9rem;
+        }
+
+        /* Password Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-header {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .modal-subtitle {
+            color: #666;
+            margin-bottom: 25px;
+        }
+
+        .password-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .password-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .modal-btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .modal-btn.roaro {
+            background: linear-gradient(135deg, #003366 0%, #004080 100%);
+        }
+
+        .modal-btn.nta {
+            background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%);
+        }
+
+        .error-msg {
+            color: #dc3545;
+            margin-top: 10px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: white;
+            font-size: 30px;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            .exam-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+<base target="_blank">
+</head>
+<body>
+    <div class="main-container">
+        <div class="header">
+            <h1>🎓 Akash Academy</h1>
+            <p>Choose Your Exam Portal</p>
+        </div>
+
+        <div class="exam-grid">
+            <!-- RO/ARO Exam Card -->
+            <div class="exam-card" onclick="openModal('roaro')">
+                <div class="exam-header roaro">
+                    <div class="exam-icon">📋</div>
+                    <h2>RO/ARO Exam</h2>
+                    <p>Uttar Pradesh Public Service Commission</p>
+                </div>
+                <div class="exam-body">
+                    <ul class="feature-list">
+                        <li><i class="fas fa-check-circle"></i> UPPSC Pattern Questions</li>
+                        <li><i class="fas fa-check-circle"></i> Hindi & English Support</li>
+                        <li><i class="fas fa-check-circle"></i> Detailed Explanations</li>
+                        <li><i class="fas fa-check-circle"></i> Previous Year Papers</li>
+                        <li><i class="fas fa-check-circle"></i> Timer Based Tests</li>
+                    </ul>
+                    <button class="start-btn roaro">
+                        <i class="fas fa-play"></i> Start Exam
+                    </button>
+                </div>
+            </div>
+
+            <!-- NTA Mock Test Card -->
+            <div class="exam-card" onclick="openModal('nta')">
+                <div class="exam-header nta">
+                    <div class="exam-icon">📝</div>
+                    <h2>NTA Mock Test</h2>
+                    <p>National Testing Agency Pattern</p>
+                </div>
+                <div class="exam-body">
+                    <ul class="feature-list">
+                        <li><i class="fas fa-check-circle"></i> NTA Official Pattern</li>
+                        <li><i class="fas fa-check-circle"></i> Multiple Subjects</li>
+                        <li><i class="fas fa-check-circle"></i> Question Palette</li>
+                        <li><i class="fas fa-check-circle"></i> Mark for Review</li>
+                        <li><i class="fas fa-check-circle"></i> Instant Results</li>
+                    </ul>
+                    <button class="start-btn nta">
+                        <i class="fas fa-play"></i> Start Exam
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="secure-badge">
+            <i class="fas fa-shield-alt"></i> 256-bit SSL Secured | Password Protected
+        </div>
+    </div>
+
+    <!-- Password Modal -->
+    <div id="passwordModal" class="modal-overlay" onclick="closeModalOnOutside(event)">
+        <div class="modal-content">
+            <div id="modalIcon" class="modal-header">🔐</div>
+            <h3 id="modalTitle" class="modal-title">Enter Password</h3>
+            <p id="modalSubtitle" class="modal-subtitle">Secure Access Required</p>
+
+            <input type="password" id="examPassword" class="password-input" placeholder="Enter Password" onkeypress="handleEnter(event)">
+
+            <button id="accessBtn" class="modal-btn" onclick="verifyPassword()">
+                <i class="fas fa-unlock-alt"></i> Access Test
+            </button>
+
+            <div id="errorMsg" class="error-msg">
+                <i class="fas fa-exclamation-triangle"></i> Incorrect Password!
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let selectedExam = '';
+
+        // Passwords for each exam
+        const EXAM_PASSWORDS = {
+            'roaro': '208025',
+            'nta': '208025'
+        };
+
+        // Redirect URLs (change these to your actual file names)
+        const EXAM_URLS = {
+            'roaro': 'roaro-exam.html',
+            'nta': 'nta-exam.html'
+        };
+
+        function openModal(exam) {
+            selectedExam = exam;
+            const modal = document.getElementById('passwordModal');
+            const icon = document.getElementById('modalIcon');
+            const title = document.getElementById('modalTitle');
+            const subtitle = document.getElementById('modalSubtitle');
+            const btn = document.getElementById('accessBtn');
+
+            if (exam === 'roaro') {
+                icon.textContent = '📋';
+                title.textContent = 'RO/ARO Exam';
+                subtitle.textContent = 'UPPSC Pattern Test';
+                btn.className = 'modal-btn roaro';
+            } else {
+                icon.textContent = '📝';
+                title.textContent = 'NTA Mock Test';
+                subtitle.textContent = 'National Testing Agency Pattern';
+                btn.className = 'modal-btn nta';
+            }
+
+            document.getElementById('examPassword').value = '';
+            document.getElementById('errorMsg').style.display = 'none';
+            modal.classList.add('show');
+            document.getElementById('examPassword').focus();
+        }
+
+        function closeModalOnOutside(event) {
+            if (event.target.id === 'passwordModal') {
+                document.getElementById('passwordModal').classList.remove('show');
+            }
+        }
+
+        function handleEnter(event) {
+            if (event.key === 'Enter') {
+                verifyPassword();
+            }
+        }
+
+        function verifyPassword() {
+            const enteredPass = document.getElementById('examPassword').value;
+            const correctPass = EXAM_PASSWORDS[selectedExam];
+
+            if (enteredPass === correctPass) {
+                // Store exam type in session
+                sessionStorage.setItem('selectedExam', selectedExam);
+                // Redirect to exam page
+                window.location.href = EXAM_URLS[selectedExam];
+            } else {
+                document.getElementById('errorMsg').style.display = 'block';
+                document.getElementById('examPassword').value = '';
+                setTimeout(() => {
+                    document.getElementById('errorMsg').style.display = 'none';
+                }, 3000);
+            }
+        }
+    </script>
+</body>
+</html>
