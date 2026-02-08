@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Akash Academy - Exam Portal</title>
-    <script src="https://cdn.tailwindcss.com "></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css " rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com  "></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css  " rel="stylesheet">
     <style>
         * { box-sizing: border-box; }
         body { 
@@ -45,7 +45,7 @@
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
             gap: 30px;
-            max-width: 900px;
+            max-width: 1200px;
             width: 100%;
         }
 
@@ -75,6 +75,10 @@
 
         .exam-header.nta {
             background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%);
+        }
+
+        .exam-header.vikas {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
         }
 
         .exam-icon {
@@ -143,6 +147,10 @@
             background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%);
         }
 
+        .start-btn.vikas {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+        }
+
         .secure-badge {
             text-align: center;
             margin-top: 40px;
@@ -207,6 +215,27 @@
                         <li><i class="fas fa-check-circle"></i> Instant Results</li>
                     </ul>
                     <button class="start-btn nta">
+                        <i class="fas fa-play"></i> Start Exam
+                    </button>
+                </div>
+            </div>
+
+            <!-- Vikas Portal Card - Same Tab -->
+            <div class="exam-card" onclick="window.location.href='vikas-portal.html'">
+                <div class="exam-header vikas">
+                    <div class="exam-icon">🌱</div>
+                    <h2>Vikas Portal</h2>
+                    <p>Online Assessment Platform</p>
+                </div>
+                <div class="exam-body">
+                    <ul class="feature-list">
+                        <li><i class="fas fa-check-circle"></i> General Competition Pattern</li>
+                        <li><i class="fas fa-check-circle"></i> Hindi & English Support</li>
+                        <li><i class="fas fa-check-circle"></i> Detailed Explanations</li>
+                        <li><i class="fas fa-check-circle"></i> Question Palette</li>
+                        <li><i class="fas fa-check-circle"></i> Instant Results</li>
+                    </ul>
+                    <button class="start-btn vikas">
                         <i class="fas fa-play"></i> Start Exam
                     </button>
                 </div>
