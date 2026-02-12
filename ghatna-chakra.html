@@ -723,7 +723,45 @@
             }
         }
 
-        // ==================== START EXAM (NO SHUFFLING) ====================
+        // ==================== UTILITY: Get available options for a question ====================
+        function getAvailableOptions(q, lang) {
+            const useEnglish = lang === 'en' && hasEnglishColumns;
+            const options = [];
+            
+            // Check for Option A-E (both Hindi and English)
+            const optionKeys = ['A', 'B', 'C', 'D', 'E'];
+            
+            optionKeys.forEach(key => {
+                let optionText = null;
+                
+                if (useEnglish) {
+                    // Try English columns first
+                    optionText = q[`English_Option_${key}`] || 
+                                q[`English Option ${key}`] || 
+                                q[`Option ${key}`] || 
+                                q[`Option${key}`] || 
+                                q[key];
+                } else {
+                    // Hindi columns
+                    optionText = q[`Option ${key}`] || 
+                                q[`Option${key}`] || 
+                                q[key];
+                }
+                
+                // If option text exists and is not empty, add it
+                if (optionText && optionText.toString().trim() !== '') {
+                    options.push({
+                        key: key,
+                        text: optionText.toString().trim(),
+                        index: options.length + 1  // 1-based index for answer mapping
+                    });
+                }
+            });
+            
+            return options;
+        }
+
+        // ==================== START EXAM ====================
         function startExam() {
             const subject = document.getElementById('mainSubject').value;
             const subSubject = document.getElementById('subSubject').value;
@@ -742,9 +780,6 @@
             });
 
             if (currentQuestions.length === 0) { alert('No questions found!'); return; }
-
-            // ❌ SHUFFLING REMOVED - Questions in original order
-            currentQuestions = [...currentQuestions];
 
             if (count !== 'all' && currentQuestions.length > parseInt(count)) {
                 currentQuestions = currentQuestions.slice(0, parseInt(count));
@@ -811,13 +846,7 @@
 
             return {
                 question: useEnglish ? (q['English_Question'] || q['English Question'] || q.Question) : q.Question,
-                explanation: useEnglish ? (q['English_Explanation'] || q['English Explanation'] || q.Explanation || 'No explanation.') : (q.Explanation || 'कोई व्याख्या नहीं।'),
-                options: {
-                    A: useEnglish ? (q['English_Option_A'] || q['English Option A'] || q['Option A'] || q['OptionA'] || q.A) : (q['Option A'] || q['OptionA'] || q.A),
-                    B: useEnglish ? (q['English_Option_B'] || q['English Option B'] || q['Option B'] || q['OptionB'] || q.B) : (q['Option B'] || q['OptionB'] || q.B),
-                    C: useEnglish ? (q['English_Option_C'] || q['English Option C'] || q['Option C'] || q['OptionC'] || q.C) : (q['Option C'] || q['OptionC'] || q.C),
-                    D: useEnglish ? (q['English_Option_D'] || q['English Option D'] || q['Option D'] || q['OptionD'] || q.D) : (q['Option D'] || q['OptionD'] || q.D)
-                }
+                explanation: useEnglish ? (q['English_Explanation'] || q['English Explanation'] || q.Explanation || 'No explanation.') : (q.Explanation || 'कोई व्याख्या नहीं।')
             };
         }
 
@@ -826,6 +855,9 @@
             const q = currentQuestions[currentIndex];
             const lang = document.getElementById('languageSelect').value;
             const text = getQuestionText(q, lang);
+            
+            // Get available options dynamically (supports 4 or 5 options)
+            const availableOptions = getAvailableOptions(q, lang);
 
             document.getElementById('qNumber').textContent = currentIndex + 1;
             document.getElementById('questionText').innerHTML = text.question;
@@ -837,22 +869,26 @@
             const optionsDiv = document.getElementById('optionsContainer');
             optionsDiv.innerHTML = '';
 
-            ['A', 'B', 'C', 'D'].forEach((opt, idx) => {
-                const optText = text.options[opt];
-                if (!optText) return;
-
+            // Render only available options
+            availableOptions.forEach((opt) => {
                 const label = document.createElement('label');
                 label.className = 'option-label';
-                if (userAnswers[currentIndex] === (idx + 1).toString()) {
+                
+                // Check if this option was previously selected
+                const userAnswerNum = userAnswers[currentIndex];
+                const isSelected = userAnswerNum && parseInt(userAnswerNum) === opt.index;
+                
+                if (isSelected) {
                     label.classList.add('selected');
                 }
-                label.onclick = () => selectOption((idx + 1).toString());
+                
+                label.onclick = () => selectOption(opt.index.toString(), availableOptions.length);
 
                 label.innerHTML = `
-                    <div class="option-circle">${opt}</div>
-                    <div class="flex-1">${optText}</div>
-                    <input type="radio" name="option" value="${idx + 1}" class="hidden" 
-                        ${userAnswers[currentIndex] === (idx + 1).toString() ? 'checked' : ''}>
+                    <div class="option-circle">${opt.key}</div>
+                    <div class="flex-1">${opt.text}</div>
+                    <input type="radio" name="option" value="${opt.index}" class="hidden" 
+                        ${isSelected ? 'checked' : ''}>
                 `;
                 optionsDiv.appendChild(label);
             });
@@ -862,7 +898,7 @@
             updateStats();
         }
 
-        function selectOption(value) {
+        function selectOption(value, totalOptions) {
             selectedOption = value;
             userAnswers[currentIndex] = value;
             questionStatus[currentIndex] = 'answered';
@@ -985,24 +1021,42 @@
 
             currentQuestions.forEach((q, i) => {
                 const userAns = userAnswers[i];
-                const correctAns = (q.Answer || '').toString().trim().toLowerCase();
-
+                const correctAns = (q.Answer || '').toString().trim();
+                
+                // Get available options for this question
+                const availableOptions = getAvailableOptions(q, lang);
+                
+                // Map correct answer letter to option index
                 let correctNum = '';
-                if (correctAns === 'a' || correctAns === '1') correctNum = '1';
-                else if (correctAns === 'b' || correctAns === '2') correctNum = '2';
-                else if (correctAns === 'c' || correctAns === '3') correctNum = '3';
-                else if (correctAns === 'd' || correctAns === '4') correctNum = '4';
+                const correctLetter = correctAns.toUpperCase();
+                
+                // Find which index corresponds to the correct answer letter
+                const correctOption = availableOptions.find(opt => opt.key === correctLetter);
+                if (correctOption) {
+                    correctNum = correctOption.index.toString();
+                } else {
+                    // Fallback: if answer is numeric
+                    correctNum = correctAns;
+                }
 
                 const text = getQuestionText(q, lang);
+                
+                // Create options map for display
+                const optionsMap = {};
+                availableOptions.forEach(opt => {
+                    optionsMap[opt.key] = opt.text;
+                });
 
                 const result = {
                     index: i + 1,
                     question: text.question,
                     userAnswer: userAns,
                     correctAnswer: correctNum,
-                    correctText: text.options[correctAns.toUpperCase()],
+                    correctLetter: correctLetter,
+                    correctText: optionsMap[correctLetter] || 'N/A',
                     explanation: text.explanation,
-                    options: text.options
+                    options: optionsMap,
+                    availableOptions: availableOptions
                 };
 
                 if (!userAns) {
@@ -1041,8 +1095,17 @@
             const isHindi = lang === 'hi';
 
             container.innerHTML = questions.map(q => {
-                const userOpt = q.userAnswer ? ['A', 'B', 'C', 'D'][q.userAnswer - 1] : '-';
-                const correctOpt = ['A', 'B', 'C', 'D'][q.correctAnswer - 1];
+                // Get user's selected letter
+                let userOpt = '-';
+                let userText = isHindi ? 'प्रयास नहीं किया' : 'Not attempted';
+                
+                if (q.userAnswer) {
+                    const userOption = q.availableOptions.find(opt => opt.index.toString() === q.userAnswer);
+                    if (userOption) {
+                        userOpt = userOption.key;
+                        userText = userOption.text;
+                    }
+                }
 
                 let statusHtml = '';
                 if (type === 'wrong') statusHtml = `<span class="bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm font-bold">${isHindi ? 'गलत' : 'WRONG'}</span>`;
@@ -1063,13 +1126,13 @@
                         <p class="text-gray-700 mb-3">${q.question}</p>
                         <div class="grid md:grid-cols-2 gap-2 mb-3 text-sm">
                             <div class="bg-green-50 p-2 rounded border border-green-200">
-                                <span class="font-semibold text-green-700">${correctLabel}: ${correctOpt}</span>
-                                <p class="text-gray-600">${q.options[correctOpt] || ''}</p>
+                                <span class="font-semibold text-green-700">${correctLabel}: ${q.correctLetter}</span>
+                                <p class="text-gray-600">${q.correctText}</p>
                             </div>
                             ${type === 'wrong' ? `
                             <div class="bg-red-50 p-2 rounded border border-red-200">
                                 <span class="font-semibold text-red-700">${yourLabel}: ${userOpt}</span>
-                                <p class="text-gray-600">${q.options[userOpt] || (isHindi ? 'प्रयास नहीं किया' : 'Not attempted')}</p>
+                                <p class="text-gray-600">${userText}</p>
                             </div>
                             ` : ''}
                         </div>
@@ -1082,24 +1145,12 @@
             }).join('');
         }
 
-        // ==================== UTILITY ====================
-        function shuffleArray(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
-            }
-            return array;
-        }
-
-        // ==================== RESTART TEST (NO SHUFFLING) ====================
+        // ==================== RESTART TEST ====================
         function restartTest() {
             userAnswers = new Array(currentQuestions.length).fill(null);
             questionStatus = new Array(currentQuestions.length).fill('not-visited');
             currentIndex = 0;
             selectedOption = null;
-
-            // ❌ SHUFFLING REMOVED - Keep original order
-            currentQuestions = [...currentQuestions];
 
             document.getElementById('resultSection').classList.add('hidden-all');
             document.getElementById('examSection').classList.remove('hidden-all');
