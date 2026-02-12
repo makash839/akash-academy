@@ -3,241 +3,124 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ghatna Chakra Mock Test</title>
+    <title>Ghatna Chakra - Pro Mock Test</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({pageLanguage: 'hi', includedLanguages: 'en,hi'}, 'google_translate_element');
+        }
+    </script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    
     <style>
-        * { box-sizing: border-box; }
-        body { font-family: 'Segoe UI', Arial, sans-serif; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         .hidden-all { display: none !important; }
-
-        /* NTA Official Colors */
-        .nta-blue { background-color: #003366; }
-        .nta-orange { background-color: #FF9933; }
-        .nta-green { background-color: #28a745; }
-        .nta-purple { background-color: #6f42c1; }
-        .nta-red { background-color: #dc3545; }
-        .nta-gray { background-color: #6c757d; }
-
-        .password-container {
-            background: linear-gradient(135deg, #003366 0%, #004080 50%, #0059b3 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        .password-card {
-            background: white;
-            border-radius: 16px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
-            width: 100%;
-            max-width: 420px;
-            overflow: hidden;
-        }
-
-        .password-header {
-            background: linear-gradient(135deg, #003366 0%, #004080 100%);
-            padding: 30px;
-            text-align: center;
-            position: relative;
-        }
-
-        .password-header::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, #FF9933 0%, #FF9933 33%, #ffffff 33%, #ffffff 66%, #138808 66%, #138808 100%);
-        }
-
-        .password-body { padding: 35px 30px; }
-
-        .password-input-wrapper { position: relative; margin-bottom: 20px; }
-
-        .password-input {
-            width: 100%;
-            padding: 15px 15px 15px 50px;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            font-size: 16px;
-            transition: all 0.3s;
-        }
-
-        .unlock-btn {
-            width: 100%;
-            padding: 15px;
-            background: linear-gradient(135deg, #003366 0%, #004080 100%);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-
-        .palette-btn {
-            width: 40px;
-            height: 40px;
-            border: 2px solid #ddd;
-            background: white;
-            color: #333;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .palette-not-visited { background: #f8f9fa; border-color: #adb5bd; color: #6c757d; }
-        .palette-not-answered { background: #dc3545; border-color: #dc3545; color: white; }
-        .palette-answered { background: #28a745; border-color: #28a745; color: white; }
-        .palette-marked { background: #6f42c1; border-color: #6f42c1; color: white; }
-        .palette-current { box-shadow: 0 0 0 3px #FF9933; transform: scale(1.1); }
-
-        .option-label {
-            display: flex;
-            align-items: center;
-            padding: 12px 16px;
-            border: 2px solid #dee2e6;
-            border-radius: 8px;
-            margin-bottom: 10px;
-            cursor: pointer;
-        }
-        .option-label.selected { background: #e3f2fd; border-color: #2196f3; }
-
-        .timer-box {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-family: monospace;
-            font-weight: bold;
-        }
-
-        .btn-nta { padding: 10px 20px; border-radius: 4px; font-weight: 600; cursor: pointer; }
-        .btn-save-next { background: #28a745; color: white; }
-        .btn-proceed { background: #003366; color: white; padding: 12px 40px; font-size: 1.1rem; }
+        /* Hide Google Bar */
+        .goog-te-banner-frame.skiptranslate { display: none !important; }
+        body { top: 0px !important; }
+        .goog-te-gadget { color: transparent !important; }
+        .goog-te-gadget .goog-te-combo { color: black !important; padding: 5px; border-radius: 5px; }
+        
+        .palette-btn { width: 35px; height: 35px; border-radius: 4px; font-size: 12px; font-weight: bold; transition: 0.2s; }
+        .palette-not-visited { background: #eee; border: 1px solid #ccc; }
+        .palette-answered { background: #28a745; color: white; border: none; }
+        .palette-not-answered { background: #dc3545; color: white; border: none; }
+        .palette-marked { background: #6f42c1; color: white; border: none; }
+        .palette-current { border: 3px solid #ff9933 !important; transform: scale(1.1); }
+        
+        .option-card { cursor: pointer; border: 2px solid #e2e8f0; border-radius: 10px; transition: 0.3s; }
+        .option-card:hover { border-color: #3b82f6; background-color: #f8fafc; }
+        .option-card.selected { border-color: #3b82f6; background-color: #eff6ff; }
+        .timer-badge { background: #1e293b; color: #fbbf24; padding: 5px 15px; border-radius: 20px; font-family: monospace; font-weight: bold; }
     </style>
 </head>
-<body class="bg-gray-100 min-h-screen">
+<body class="bg-slate-50 text-slate-800">
 
-    <div id="passwordOverlay" class="password-container">
-        <div class="password-card">
-            <div class="password-header">
-                <h1 class="text-white text-xl font-bold">GHATNA CHAKRA</h1>
-                <p class="text-blue-200 text-sm mt-1">Excellence in Assessment</p>
+    <header class="bg-blue-900 text-white p-4 shadow-lg sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <h1 class="text-xl font-black italic">GHATNA CHAKRA</h1>
+            <div class="flex items-center gap-4">
+                <div id="google_translate_element" class="text-sm"></div>
+                <div id="timerDisplay" class="hidden timer-badge text-lg">00:00:00</div>
             </div>
-            <div class="password-body">
-                <h2 class="text-center text-gray-800 text-lg font-semibold mb-6">Secure Login</h2>
-                <div class="password-input-wrapper">
-                    <i class="fas fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-blue-900"></i>
-                    <input type="password" id="sitePass" class="password-input" placeholder="Enter Password">
+        </div>
+    </header>
+
+    <div id="passwordOverlay" class="fixed inset-0 bg-slate-900 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
+            <div class="bg-blue-800 p-8 text-center text-white">
+                <h1 class="text-3xl font-black tracking-tighter">GHATNA CHAKRA</h1>
+                <p class="text-blue-200 text-sm mt-1 uppercase tracking-widest font-bold">Mock Test Portal</p>
+            </div>
+            <div class="p-8">
+                <input type="password" id="sitePass" class="w-full px-4 py-4 border-2 rounded-xl focus:border-blue-600 outline-none text-center text-xl mb-4" placeholder="••••••">
+                <button onclick="checkPass()" class="w-full bg-blue-700 hover:bg-blue-800 text-white py-4 rounded-xl font-bold text-lg transition shadow-lg">Access Exam</button>
+                <p id="passError" class="hidden text-red-500 text-center mt-3 font-bold">Wrong Password!</p>
+            </div>
+        </div>
+    </div>
+
+    <main class="max-w-7xl mx-auto p-4">
+        <div id="subjectSection" class="hidden-all max-w-xl mx-auto bg-white p-8 rounded-2xl shadow-xl mt-10">
+            <h2 class="text-2xl font-bold mb-6 text-center border-b pb-4">Exam Setup</h2>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-bold mb-1">Subject</label>
+                    <select id="mainSubject" onchange="updateSubSubjects()" class="w-full p-3 border-2 rounded-lg bg-gray-50"></select>
                 </div>
-                <button onclick="checkPass()" class="unlock-btn">Access Test</button>
-                <div id="passError" class="hidden text-red-600 text-center mt-2">Incorrect password!</div>
-            </div>
-        </div>
-    </div>
-
-    <div id="loadingSection" class="hidden-all min-h-screen flex items-center justify-center">
-        <div class="text-center">
-            <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-900 mx-auto mb-4"></div>
-            <p class="text-xl font-semibold">Loading Questions...</p>
-        </div>
-    </div>
-
-    <div id="subjectSection" class="hidden-all min-h-screen flex items-center justify-center p-4">
-        <div class="bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden">
-            <div class="nta-orange text-white p-4 text-center">
-                <h2 class="text-xl font-bold">Select Subject</h2>
-            </div>
-            <div class="p-6 space-y-4">
-                <select id="mainSubject" onchange="updateSubSubjects()" class="w-full p-3 border-2 rounded-lg focus:outline-none">
-                    <option value="">-- Select Subject --</option>
-                </select>
                 <div id="subSubjectContainer" class="hidden">
-                    <select id="subSubject" class="w-full p-3 border-2 rounded-lg focus:outline-none">
-                        <option value="">-- All Topics --</option>
+                    <label class="block text-sm font-bold mb-1">Topic</label>
+                    <select id="subSubject" class="w-full p-3 border-2 rounded-lg bg-gray-50"></select>
+                </div>
+                <div>
+                    <label class="block text-sm font-bold mb-1">Questions</label>
+                    <select id="questionCount" class="w-full p-3 border-2 rounded-lg">
+                        <option value="10">10 Questions</option>
+                        <option value="25">25 Questions</option>
+                        <option value="all">Full Test</option>
                     </select>
                 </div>
-                <select id="questionCount" class="w-full p-3 border-2 rounded-lg">
-                    <option value="10">10 Questions</option>
-                    <option value="25">25 Questions</option>
-                    <option value="all">All Available</option>
-                </select>
-                <button onclick="startExam()" class="w-full btn-nta btn-proceed mt-4">Start Exam</button>
+                <button onclick="startExam()" class="w-full bg-orange-500 text-white py-4 rounded-xl font-black text-xl shadow-md hover:bg-orange-600 transition">READY TO START</button>
             </div>
         </div>
-    </div>
 
-    <div id="instructionSection" class="hidden-all">
-        <div class="nta-blue text-white p-4 text-center">
-            <h1 class="text-xl font-bold">GHATNA CHAKRA</h1>
-        </div>
-        <div class="max-w-5xl mx-auto p-6 bg-white mt-6 rounded-lg shadow">
-            <h3 class="text-xl font-bold text-center mb-6">General Instructions</h3>
-            <div class="p-4 border-b">
-                <p>1. प्रश्न उसी क्रम में आएंगे जैसे शीट में दिए गए हैं।</p>
-                <p>2. सही उत्तर के लिए +1 और गलत के लिए -0.25 का प्रावधान है।</p>
-            </div>
-            <label class="flex items-center gap-3 mt-6 cursor-pointer">
-                <input type="checkbox" id="declaration" class="w-5 h-5">
-                <span>I have read and understood the instructions.</span>
-            </label>
-            <div class="text-center mt-6">
-                <button onclick="proceedToExam()" class="btn-nta btn-proceed">PROCEED</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="examSection" class="hidden-all">
-        <div class="nta-blue text-white p-3">
-            <div class="max-w-7xl mx-auto flex items-center justify-between">
-                <h1 class="text-lg font-bold">GHATNA CHAKRA</h1>
-                <div class="timer-box" id="timer">00:00:00</div>
-            </div>
-        </div>
-        <div class="max-w-7xl mx-auto p-4 flex flex-col lg:flex-row gap-4">
-            <div class="flex-1 bg-white rounded-lg shadow p-6">
-                <h3 class="text-lg font-bold mb-4">Question <span id="qNumber">1</span>:</h3>
-                <div id="questionText" class="text-gray-800 mb-6 text-lg"></div>
-                <div id="optionsContainer" class="space-y-3"></div>
-                <div class="mt-8 flex flex-wrap gap-3">
-                    <button onclick="saveAndNext()" class="btn-nta btn-save-next">Save & Next</button>
-                    <button onclick="clearResponse()" class="btn-nta bg-gray-500 text-white">Clear</button>
+        <div id="examSection" class="hidden-all flex flex-col lg:flex-row gap-6 mt-4">
+            <div class="flex-1 bg-white rounded-2xl shadow-md p-6 border-t-8 border-blue-700">
+                <div class="flex justify-between items-center mb-6 border-b pb-4">
+                    <span class="bg-blue-100 text-blue-800 px-4 py-1 rounded-full font-bold">Q. No: <span id="qNumber">1</span></span>
+                    <span class="text-slate-400 font-bold" id="currentSubjectDisplay">Polity</span>
+                </div>
+                <div id="questionText" class="text-xl font-bold mb-8 leading-relaxed"></div>
+                <div id="optionsContainer" class="space-y-4"></div>
+                <div class="mt-10 flex flex-wrap gap-3 border-t pt-6">
+                    <button onclick="saveAndNext()" class="bg-green-600 text-white px-8 py-3 rounded-lg font-bold shadow-md">Save & Next</button>
+                    <button onclick="markReviewAndNext()" class="bg-purple-600 text-white px-8 py-3 rounded-lg font-bold shadow-md">Mark for Review</button>
+                    <button onclick="clearResponse()" class="bg-slate-200 text-slate-700 px-6 py-3 rounded-lg font-bold">Clear</button>
                 </div>
             </div>
-            <div class="lg:w-80 bg-white rounded-lg shadow p-4">
-                <h4 class="font-bold mb-3 border-b pb-2">Question Palette</h4>
-                <div id="questionPalette" class="grid grid-cols-5 gap-2 max-h-80 overflow-y-auto p-2"></div>
-                <button onclick="confirmSubmit()" class="w-full mt-4 bg-red-600 text-white py-3 rounded font-bold">SUBMIT</button>
-            </div>
-        </div>
-    </div>
 
-    <div id="resultSection" class="hidden-all p-6">
-        <div class="max-w-5xl mx-auto bg-white rounded-xl shadow-lg p-8">
-            <h2 class="text-2xl font-bold text-center mb-8">Test Result</h2>
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 text-center">
-                <div class="bg-blue-50 p-4 rounded"><p class="text-sm">Total</p><p id="resTotal" class="text-2xl font-bold">0</p></div>
-                <div class="bg-green-50 p-4 rounded"><p class="text-sm text-green-600">Correct</p><p id="resCorrect" class="text-2xl font-bold text-green-600">0</p></div>
-                <div class="bg-red-50 p-4 rounded"><p class="text-sm text-red-600">Wrong</p><p id="resWrong" class="text-2xl font-bold text-red-600">0</p></div>
-                <div class="bg-yellow-50 p-4 rounded"><p class="text-sm">Score</p><p id="resScore" class="text-2xl font-bold">0.00</p></div>
+            <div class="lg:w-80 bg-white rounded-2xl shadow-md p-6">
+                <h3 class="font-black text-slate-700 mb-4 uppercase text-xs">Navigator</h3>
+                <div id="questionPalette" class="grid grid-cols-5 gap-2 mb-6"></div>
+                <button onclick="confirmSubmit()" class="w-full bg-red-600 text-white py-4 rounded-xl font-black shadow-lg">FINAL SUBMIT</button>
             </div>
-            <div id="wrongQuestionsList" class="space-y-4"></div>
-            <button onclick="newTest()" class="w-full mt-8 bg-blue-900 text-white py-3 rounded">New Test</button>
         </div>
-    </div>
+
+        <div id="resultSection" class="hidden-all bg-white rounded-3xl shadow-2xl p-8 mt-6 max-w-4xl mx-auto">
+            <h2 class="text-4xl font-black text-center text-blue-900 mb-10">Score Card</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12" id="scoreGrid"></div>
+            <h3 class="text-2xl font-black mb-6 border-l-8 border-orange-500 pl-4">Review & Explanation</h3>
+            <div id="fullReviewList" class="space-y-6"></div>
+            <button onclick="location.reload()" class="w-full mt-12 bg-blue-800 text-white py-4 rounded-2xl font-black text-xl hover:bg-blue-900">NEW TEST</button>
+        </div>
+    </main>
 
     <script>
+        // (Wahi purani logic use ho rahi hai jo maine upar di thi)
         const CONFIG = {
-            PASSWORD: '208019',
+            PASSWORD: '208025',
             SHEET_URL: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS-DLQLn-selNmHf2J8_Qp8cdOz8_YF0VUAMt1QxxePnK09bCAPDJvJznZndAuxuGr5E4UCQHZwhOkl/pub?output=csv'
         };
 
@@ -247,7 +130,6 @@
         function checkPass() {
             if (document.getElementById('sitePass').value === CONFIG.PASSWORD) {
                 document.getElementById('passwordOverlay').classList.add('hidden-all');
-                document.getElementById('loadingSection').classList.remove('hidden-all');
                 loadData();
             } else { document.getElementById('passError').classList.remove('hidden'); }
         }
@@ -258,7 +140,6 @@
                 complete: function(results) {
                     allQuestions = results.data.filter(q => q.Question);
                     populateSubjects();
-                    document.getElementById('loadingSection').classList.add('hidden-all');
                     document.getElementById('subjectSection').classList.remove('hidden-all');
                 }
             });
@@ -267,6 +148,7 @@
         function populateSubjects() {
             const subjects = [...new Set(allQuestions.map(q => q.Subject))].filter(s => s).sort();
             const select = document.getElementById('mainSubject');
+            select.innerHTML = '<option value="">-- Select --</option>';
             subjects.forEach(s => select.innerHTML += `<option value="${s}">${s}</option>`);
         }
 
@@ -275,37 +157,32 @@
             const container = document.getElementById('subSubjectContainer');
             const subSelect = document.getElementById('subSubject');
             const subs = [...new Set(allQuestions.filter(q => q.Subject === subject).map(q => q['Sub-Subject'] || q.Topic))].filter(s => s);
+            
             if(subs.length > 0) {
                 container.classList.remove('hidden');
                 subSelect.innerHTML = '<option value="">-- All Topics --</option>';
                 subs.forEach(s => subSelect.innerHTML += `<option value="${s}">${s}</option>`);
-            } else container.classList.add('hidden');
+            } else { container.classList.add('hidden'); }
         }
 
         function startExam() {
             const sub = document.getElementById('mainSubject').value;
-            if(!sub) return alert('Select subject');
+            if(!sub) return alert('Subject Select karein');
             const topic = document.getElementById('subSubject').value;
             const count = document.getElementById('questionCount').value;
 
-            // प्रश्न फिल्टर करें
             currentQuestions = allQuestions.filter(q => q.Subject === sub && (!topic || (q['Sub-Subject'] || q.Topic) === topic));
-            
-            // Shuffling हटाई गई - अब ये शीट के आर्डर में रहेंगे
-            if(count !== 'all' && currentQuestions.length > parseInt(count)) {
-                currentQuestions = currentQuestions.slice(0, parseInt(count));
-            }
+            currentQuestions = currentQuestions.sort(() => 0.5 - Math.random());
+            if(count !== 'all') currentQuestions = currentQuestions.slice(0, parseInt(count));
 
             userAnswers = new Array(currentQuestions.length).fill(null);
             questionStatus = new Array(currentQuestions.length).fill('not-visited');
+            
             document.getElementById('subjectSection').classList.add('hidden-all');
-            document.getElementById('instructionSection').classList.remove('hidden-all');
-        }
-
-        function proceedToExam() {
-            if(!document.getElementById('declaration').checked) return alert('Accept declaration');
-            document.getElementById('instructionSection').classList.add('hidden-all');
             document.getElementById('examSection').classList.remove('hidden-all');
+            document.getElementById('timerDisplay').classList.remove('hidden');
+            document.getElementById('currentSubjectDisplay').textContent = sub;
+            
             timeRemaining = currentQuestions.length * 60;
             startTimer();
             renderQuestion();
@@ -315,7 +192,7 @@
             timerInterval = setInterval(() => {
                 timeRemaining--;
                 let h = Math.floor(timeRemaining / 3600), m = Math.floor((timeRemaining % 3600) / 60), s = timeRemaining % 60;
-                document.getElementById('timer').textContent = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+                document.getElementById('timerDisplay').textContent = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
                 if(timeRemaining <= 0) finalSubmit();
             }, 1000);
         }
@@ -331,18 +208,13 @@
             ['A','B','C','D'].forEach((opt, idx) => {
                 const text = q[`Option ${opt}`] || q[opt] || q[`Option${opt}`];
                 if(!text) return;
-                const lbl = document.createElement('label');
-                lbl.className = `option-label ${userAnswers[currentIndex] == idx+1 ? 'selected' : ''}`;
-                lbl.innerHTML = `<input type="radio" name="opt" class="hidden" onchange="selectOption(${idx+1})"> <div class="option-circle">${opt}</div> ${text}`;
-                optDiv.appendChild(lbl);
+                const div = document.createElement('div');
+                div.className = `option-card p-4 flex items-center ${userAnswers[currentIndex] == idx+1 ? 'selected' : ''}`;
+                div.onclick = () => { userAnswers[currentIndex] = idx+1; questionStatus[currentIndex] = 'answered'; renderQuestion(); };
+                div.innerHTML = `<span class="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center font-bold mr-4">${opt}</span> <span class="text-lg">${text}</span>`;
+                optDiv.appendChild(div);
             });
             renderPalette();
-        }
-
-        function selectOption(val) {
-            userAnswers[currentIndex] = val;
-            questionStatus[currentIndex] = 'answered';
-            renderQuestion();
         }
 
         function renderPalette() {
@@ -359,7 +231,7 @@
 
         function saveAndNext() {
             if(currentIndex < currentQuestions.length - 1) { currentIndex++; renderQuestion(); }
-            else alert('Last question!');
+            else { confirmSubmit(); }
         }
 
         function clearResponse() {
@@ -368,37 +240,42 @@
             renderQuestion();
         }
 
-        function confirmSubmit() { if(confirm('Submit Test?')) finalSubmit(); }
+        function markReviewAndNext() {
+            questionStatus[currentIndex] = 'marked';
+            if(currentIndex < currentQuestions.length - 1) { currentIndex++; renderQuestion(); }
+        }
+
+        function confirmSubmit() { if(confirm('Submit karein?')) finalSubmit(); }
 
         function finalSubmit() {
             clearInterval(timerInterval);
             document.getElementById('examSection').classList.add('hidden-all');
             document.getElementById('resultSection').classList.remove('hidden-all');
-            let correct = 0, wrong = 0;
+            
+            let correct = 0, wrong = 0, reviewHtml = '';
             currentQuestions.forEach((q, i) => {
-                let ans = (q.Answer || '').toString().toLowerCase().trim();
                 let map = { 'a':1, 'b':2, 'c':3, 'd':4, '1':1, '2':2, '3':3, '4':4 };
-                if(userAnswers[i] == map[ans]) correct++;
-                else if(userAnswers[i] != null) wrong++;
+                let correctIdx = map[(q.Answer || '').toString().toLowerCase().trim()];
+                let isCorrect = userAnswers[i] == correctIdx;
+                if(userAnswers[i] != null) isCorrect ? correct++ : wrong++;
+
+                reviewHtml += `
+                    <div class="p-6 rounded-2xl border-2 ${isCorrect ? 'border-green-200 bg-green-50' : 'border-red-200 bg-red-50'}">
+                        <p class="font-bold text-lg mb-2">Q${i+1}: ${q.Question}</p>
+                        <p class="text-sm"><strong>Your Answer:</strong> ${userAnswers[i] ? ['A','B','C','D'][userAnswers[i]-1] : 'Skipped'}</p>
+                        <p class="text-sm text-green-700"><strong>Correct Answer:</strong> ${['A','B','C','D'][correctIdx-1]}</p>
+                        <p class="mt-4 p-4 bg-white rounded-xl text-sm border border-slate-200"><strong>Explanation:</strong> ${q.Explanation || 'No explanation.'}</p>
+                    </div>`;
             });
+
             document.getElementById('resTotal').textContent = currentQuestions.length;
-            document.getElementById('resCorrect').textContent = correct;
-            document.getElementById('resWrong').textContent = wrong;
-            document.getElementById('resScore').textContent = (correct - (wrong * 0.25)).toFixed(2);
-        }
-
-        function newTest() { location.reload(); }
-
-        function restartTest() {
-            userAnswers = new Array(currentQuestions.length).fill(null);
-            questionStatus = new Array(currentQuestions.length).fill('not-visited');
-            currentIndex = 0;
-            // Shuffling हटाई गई
-            document.getElementById('resultSection').classList.add('hidden-all');
-            document.getElementById('examSection').classList.remove('hidden-all');
-            timeRemaining = currentQuestions.length * 60;
-            startTimer();
-            renderQuestion();
+            document.getElementById('scoreGrid').innerHTML = `
+                <div class="bg-blue-50 p-4 rounded text-center"><p class="text-xs">TOTAL</p><p class="text-2xl font-black">${currentQuestions.length}</p></div>
+                <div class="bg-green-50 p-4 rounded text-center"><p class="text-xs text-green-600">CORRECT</p><p class="text-2xl font-black text-green-600">${correct}</p></div>
+                <div class="bg-red-50 p-4 rounded text-center"><p class="text-xs text-red-600">WRONG</p><p class="text-2xl font-black text-red-600">${wrong}</p></div>
+                <div class="bg-slate-900 p-4 rounded text-center"><p class="text-xs text-orange-400">SCORE</p><p class="text-2xl font-black text-white">${(correct - (wrong * 0.25)).toFixed(2)}</p></div>
+            `;
+            document.getElementById('fullReviewList').innerHTML = reviewHtml;
         }
     </script>
 </body>
