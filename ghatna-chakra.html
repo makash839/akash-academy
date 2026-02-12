@@ -5,231 +5,551 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>घटना चक्र पोर्टल - Ghatna Chakra</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         *{box-sizing:border-box;margin:0;padding:0}
-        body{font-family:'Segoe UI',Arial,sans-serif;background:linear-gradient(135deg,#1a1a2e 0%,#16213e 100%);min-height:100vh;color:#333}
-        .password-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(135deg,#dc2626 0%,#991b1b 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999}
-        .password-box{background:white;padding:40px;border-radius:20px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.3);max-width:400px;width:90%}
-        .password-box h1{color:#dc2626;margin-bottom:10px;font-size:2rem}
-        .password-box p{color:#666;margin-bottom:20px}
-        .password-input{width:100%;padding:15px;border:2px solid #ddd;border-radius:10px;font-size:1rem;margin-bottom:15px;text-align:center}
-        .password-btn{width:100%;padding:15px;background:linear-gradient(135deg,#dc2626 0%,#991b1b 100%);color:white;border:none;border-radius:10px;font-size:1rem;font-weight:bold;cursor:pointer;transition:transform 0.3s}
-        .password-btn:hover{transform:scale(1.02)}
-        .error-msg{color:#dc2626;margin-top:10px;display:none}
-        .portal-container{display:none;min-height:100vh}
-        .portal-header{background:linear-gradient(135deg,#dc2626 0%,#991b1b 100%);color:white;padding:20px;box-shadow:0 4px 20px rgba(0,0,0,0.3)}
-        .header-content{max-width:1400px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:15px}
-        .logo-section{display:flex;align-items:center;gap:15px}
-        .logo-section i{font-size:40px}
-        .logo-section h1{font-size:1.8rem}
-        .logo-section p{font-size:0.9rem;opacity:0.9}
-        .back-btn{background:rgba(255,255,255,0.2);color:white;border:none;padding:10px 20px;border-radius:25px;cursor:pointer;transition:all 0.3s;display:flex;align-items:center;gap:8px}
-        .back-btn:hover{background:rgba(255,255,255,0.3)}
-        .nav-tabs{background:white;padding:0 20px;box-shadow:0 2px 10px rgba(0,0,0,0.1);position:sticky;top:0;z-index:100}
-        .tabs-container{max-width:1400px;margin:0 auto;display:flex;gap:5px;overflow-x:auto}
-        .tab-btn{padding:15px 25px;border:none;background:none;color:#666;font-size:0.95rem;cursor:pointer;border-bottom:3px solid transparent;transition:all 0.3s;white-space:nowrap;display:flex;align-items:center;gap:8px}
-        .tab-btn:hover{color:#dc2626;background:#fef2f2}
-        .tab-btn.active{color:#dc2626;border-bottom-color:#dc2626;font-weight:bold}
-        .main-content{max-width:1400px;margin:0 auto;padding:30px 20px}
-        .section-title{font-size:1.5rem;color:#1a1a2e;margin-bottom:20px;display:flex;align-items:center;gap:10px}
-        .cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px;margin-bottom:40px}
-        .content-card{background:white;border-radius:15px;overflow:hidden;box-shadow:0 4px 15px rgba(0,0,0,0.1);transition:all 0.3s;cursor:pointer}
-        .content-card:hover{transform:translateY(-5px);box-shadow:0 8px 25px rgba(0,0,0,0.15)}
-        .card-header{padding:20px;color:white;position:relative}
-        .card-header.current{background:linear-gradient(135deg,#dc2626 0%,#991b1b 100%)}
-        .card-header.purvavalokan{background:linear-gradient(135deg,#7c3aed 0%,#5b21b6 100%)}
-        .card-header.gs{background:linear-gradient(135deg,#059669 0%,#047857 100%)}
-        .card-header.pdf{background:linear-gradient(135deg,#ea580c 0%,#c2410c 100%)}
-        .card-badge{position:absolute;top:15px;right:15px;background:rgba(255,255,255,0.2);padding:5px 12px;border-radius:20px;font-size:0.75rem}
-        .card-title{font-size:1.2rem;margin-bottom:5px}
-        .card-subtitle{font-size:0.85rem;opacity:0.9}
-        .card-body{padding:20px}
-        .card-stats{display:flex;gap:20px;margin-bottom:15px}
-        .stat{display:flex;align-items:center;gap:5px;color:#666;font-size:0.9rem}
-        .stat i{color:#dc2626}
-        .start-test-btn{width:100%;padding:12px;background:linear-gradient(135deg,#dc2626 0%,#991b1b 100%);color:white;border:none;border-radius:8px;font-weight:bold;cursor:pointer;transition:transform 0.3s}
-        .start-test-btn:hover{transform:scale(1.02)}
-        .test-interface{display:none;background:white;border-radius:20px;padding:30px;box-shadow:0 4px 20px rgba(0,0,0,0.1)}
-        .test-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:30px;padding-bottom:20px;border-bottom:2px solid #eee;flex-wrap:wrap;gap:15px}
-        .test-info h2{color:#1a1a2e;margin-bottom:5px}
-        .timer-box{background:linear-gradient(135deg,#dc2626 0%,#991b1b 100%);color:white;padding:15px 25px;border-radius:10px;font-size:1.3rem;font-weight:bold;display:flex;align-items:center;gap:10px}
-        .question-box{margin-bottom:30px}
-        .question-number{color:#dc2626;font-weight:bold;margin-bottom:10px}
-        .question-text{font-size:1.2rem;color:#1a1a2e;line-height:1.6;margin-bottom:20px}
-        .options-list{display:flex;flex-direction:column;gap:12px}
-        .option{padding:15px 20px;border:2px solid #e5e7eb;border-radius:10px;cursor:pointer;transition:all 0.3s;display:flex;align-items:center;gap:12px}
-        .option:hover{border-color:#dc2626;background:#fef2f2}
-        .option.selected{border-color:#dc2626;background:#fef2f2}
-        .option-letter{width:35px;height:35px;border-radius:50%;background:#f3f4f6;display:flex;align-items:center;justify-content:center;font-weight:bold;color:#666}
-        .option.selected .option-letter{background:#dc2626;color:white}
-        .test-actions{display:flex;justify-content:space-between;gap:15px;flex-wrap:wrap}
-        .action-btn{padding:12px 25px;border:none;border-radius:8px;font-weight:bold;cursor:pointer;transition:all 0.3s;display:flex;align-items:center;gap:8px}
-        .btn-secondary{background:#f3f4f6;color:#666}
-        .btn-secondary:hover{background:#e5e7eb}
-        .btn-primary{background:linear-gradient(135deg,#dc2626 0%,#991b1b 100%);color:white}
-        .btn-primary:hover{transform:scale(1.05)}
-        .palette-box{background:#f9fafb;border-radius:15px;padding:20px;margin-top:30px}
-        .palette-title{font-weight:bold;margin-bottom:15px;color:#1a1a2e}
-        .palette-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(45px,1fr));gap:10px}
-        .palette-number{width:45px;height:45px;border-radius:8px;border:2px solid #ddd;background:white;display:flex;align-items:center;justify-content:center;cursor:pointer;font-weight:bold;transition:all 0.3s}
-        .palette-number:hover{border-color:#dc2626}
-        .palette-number.answered{background:#dc2626;color:white;border-color:#dc2626}
-        .palette-number.current{border-color:#dc2626;box-shadow:0 0 0 3px rgba(220,38,38,0.2)}
-        .results-box{display:none;text-align:center;padding:40px}
-        .score-circle{width:200px;height:200px;border-radius:50%;background:linear-gradient(135deg,#dc2626 0%,#991b1b 100%);margin:0 auto 30px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:white;box-shadow:0 10px 30px rgba(220,38,38,0.3)}
-        .score-number{font-size:3.5rem;font-weight:bold}
-        .score-label{font-size:1rem;opacity:0.9}
-        .result-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:20px;max-width:600px;margin:0 auto 30px}
-        .result-stat{background:#f9fafb;padding:20px;border-radius:10px}
-        .result-stat-value{font-size:2rem;font-weight:bold;color:#dc2626}
-        .result-stat-label{color:#666;margin-top:5px}
-        @media(max-width:768px){.header-content{flex-direction:column;text-align:center}.tabs-container{padding:10px 0}.tab-btn{padding:10px 15px;font-size:0.85rem}.test-header{flex-direction:column;text-align:center}}
+        body{font-family:'Segoe UI',Arial,sans-serif}
+        .hidden-all{display:none!important}
+        .password-container{background:linear-gradient(135deg,#dc2626 0%,#991b1b 100%);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+        .password-card{background:white;border-radius:16px;box-shadow:0 25px 50px -12px rgba(0,0,0,0.4);width:100%;max-width:420px;overflow:hidden}
+        .password-header{background:linear-gradient(135deg,#dc2626 0%,#991b1b 100%);padding:30px;text-align:center}
+        .gc-logo{width:80px;height:80px;background:white;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 15px}
+        .gc-logo-inner{width:65px;height:65px;border-radius:50%;background:linear-gradient(135deg,#dc2626 0%,#991b1b 100%);display:flex;align-items:center;justify-content:center;color:white;font-size:24px;font-weight:bold}
+        .password-body{padding:35px 30px}
+        .password-input{width:100%;padding:15px 15px 15px 50px;border:2px solid #e0e0e0;border-radius:10px;font-size:16px}
+        .password-input:focus{border-color:#dc2626;outline:none;box-shadow:0 0 0 4px rgba(220,38,38,0.1)}
+        .password-icon{position:absolute;left:18px;top:50%;transform:translateY(-50%);color:#dc2626;font-size:18px}
+        .password-input-wrapper{position:relative;margin-bottom:20px}
+        .unlock-btn{width:100%;padding:15px;background:linear-gradient(135deg,#dc2626 0%,#991b1b 100%);color:white;border:none;border-radius:10px;font-size:16px;font-weight:600;cursor:pointer}
+        .error-message{background:#fee2e2;color:#dc2626;padding:12px;border-radius:8px;margin-top:15px;display:none;align-items:center;gap:8px}
+        .error-message.show{display:flex}
+        .palette-btn{width:40px;height:40px;border:2px solid #ddd;background:white;color:#333;font-weight:bold;cursor:pointer}
+        .palette-not-visited{background:#f8f9fa;border-color:#adb5bd;color:#6c757d}
+        .palette-not-answered{background:#dc2626;border-color:#dc2626;color:white}
+        .palette-answered{background:#059669;border-color:#059669;color:white}
+        .palette-marked{background:#7c3aed;border-color:#7c3aed;color:white}
+        .palette-current{box-shadow:0 0 0 3px #dc2626;transform:scale(1.15)}
+        .option-label{display:flex;align-items:center;padding:12px 16px;border:2px solid #dee2e6;border-radius:8px;margin-bottom:10px;cursor:pointer}
+        .option-label:hover{background:#fef2f2;border-color:#fca5a5}
+        .option-label.selected{background:#fef2f2;border-color:#dc2626}
+        .option-circle{width:32px;height:32px;border-radius:50%;background:#f8f9fa;border:2px solid #adb5bd;display:flex;align-items:center;justify-content:center;margin-right:12px;font-weight:bold}
+        .option-label.selected .option-circle{background:#dc2626;border-color:#dc2626;color:white}
+        .timer-box{background:linear-gradient(135deg,#dc2626 0%,#991b1b 100%);color:white;padding:8px 16px;border-radius:8px;font-family:'Courier New',monospace;font-weight:bold;font-size:1.1rem}
+        .btn-gc{padding:10px 20px;border:none;border-radius:4px;font-weight:600;cursor:pointer}
+        .btn-save-next{background:#059669;color:white}
+        .btn-save-review{background:#ffc107;color:#212529}
+        .btn-clear{background:#6c757d;color:white}
+        .btn-mark-review{background:#7c3aed;color:white}
+        .btn-submit{background:#dc2626;color:white}
+        .btn-proceed{background:#dc2626;color:white;padding:12px 40px;font-size:1.1rem}
+        .upload-area{border:2px dashed #dc2626;border-radius:10px;padding:40px;text-align:center;background:#fef2f2;cursor:pointer}
+        .loading-spinner{width:60px;height:60px;border:4px solid #f3f3f3;border-top:4px solid #dc2626;border-radius:50%;animation:spin 1s linear infinite}
+        @keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
     </style>
 </head>
-<body>
-    <div class="password-overlay" id="passwordOverlay">
-        <div class="password-box">
-            <i class="fas fa-book-open" style="font-size:60px;color:#dc2626;margin-bottom:15px"></i>
-            <h1>घटना चक्र पोर्टल</h1>
-            <p>Ghatna Chakra - Current Affairs & GS Special</p>
-            <input type="password" class="password-input" id="passwordInput" placeholder="पासवर्ड दर्ज करें">
-            <button class="password-btn" onclick="checkPassword()"><i class="fas fa-unlock"></i> पोर्टल खोलें</button>
-            <p class="error-msg" id="errorMsg">गलत पासवर्ड!</p>
+<body class="bg-gray-100 min-h-screen">
+    <!-- PASSWORD -->
+    <div id="passwordOverlay" class="password-container">
+        <div class="password-card">
+            <div class="password-header">
+                <div class="gc-logo"><div class="gc-logo-inner">GC</div></div>
+                <h1 class="text-white text-xl font-bold">घटना चक्र पोर्टल</h1>
+                <p class="text-red-200 text-sm mt-1">Current Affairs & GS</p>
+            </div>
+            <div class="password-body">
+                <h2 class="text-center text-gray-800 text-lg font-semibold mb-2">सुरक्षित लॉगिन</h2>
+                <div class="password-input-wrapper">
+                    <i class="fas fa-lock password-icon"></i>
+                    <input type="password" id="sitePass" class="password-input" placeholder="पासवर्ड दर्ज करें">
+                </div>
+                <button onclick="checkPass()" class="unlock-btn"><i class="fas fa-unlock-alt mr-2"></i>पोर्टल खोलें</button>
+                <div id="passError" class="error-message"><i class="fas fa-exclamation-triangle"></i>गलत पासवर्ड!</div>
+            </div>
         </div>
     </div>
-    <div class="portal-container" id="portalContainer">
-        <header class="portal-header">
-            <div class="header-content">
-                <div class="logo-section">
-                    <i class="fas fa-book-open"></i>
-                    <div>
-                        <h1>घटना चक्र पोर्टल</h1>
-                        <p>Ghatna Chakra - Current Affairs & GS Special</p>
-                    </div>
-                </div>
-                <button class="back-btn" onclick="window.location.href='index.html'"><i class="fas fa-arrow-left"></i> वापस जाएं</button>
-            </div>
-        </header>
-        <nav class="nav-tabs">
-            <div class="tabs-container">
-                <button class="tab-btn active" onclick="showTab('current')"><i class="fas fa-calendar-alt"></i> घटना चक्र</button>
-                <button class="tab-btn" onclick="showTab('purvavalokan')"><i class="fas fa-eye"></i> पूर्वावलोकन</button>
-                <button class="tab-btn" onclick="showTab('gs')"><i class="fas fa-graduation-cap"></i> सामान्य अध्ययन</button>
-                <button class="tab-btn" onclick="showTab('pdf')"><i class="fas fa-file-pdf"></i> PDF डाउनलोड</button>
-            </div>
-        </nav>
-        <main class="main-content">
-            <div id="current" class="tab-content">
-                <h2 class="section-title"><i class="fas fa-calendar-alt" style="color:#dc2626"></i> मासिक करंट अफेयर्स</h2>
-                <div class="cards-grid">
-                    <div class="content-card" onclick="startTest('jan2025')">
-                        <div class="card-header current"><span class="card-badge">नया</span><h3 class="card-title">जनवरी 2025</h3><p class="card-subtitle">घटना चक्र - करंट अफेयर्स</p></div>
-                        <div class="card-body"><div class="card-stats"><span class="stat"><i class="fas fa-question-circle"></i> 100 प्रश्न</span><span class="stat"><i class="fas fa-clock"></i> 60 मिनट</span></div><button class="start-test-btn"><i class="fas fa-play"></i> टेस्ट शुरू करें</button></div>
-                    </div>
-                    <div class="content-card" onclick="startTest('dec2024')">
-                        <div class="card-header current"><h3 class="card-title">दिसंबर 2024</h3><p class="card-subtitle">घटना चक्र - करंट अफेयर्स</p></div>
-                        <div class="card-body"><div class="card-stats"><span class="stat"><i class="fas fa-question-circle"></i> 100 प्रश्न</span><span class="stat"><i class="fas fa-clock"></i> 60 मिनट</span></div><button class="start-test-btn"><i class="fas fa-play"></i> टेस्ट शुरू करें</button></div>
-                    </div>
-                    <div class="content-card" onclick="startTest('nov2024')">
-                        <div class="card-header current"><h3 class="card-title">नवंबर 2024</h3><p class="card-subtitle">घटना चक्र - करंट अफेयर्स</p></div>
-                        <div class="card-body"><div class="card-stats"><span class="stat"><i class="fas fa-question-circle"></i> 100 प्रश्न</span><span class="stat"><i class="fas fa-clock"></i> 60 मिनट</span></div><button class="start-test-btn"><i class="fas fa-play"></i> टेस्ट शुरू करें</button></div>
-                    </div>
-                    <div class="content-card" onclick="startTest('oct2024')">
-                        <div class="card-header current"><h3 class="card-title">अक्टूबर 2024</h3><p class="card-subtitle">घटना चक्र - करंट अफेयर्स</p></div>
-                        <div class="card-body"><div class="card-stats"><span class="stat"><i class="fas fa-question-circle"></i> 100 प्रश्न</span><span class="stat"><i class="fas fa-clock"></i> 60 मिनट</span></div><button class="start-test-btn"><i class="fas fa-play"></i> टेस्ट शुरू करें</button></div>
-                    </div>
-                </div>
-            </div>
-            <div id="purvavalokan" class="tab-content" style="display:none">
-                <h2 class="section-title"><i class="fas fa-eye" style="color:#7c3aed"></i> पूर्वावलोकन सीरीज</h2>
-                <div class="cards-grid">
-                    <div class="content-card" onclick="startTest('purva2025')">
-                        <div class="card-header purvavalokan"><span class="card-badge">हॉट</span><h3 class="card-title">पूर्वावलोकन 2025</h3><p class="card-subtitle">वार्षिक करंट अफेयर्स रिवीजन</p></div>
-                        <div class="card-body"><div class="card-stats"><span class="stat"><i class="fas fa-question-circle"></i> 500 प्रश्न</span><span class="stat"><i class="fas fa-clock"></i> 120 मिनट</span></div><button class="start-test-btn" style="background:linear-gradient(135deg,#7c3aed 0%,#5b21b6 100%)"><i class="fas fa-play"></i> टेस्ट शुरू करें</button></div>
-                    </div>
-                    <div class="content-card" onclick="startTest('purva2024')">
-                        <div class="card-header purvavalokan"><h3 class="card-title">पूर्वावलोकन 2024</h3><p class="card-subtitle">वार्षिक करंट अफेयर्स रिवीजन</p></div>
-                        <div class="card-body"><div class="card-stats"><span class="stat"><i class="fas fa-question-circle"></i> 500 प्रश्न</span><span class="stat"><i class="fas fa-clock"></i> 120 मिनट</span></div><button class="start-test-btn" style="background:linear-gradient(135deg,#7c3aed 0%,#5b21b6 100%)"><i class="fas fa-play"></i> टेस्ट शुरू करें</button></div>
-                    </div>
-                </div>
-            </div>
-            <div id="gs" class="tab-content" style="display:none">
-                <h2 class="section-title"><i class="fas fa-graduation-cap" style="color:#059669"></i> सामान्य अध्ययन</h2>
-                <div class="cards-grid">
-                    <div class="content-card" onclick="startTest('history')"><div class="card-header gs"><h3 class="card-title">इतिहास</h3><p class="card-subtitle">प्राचीन, मध्यकालीन और आधुनिक</p></div><div class="card-body"><div class="card-stats"><span class="stat"><i class="fas fa-question-circle"></i> 150 प्रश्न</span><span class="stat"><i class="fas fa-clock"></i> 90 मिनट</span></div><button class="start-test-btn" style="background:linear-gradient(135deg,#059669 0%,#047857 100%)"><i class="fas fa-play"></i> टेस्ट शुरू करें</button></div></div>
-                    <div class="content-card" onclick="startTest('geography')"><div class="card-header gs"><h3 class="card-title">भूगोल</h3><p class="card-subtitle">भारत और विश्व भूगोल</p></div><div class="card-body"><div class="card-stats"><span class="stat"><i class="fas fa-question-circle"></i> 150 प्रश्न</span><span class="stat"><i class="fas fa-clock"></i> 90 मिनट</span></div><button class="start-test-btn" style="background:linear-gradient(135deg,#059669 0%,#047857 100%)"><i class="fas fa-play"></i> टेस्ट शुरू करें</button></div></div>
-                    <div class="content-card" onclick="startTest('polity')"><div class="card-header gs"><h3 class="card-title">पॉलिटी</h3><p class="card-subtitle">भारतीय संविधान और राजव्यवस्था</p></div><div class="card-body"><div class="card-stats"><span class="stat"><i class="fas fa-question-circle"></i> 150 प्रश्न</span><span class="stat"><i class="fas fa-clock"></i> 90 मिनट</span></div><button class="start-test-btn" style="background:linear-gradient(135deg,#059669 0%,#047857 100%)"><i class="fas fa-play"></i> टेस्ट शुरू करें</button></div></div>
-                    <div class="content-card" onclick="startTest('economy')"><div class="card-header gs"><h3 class="card-title">अर्थव्यवस्था</h3><p class="card-subtitle">भारतीय अर्थव्यवस्था</p></div><div class="card-body"><div class="card-stats"><span class="stat"><i class="fas fa-question-circle"></i> 150 प्रश्न</span><span class="stat"><i class="fas fa-clock"></i> 90 मिनट</span></div><button class="start-test-btn" style="background:linear-gradient(135deg,#059669 0%,#047857 100%)"><i class="fas fa-play"></i> टेस्ट शुरू करें</button></div></div>
-                    <div class="content-card" onclick="startTest('science')"><div class="card-header gs"><h3 class="card-title">विज्ञान</h3><p class="card-subtitle">भौतिकी, रसायन और जीव विज्ञान</p></div><div class="card-body"><div class="card-stats"><span class="stat"><i class="fas fa-question-circle"></i> 150 प्रश्न</span><span class="stat"><i class="fas fa-clock"></i> 90 मिनट</span></div><button class="start-test-btn" style="background:linear-gradient(135deg,#059669 0%,#047857 100%)"><i class="fas fa-play"></i> टेस्ट शुरू करें</button></div></div>
-                    <div class="content-card" onclick="startTest('misc')"><div class="card-header gs"><h3 class="card-title">विविध</h3><p class="card-subtitle">कंप्यूटर, स्पोर्ट्स, अवार्ड्स</p></div><div class="card-body"><div class="card-stats"><span class="stat"><i class="fas fa-question-circle"></i> 150 प्रश्न</span><span class="stat"><i class="fas fa-clock"></i> 90 मिनट</span></div><button class="start-test-btn" style="background:linear-gradient(135deg,#059669 0%,#047857 100%)"><i class="fas fa-play"></i> टेस्ट शुरू करें</button></div></div>
-                </div>
-            </div>
-            <div id="pdf" class="tab-content" style="display:none">
-                <h2 class="section-title"><i class="fas fa-file-pdf" style="color:#ea580c"></i> PDF डाउनलोड</h2>
-                <div class="cards-grid">
-                    <div class="content-card" onclick="downloadPDF('jan2025')"><div class="card-header pdf"><span class="card-badge">PDF</span><h3 class="card-title">जनवरी 2025 PDF</h3><p class="card-subtitle">घटना चक्र मासिक पत्रिका</p></div><div class="card-body"><div class="card-stats"><span class="stat"><i class="fas fa-file"></i> 50 पेज</span><span class="stat"><i class="fas fa-download"></i> 5 MB</span></div><button class="start-test-btn" style="background:linear-gradient(135deg,#ea580c 0%,#c2410c 100%)"><i class="fas fa-download"></i> डाउनलोड करें</button></div></div>
-                    <div class="content-card" onclick="downloadPDF('dec2024')"><div class="card-header pdf"><span class="card-badge">PDF</span><h3 class="card-title">दिसंबर 2024 PDF</h3><p class="card-subtitle">घटना चक्र मासिक पत्रिका</p></div><div class="card-body"><div class="card-stats"><span class="stat"><i class="fas fa-file"></i> 48 पेज</span><span class="stat"><i class="fas fa-download"></i> 4.8 MB</span></div><button class="start-test-btn" style="background:linear-gradient(135deg,#ea580c 0%,#c2410c 100%)"><i class="fas fa-download"></i> डाउनलोड करें</button></div></div>
-                    <div class="content-card" onclick="downloadPDF('purva2025')"><div class="card-header pdf"><span class="card-badge">PDF</span><h3 class="card-title">पूर्वावलोकन 2025 PDF</h3><p class="card-subtitle">वार्षिक करंट अफेयर्स संग्रह</p></div><div class="card-body"><div class="card-stats"><span class="stat"><i class="fas fa-file"></i> 200 पेज</span><span class="stat"><i class="fas fa-download"></i> 15 MB</span></div><button class="start-test-btn" style="background:linear-gradient(135deg,#ea580c 0%,#c2410c 100%)"><i class="fas fa-download"></i> डाउनलोड करें</button></div></div>
-                    <div class="content-card" onclick="downloadPDF('gsnotes')"><div class="card-header pdf"><span class="card-badge">PDF</span><h3 class="card-title">GS संकलन PDF</h3><p class="card-subtitle">सामान्य अध्ययन नोट्स</p></div><div class="card-body"><div class="card-stats"><span class="stat"><i class="fas fa-file"></i> 300 पेज</span><span class="stat"><i class="fas fa-download"></i> 20 MB</span></div><button class="start-test-btn" style="background:linear-gradient(135deg,#ea580c 0%,#c2410c 100%)"><i class="fas fa-download"></i> डाउनलोड करें</button></div></div>
-                </div>
-            </div>
-            <div class="test-interface" id="testInterface">
-                <div class="test-header">
-                    <div class="test-info"><h2 id="testTitle">घटना चक्र - जनवरी 2025</h2><p>कुल प्रश्न: <span id="totalQuestions">100</span> | समय: <span id="totalTime">60</span> मिनट</p></div>
-                    <div class="timer-box"><i class="fas fa-clock"></i><span id="timer">60:00</span></div>
-                </div>
-                <div class="question-box">
-                    <p class="question-number">प्रश्न <span id="currentQ">1</span> / <span id="totalQ">100</span></p>
-                    <p class="question-text" id="questionText">भारत का पहला सौर मिशन "आदित्य-एल1" किस तारीख को लॉन्च किया गया था?</p>
-                    <div class="options-list" id="optionsList">
-                        <div class="option" onclick="selectOption(this,'A')"><span class="option-letter">A</span><span>2 सितंबर 2023</span></div>
-                        <div class="option" onclick="selectOption(this,'B')"><span class="option-letter">B</span><span>2 अक्टूबर 2023</span></div>
-                        <div class="option" onclick="selectOption(this,'C')"><span class="option-letter">C</span><span>2 नवंबर 2023</span></div>
-                        <div class="option" onclick="selectOption(this,'D')"><span class="option-letter">D</span><span>2 दिसंबर 2023</span></div>
-                    </div>
-                </div>
-                <div class="test-actions">
-                    <button class="action-btn btn-secondary" onclick="markForReview()"><i class="fas fa-bookmark"></i> बाद के लिए चिह्नित करें</button>
-                    <button class="action-btn btn-secondary" onclick="previousQuestion()"><i class="fas fa-arrow-left"></i> पिछला</button>
-                    <button class="action-btn btn-primary" onclick="nextQuestion()">अगला <i class="fas fa-arrow-right"></i></button>
-                    <button class="action-btn btn-primary" onclick="submitTest()"><i class="fas fa-check-circle"></i> टेस्ट समाप्त करें</button>
-                </div>
-                <div class="palette-box">
-                    <h3 class="palette-title">प्रश्न पैलेट</h3>
-                    <div class="palette-grid" id="questionPalette"></div>
-                </div>
-            </div>
-            <div class="results-box" id="resultsBox">
-                <div class="score-circle"><span class="score-number" id="scoreNum">85</span><span class="score-label">% स्कोर</span></div>
-                <h2 style="font-size:2rem;color:#1a1a2e;margin-bottom:10px">टेस्ट पूरा हुआ!</h2>
-                <p style="color:#666;margin-bottom:30px">आपका परिणाम</p>
-                <div class="result-stats">
-                    <div class="result-stat"><div class="result-stat-value" id="correctAns">85</div><div class="result-stat-label">सही उत्तर</div></div>
-                    <div class="result-stat"><div class="result-stat-value" id="wrongAns">15</div><div class="result-stat-label">गलत उत्तर</div></div>
-                    <div class="result-stat"><div class="result-stat-value" id="attempted">100</div><div class="result-stat-label">कुल प्रयास</div></div>
-                    <div class="result-stat"><div class="result-stat-value" id="timeTaken">45</div><div class="result-stat-label">समय (मिनट)</div></div>
-                </div>
-                <button class="action-btn btn-primary" onclick="backToDashboard()" style="padding:15px 40px;font-size:1.1rem"><i class="fas fa-home"></i> डैशबोर्ड पर वापस जाएं</button>
-            </div>
-        </main>
+
+    <!-- LOADING -->
+    <div id="loadingSection" class="hidden-all min-h-screen flex items-center justify-center bg-gradient-to-br from-red-50 to-orange-100">
+        <div class="text-center">
+            <div class="loading-spinner mx-auto mb-4"></div>
+            <p class="text-xl font-semibold text-gray-700">प्रश्न लोड हो रहे हैं...</p>
+        </div>
     </div>
+
+    <!-- CSV UPLOAD -->
+    <div id="uploadSection" class="hidden-all min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-red-50 to-orange-100">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg overflow-hidden">
+            <div class="bg-red-600 text-white p-4 text-center">
+                <h2 class="text-xl font-bold"><i class="fas fa-upload mr-2"></i>CSV डेटा अपलोड करें</h2>
+            </div>
+            <div class="p-6">
+                <div class="upload-area" onclick="document.getElementById('csvFile').click()">
+                    <i class="fas fa-cloud-upload-alt text-5xl text-red-600 mb-4"></i>
+                    <h3 class="text-lg font-semibold text-gray-700 mb-2">CSV फाइल अपलोड करें</h3>
+                    <p class="text-gray-500 text-sm">या यहां क्लिक करें</p>
+                    <input type="file" id="csvFile" accept=".csv" class="hidden" onchange="handleCSVUpload(event)">
+                </div>
+                <div class="mt-4">
+                    <p class="text-sm text-gray-600 mb-2"><strong>CSV फॉर्मेट:</strong></p>
+                    <code class="block bg-gray-100 p-3 rounded text-xs">
+                        Subject,Sub-Subject,Question,Option A,Option B,Option C,Option D,Answer,Explanation<br>
+                        Current Affairs,Jan 2025,भारत का पहला सौर मिशन?,आदित्य-L1,चंद्रयान-1,मंगलयान,Gaganyaan,A,आदित्य-L1 भारत का पहला सौर मिशन है।
+                    </code>
+                </div>
+                <button onclick="useDefaultData()" class="w-full mt-4 btn-gc bg-gray-600 text-white py-3 rounded">
+                    <i class="fas fa-database mr-2"></i>डिफॉल्ट डेटा का उपयोग करें
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SUBJECT SELECTION -->
+    <div id="subjectSection" class="hidden-all min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-red-50 to-orange-100">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden">
+            <div class="bg-orange-500 text-white p-4 text-center">
+                <h2 class="text-xl font-bold"><i class="fas fa-book mr-2"></i>विषय चुनें</h2>
+            </div>
+            <div class="p-6 space-y-4">
+                <div>
+                    <label class="block text-gray-700 font-semibold mb-2">मुख्य विषय</label>
+                    <select id="mainSubject" onchange="updateSubSubjects()" class="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-red-500 focus:outline-none">
+                        <option value="">-- विषय चुनें --</option>
+                    </select>
+                </div>
+                <div id="subSubjectContainer" class="hidden">
+                    <label class="block text-gray-700 font-semibold mb-2">उप-विषय</label>
+                    <select id="subSubject" class="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-red-500 focus:outline-none">
+                        <option value="">-- सभी टॉपिक --</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-gray-700 font-semibold mb-2">प्रश्नों की संख्या</label>
+                    <select id="questionCount" class="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-red-500 focus:outline-none">
+                        <option value="10">10 प्रश्न</option>
+                        <option value="25">25 प्रश्न</option>
+                        <option value="50">50 प्रश्न</option>
+                        <option value="100">100 प्रश्न</option>
+                        <option value="all">सभी उपलब्ध</option>
+                    </select>
+                </div>
+                <button onclick="startExam()" class="w-full btn-gc btn-proceed mt-4"><i class="fas fa-play mr-2"></i>परीक्षा शुरू करें</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- INSTRUCTIONS -->
+    <div id="instructionSection" class="hidden-all">
+        <div class="bg-red-600 text-white p-4">
+            <div class="max-w-7xl mx-auto flex items-center gap-3">
+                <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center text-red-600 font-bold text-xl">GC</div>
+                <div>
+                    <h1 class="text-xl font-bold">घटना चक्र पोर्टल</h1>
+                    <p class="text-xs text-red-200">Current Affairs & GS Special</p>
+                </div>
+            </div>
+        </div>
+        <div class="bg-orange-500 text-white p-3"><div class="max-w-7xl mx-auto"><h2 class="text-lg font-bold">सामान्य निर्देश</h2></div></div>
+        <div class="max-w-5xl mx-auto p-6">
+            <h3 class="text-xl font-bold text-center mb-6">कृपया निर्देश ध्यान से पढ़ें</h3>
+            <div class="bg-white p-6 rounded-lg shadow mb-6">
+                <h4 class="font-bold text-lg mb-4">महत्वपूर्ण निर्देश:</h4>
+                <ol class="list-decimal list-inside space-y-3 text-gray-700">
+                    <li>परीक्षा की कुल अवधि टाइमर पर प्रदर्शित होगी।</li>
+                    <li>जब टाइमर शून्य होगा तो परीक्षा स्वतः समाप्त हो जाएगी।</li>
+                    <li>प्रश्न पैलेट में प्रत्येक प्रश्न की स्थिति दर्शाई जाएगी।</li>
+                </ol>
+                <div class="mt-6 text-gray-700">
+                    <p class="mb-2 font-bold">मार्किंग स्कीम:</p>
+                    <ul class="list-disc list-inside space-y-1">
+                        <li><span class="text-green-600 font-bold">+1 अंक</span> प्रत्येक सही उत्तर के लिए</li>
+                        <li><span class="text-red-600 font-bold">-0.25 अंक</span> प्रत्येक गलत उत्तर के लिए</li>
+                        <li><span class="text-gray-600 font-bold">0 अंक</span> अनुत्तरित प्रश्नों के लिए</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow mb-6">
+                <label class="flex items-start gap-3 cursor-pointer">
+                    <input type="checkbox" id="declaration" class="mt-1 w-5 h-5">
+                    <span class="text-gray-700">मैंने निर्देश पढ़ लिए हैं और परीक्षा देने के लिए तैयार हूं।</span>
+                </label>
+            </div>
+            <div class="text-center">
+                <button onclick="proceedToExam()" class="btn-gc btn-proceed"><i class="fas fa-arrow-right mr-2"></i>आगे बढ़ें</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- EXAM -->
+    <div id="examSection" class="hidden-all">
+        <div class="bg-red-600 text-white p-3">
+            <div class="max-w-7xl mx-auto flex items-center justify-between flex-wrap gap-3">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-red-600 font-bold">GC</div>
+                    <div>
+                        <h1 class="text-lg font-bold">घटना चक्र पोर्टल</h1>
+                        <p class="text-xs text-red-200">Current Affairs & GS</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="text-right hidden sm:block">
+                        <p class="text-xs text-red-200">विषय</p>
+                        <p class="font-semibold" id="examSubject">टेस्ट</p>
+                    </div>
+                    <div class="timer-box"><i class="fas fa-clock mr-2"></i><span id="timer">00:00:00</span></div>
+                </div>
+            </div>
+        </div>
+        <div class="bg-orange-500 text-white p-2">
+            <div class="max-w-7xl mx-auto flex items-center justify-between">
+                <h2 class="font-bold" id="examTitle">घटना चक्र मॉक टेस्ट</h2>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto p-4">
+            <div class="flex flex-col lg:flex-row gap-4">
+                <div class="flex-1 bg-white rounded-lg shadow p-6">
+                    <div id="questionContainer">
+                        <h3 class="text-lg font-bold mb-4">प्रश्न <span id="qNumber">1</span>:</h3>
+                        <div id="questionText" class="text-gray-800 mb-6 text-lg leading-relaxed"></div>
+                        <div id="optionsContainer" class="space-y-3"></div>
+                    </div>
+                    <div class="mt-8 flex flex-wrap gap-3">
+                        <button onclick="saveAndNext()" class="btn-gc btn-save-next"><i class="fas fa-save mr-1"></i>सेव और आगे</button>
+                        <button onclick="saveAndMarkReview()" class="btn-gc btn-save-review"><i class="fas fa-bookmark mr-1"></i>सेव और रिव्यू</button>
+                        <button onclick="clearResponse()" class="btn-gc btn-clear"><i class="fas fa-eraser mr-1"></i>क्लियर</button>
+                        <button onclick="markReviewAndNext()" class="btn-gc btn-mark-review"><i class="fas fa-flag mr-1"></i>रिव्यू और आगे</button>
+                    </div>
+                    <div class="mt-6 flex justify-between">
+                        <button onclick="prevQuestion()" class="px-4 py-2 border-2 border-gray-300 rounded hover:bg-gray-100"><< पीछे</button>
+                        <button onclick="nextQuestion()" class="px-4 py-2 border-2 border-gray-300 rounded hover:bg-gray-100">आगे >></button>
+                    </div>
+                </div>
+                <div class="lg:w-80 bg-white rounded-lg shadow p-4">
+                    <h4 class="font-bold text-gray-700 mb-3 border-b pb-2">प्रश्न पैलेट</h4>
+                    <div class="grid grid-cols-2 gap-2 mb-4 text-xs">
+                        <div class="flex items-center gap-2"><span class="w-6 h-6 rounded bg-gray-400 flex items-center justify-center text-white font-bold" id="statNotVisited">0</span><span>नहीं देखा</span></div>
+                        <div class="flex items-center gap-2"><span class="w-6 h-6 rounded bg-red-500 flex items-center justify-center text-white font-bold" id="statNotAnswered">0</span><span>उत्तर नहीं</span></div>
+                        <div class="flex items-center gap-2"><span class="w-6 h-6 rounded bg-green-500 flex items-center justify-center text-white font-bold" id="statAnswered">0</span><span>उत्तर दिया</span></div>
+                        <div class="flex items-center gap-2"><span class="w-6 h-6 rounded bg-purple-600 flex items-center justify-center text-white font-bold" id="statMarked">0</span><span>रिव्यू</span></div>
+                    </div>
+                    <div id="questionPalette" class="grid grid-cols-5 gap-2 max-h-80 overflow-y-auto p-2"></div>
+                    <button onclick="confirmSubmit()" class="w-full mt-4 btn-gc btn-submit py-3"><i class="fas fa-check-circle mr-2"></i>सबमिट करें</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SUBMIT MODAL -->
+    <div id="submitModal" class="hidden-all fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-lg shadow-2xl p-6 max-w-md w-full mx-4">
+            <h3 class="text-xl font-bold text-center mb-4">परीक्षा सारांश</h3>
+            <table class="w-full mb-6 text-sm"><thead class="bg-gray-100"><tr><th class="p-2 text-left">स्थिति</th><th class="p-2 text-center">संख्या</th></tr></thead><tbody id="summaryTable"></tbody></table>
+            <p class="text-center text-gray-700 mb-4 font-semibold">क्या आप वाकई सबमिट करना चाहते हैं?</p>
+            <div class="flex justify-center gap-4">
+                <button onclick="finalSubmit()" class="px-6 py-2 bg-green-500 text-white rounded hover:bg-green-600 font-semibold">हां</button>
+                <button onclick="closeSubmitModal()" class="px-6 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 font-semibold">नहीं</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- RESULT -->
+    <div id="resultSection" class="hidden-all">
+        <div class="bg-red-600 text-white p-4 text-center">
+            <h1 class="text-2xl font-bold">घटना चक्र पोर्टल</h1>
+            <p class="text-red-200">Current Affairs & GS Special</p>
+        </div>
+        <div class="max-w-5xl mx-auto p-6">
+            <h2 class="text-2xl font-bold text-center mb-6">परिणाम</h2>
+            <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                    <div class="text-center p-4 bg-blue-50 rounded-lg"><p class="text-gray-600 text-sm">कुल प्रश्न</p><p class="text-2xl font-bold text-blue-600" id="resTotal">0</p></div>
+                    <div class="text-center p-4 bg-green-50 rounded-lg"><p class="text-gray-600 text-sm">सही</p><p class="text-2xl font-bold text-green-600" id="resCorrect">0</p></div>
+                    <div class="text-center p-4 bg-red-50 rounded-lg"><p class="text-gray-600 text-sm">गलत</p><p class="text-2xl font-bold text-red-600" id="resWrong">0</p></div>
+                    <div class="text-center p-4 bg-yellow-50 rounded-lg"><p class="text-gray-600 text-sm">अनुत्तरित</p><p class="text-2xl font-bold text-yellow-600" id="resUnattempted">0</p></div>
+                </div>
+                <div class="text-center p-6 bg-gradient-to-r from-red-600 to-red-800 rounded-lg text-white">
+                    <p class="text-lg mb-2">अंतिम स्कोर</p>
+                    <p class="text-5xl font-bold" id="resScore">0.00</p>
+                    <p class="text-sm mt-2 opacity-80">(+1 सही, -0.25 गलत)</p>
+                </div>
+                <div class="mt-6 text-center">
+                    <button onclick="restartTest()" class="btn-gc btn-proceed mr-3"><i class="fas fa-redo mr-2"></i>फिर से दें</button>
+                    <button onclick="newTest()" class="btn-gc bg-gray-600 text-white px-6 py-3 rounded"><i class="fas fa-home mr-2"></i>नया टेस्ट</button>
+                </div>
+            </div>
+            <h3 class="text-xl font-bold mb-4 text-red-600"><i class="fas fa-times-circle mr-2"></i>गलत उत्तर</h3>
+            <div id="wrongQuestionsList" class="space-y-4 mb-8"></div>
+            <h3 class="text-xl font-bold mb-4 text-green-600"><i class="fas fa-check-circle mr-2"></i>सही उत्तर</h3>
+            <div id="correctQuestionsList" class="space-y-4 mb-8"></div>
+            <h3 class="text-xl font-bold mb-4 text-gray-600"><i class="fas fa-minus-circle mr-2"></i>अनुत्तरित</h3>
+            <div id="skippedQuestionsList" class="space-y-4"></div>
+        </div>
+    </div>
+
     <script>
-        function checkPassword(){const p=document.getElementById('passwordInput').value;if(p==='ghatna2024'){document.getElementById('passwordOverlay').style.display='none';document.getElementById('portalContainer').style.display='block'}else{document.getElementById('errorMsg').style.display='block'}}
-        function showTab(t){document.querySelectorAll('.tab-content').forEach(x=>x.style.display='none');document.getElementById(t).style.display='block';document.querySelectorAll('.tab-btn').forEach(x=>x.classList.remove('active'));event.target.closest('.tab-btn').classList.add('active');document.getElementById('testInterface').style.display='none';document.getElementById('resultsBox').style.display='none'}
-        let cq=1,tq=100,aq=[],tl=3600,ti;
-        function startTest(id){document.querySelectorAll('.tab-content').forEach(x=>x.style.display='none');document.getElementById('testInterface').style.display='block';document.getElementById('resultsBox').style.display='none';cq=1;aq=[];tl=3600;gp();st();uq()}
-        function gp(){const p=document.getElementById('questionPalette');p.innerHTML='';for(let i=1;i<=tq;i++){const n=document.createElement('div');n.className='palette-number';n.textContent=i;n.onclick=()=>gq(i);if(i===1)n.classList.add('current');p.appendChild(n)}}
-        function st(){clearInterval(ti);ti=setInterval(()=>{tl--;const m=Math.floor(tl/60),s=tl%60;document.getElementById('timer').textContent=`${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;if(tl<=0){clearInterval(ti);submitTest()}},1000)}
-        function selectOption(e,o){document.querySelectorAll('.option').forEach(x=>x.classList.remove('selected'));e.classList.add('selected');aq[cq]=o;up()}
-        function up(){document.querySelectorAll('.palette-number').forEach((n,i)=>{n.classList.remove('current','answered');if(i+1===cq)n.classList.add('current');if(aq[i+1])n.classList.add('answered')})}
-        function nq(){if(cq<tq){cq++;uq()}}function pq(){if(cq>1){cq--;uq()}}function gq(n){cq=n;uq()}
-        function uq(){document.getElementById('currentQ').textContent=cq;document.getElementById('totalQ').textContent=tq;document.querySelectorAll('.option').forEach(x=>x.classList.remove('selected'));if(aq[cq]){const o=document.querySelectorAll('.option'),i=['A','B','C','D'].indexOf(aq[cq]);if(o[i])o[i].classList.add('selected')}up()}
-        function markForReview(){alert('प्रश्न '+cq+' को बाद के लिए चिह्नित किया गया!')}
-        function submitTest(){clearInterval(ti);const c=Math.floor(Math.random()*30)+70,w=tq-c,at=Object.keys(aq).length,tt=Math.floor((3600-tl)/60);document.getElementById('testInterface').style.display='none';document.getElementById('resultsBox').style.display='block';document.getElementById('scoreNum').textContent=c;document.getElementById('correctAns').textContent=c;document.getElementById('wrongAns').textContent=w;document.getElementById('attempted').textContent=at;document.getElementById('timeTaken').textContent=tt}
-        function backToDashboard(){document.getElementById('resultsBox').style.display='none';document.getElementById('current').style.display='block';document.querySelectorAll('.tab-btn').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.tab-btn')[0].classList.add('active')}
-        function downloadPDF(id){alert('PDF डाउनलोड शुरू हो गया है: '+id)}
-        document.getElementById('passwordInput')?.addEventListener('keypress',e=>{if(e.key==='Enter')checkPassword()})
+        // CONFIG
+        const CONFIG = { PASSWORD: 'ghatna2024' };
+        let allQuestions = [], currentQuestions = [], userAnswers = [], questionStatus = [], currentIndex = 0, timerInterval, timeRemaining = 0, selectedOption = null;
+
+        // PASSWORD
+        function checkPass() {
+            if (document.getElementById('sitePass').value === CONFIG.PASSWORD) {
+                document.getElementById('passwordOverlay').classList.add('hidden-all');
+                document.getElementById('uploadSection').classList.remove('hidden-all');
+            } else {
+                document.getElementById('passError').classList.add('show');
+            }
+        }
+        document.getElementById('sitePass')?.addEventListener('keypress', e => { if (e.key === 'Enter') checkPass(); });
+
+        // CSV UPLOAD
+        function handleCSVUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            document.getElementById('uploadSection').classList.add('hidden-all');
+            document.getElementById('loadingSection').classList.remove('hidden-all');
+            Papa.parse(file, {
+                header: true,
+                skipEmptyLines: true,
+                complete: function(results) {
+                    if (results.data && results.data.length > 0) {
+                        allQuestions = results.data.filter(q => q.Question && q.Question.trim() !== '');
+                        populateSubjects();
+                        document.getElementById('loadingSection').classList.add('hidden-all');
+                        document.getElementById('subjectSection').classList.remove('hidden-all');
+                    }
+                }
+            });
+        }
+
+        // DEFAULT DATA
+        function useDefaultData() {
+            const sampleCSV = `Subject,Sub-Subject,Question,Option A,Option B,Option C,Option D,Answer,Explanation
+Current Affairs,January 2025,भारत का पहला सौर मिशन कौन सा है?,आदित्य-L1,चंद्रयान-1,मंगलयान,Gaganyaan,A,आदित्य-L1 भारत का पहला सौर मिशन है।
+Current Affairs,January 2025,2024 का नोबेल शांति पुरस्कार किसे मिला?,मोहम्मद यूनुस,जसिंदा अर्डर्न,वोलोडिमिर जेलेंस्की,रिशी सुनक,A,मोहम्मद यूनुस को 2024 का नोबेल शांति पुरस्कार मिला।
+History,Ancient,मोहेनजोदड़ो किस नदी के किनारे स्थित है?,गंगा,सिंधु,यमुना,सरस्वती,B,मोहेनजोदड़ो सिंधु नदी के किनारे स्थित था।
+Polity,Constitution,भारतीय संविधान में कितनी अनुसूचियां हैं?,8,10,12,14,C,भारतीय संविधान में 12 अनुसूचियां हैं।`;
+            
+            document.getElementById('uploadSection').classList.add('hidden-all');
+            document.getElementById('loadingSection').classList.remove('hidden-all');
+            Papa.parse(sampleCSV, {
+                header: true,
+                complete: function(results) {
+                    allQuestions = results.data;
+                    populateSubjects();
+                    document.getElementById('loadingSection').classList.add('hidden-all');
+                    document.getElementById('subjectSection').classList.remove('hidden-all');
+                }
+            });
+        }
+
+        function populateSubjects() {
+            const subjects = [...new Set(allQuestions.map(q => q.Subject))].filter(s => s).sort();
+            const select = document.getElementById('mainSubject');
+            select.innerHTML = '<option value="">-- विषय चुनें --</option>';
+            subjects.forEach(s => select.innerHTML += `<option value="${s}">${s}</option>`);
+        }
+
+        function updateSubSubjects() {
+            const subject = document.getElementById('mainSubject').value;
+            const container = document.getElementById('subSubjectContainer');
+            const subSelect = document.getElementById('subSubject');
+            if (!subject) { container.classList.add('hidden'); return; }
+            const subSubjects = [...new Set(allQuestions.filter(q => q.Subject === subject).map(q => q['Sub-Subject']).filter(s => s))].sort();
+            if (subSubjects.length > 0) {
+                container.classList.remove('hidden');
+                subSelect.innerHTML = '<option value="">-- सभी टॉपिक --</option>';
+                subSubjects.forEach(s => subSelect.innerHTML += `<option value="${s}">${s}</option>`);
+            } else {
+                container.classList.add('hidden');
+            }
+        }
+
+        function startExam() {
+            const subject = document.getElementById('mainSubject').value;
+            const subSubject = document.getElementById('subSubject').value;
+            const count = document.getElementById('questionCount').value;
+            if (!subject) { alert('कृपया विषय चुनें!'); return; }
+            currentQuestions = allQuestions.filter(q => {
+                if (q.Subject !== subject) return false;
+                if (subSubject && q['Sub-Subject'] !== subSubject) return false;
+                return true;
+            });
+            if (currentQuestions.length === 0) { alert('कोई प्रश्न नहीं मिले!'); return; }
+            currentQuestions = shuffleArray([...currentQuestions]);
+            if (count !== 'all' && currentQuestions.length > parseInt(count)) {
+                currentQuestions = currentQuestions.slice(0, parseInt(count));
+            }
+            userAnswers = new Array(currentQuestions.length).fill(null);
+            questionStatus = new Array(currentQuestions.length).fill('not-visited');
+            currentIndex = 0;
+            document.getElementById('examSubject').textContent = subject;
+            document.getElementById('subjectSection').classList.add('hidden-all');
+            document.getElementById('instructionSection').classList.remove('hidden-all');
+        }
+
+        function proceedToExam() {
+            if (!document.getElementById('declaration').checked) { alert('कृपया घोषणा स्वीकार करें!'); return; }
+            document.getElementById('instructionSection').classList.add('hidden-all');
+            document.getElementById('examSection').classList.remove('hidden-all');
+            timeRemaining = currentQuestions.length * 60;
+            startTimer();
+            renderQuestion();
+            renderPalette();
+            updateStats();
+        }
+
+        function startTimer() {
+            updateTimerDisplay();
+            timerInterval = setInterval(() => {
+                timeRemaining--;
+                updateTimerDisplay();
+                if (timeRemaining <= 0) { clearInterval(timerInterval); alert('समय समाप्त!'); finalSubmit(); }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const h = Math.floor(timeRemaining / 3600);
+            const m = Math.floor((timeRemaining % 3600) / 60);
+            const s = timeRemaining % 60;
+            document.getElementById('timer').textContent = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+        }
+
+        function renderQuestion() {
+            const q = currentQuestions[currentIndex];
+            document.getElementById('qNumber').textContent = currentIndex + 1;
+            document.getElementById('questionText').textContent = q.Question;
+            if (questionStatus[currentIndex] === 'not-visited') questionStatus[currentIndex] = 'not-answered';
+            const optionsDiv = document.getElementById('optionsContainer');
+            optionsDiv.innerHTML = '';
+            ['A', 'B', 'C', 'D'].forEach((opt, idx) => {
+                const optText = q['Option ' + opt] || q['Option' + opt];
+                if (!optText) return;
+                const label = document.createElement('label');
+                label.className = 'option-label';
+                if (userAnswers[currentIndex] === (idx + 1).toString()) label.classList.add('selected');
+                label.onclick = () => selectOption((idx + 1).toString());
+                label.innerHTML = `<div class="option-circle">${opt}</div><div class="flex-1">${optText}</div><input type="radio" name="option" value="${idx + 1}" class="hidden" ${userAnswers[currentIndex] === (idx + 1).toString() ? 'checked' : ''}>`;
+                optionsDiv.appendChild(label);
+            });
+            selectedOption = userAnswers[currentIndex];
+            renderPalette();
+            updateStats();
+        }
+
+        function selectOption(value) {
+            selectedOption = value;
+            userAnswers[currentIndex] = value;
+            questionStatus[currentIndex] = 'answered';
+            renderQuestion();
+        }
+
+        function renderPalette() {
+            const palette = document.getElementById('questionPalette');
+            palette.innerHTML = '';
+            for (let i = 0; i < currentQuestions.length; i++) {
+                const btn = document.createElement('button');
+                btn.className = 'palette-btn';
+                btn.textContent = i + 1;
+                let statusClass = 'palette-not-visited';
+                if (questionStatus[i] === 'not-answered') statusClass = 'palette-not-answered';
+                else if (questionStatus[i] === 'answered') statusClass = 'palette-answered';
+                else if (questionStatus[i] === 'marked') statusClass = 'palette-marked';
+                btn.classList.add(statusClass);
+                if (i === currentIndex) btn.classList.add('palette-current');
+                btn.onclick = () => { currentIndex = i; renderQuestion(); };
+                palette.appendChild(btn);
+            }
+        }
+
+        function updateStats() {
+            document.getElementById('statNotVisited').textContent = questionStatus.filter(s => s === 'not-visited').length;
+            document.getElementById('statNotAnswered').textContent = questionStatus.filter(s => s === 'not-answered').length;
+            document.getElementById('statAnswered').textContent = questionStatus.filter(s => s === 'answered').length;
+            document.getElementById('statMarked').textContent = questionStatus.filter(s => s === 'marked').length;
+        }
+
+        function saveAndNext() {
+            if (selectedOption) { userAnswers[currentIndex] = selectedOption; questionStatus[currentIndex] = 'answered'; }
+            if (currentIndex < currentQuestions.length - 1) { currentIndex++; renderQuestion(); }
+        }
+
+        function saveAndMarkReview() {
+            if (selectedOption) { userAnswers[currentIndex] = selectedOption; questionStatus[currentIndex] = 'answered-marked'; }
+            if (currentIndex < currentQuestions.length - 1) { currentIndex++; renderQuestion(); }
+        }
+
+        function clearResponse() { selectedOption = null; userAnswers[currentIndex] = null; questionStatus[currentIndex] = 'not-answered'; renderQuestion(); }
+
+        function markReviewAndNext() {
+            if (selectedOption) { userAnswers[currentIndex] = selectedOption; questionStatus[currentIndex] = 'answered-marked'; }
+            else { questionStatus[currentIndex] = 'marked'; }
+            if (currentIndex < currentQuestions.length - 1) { currentIndex++; renderQuestion(); }
+        }
+
+        function nextQuestion() { if (currentIndex < currentQuestions.length - 1) { currentIndex++; renderQuestion(); } }
+        function prevQuestion() { if (currentIndex > 0) { currentIndex--; renderQuestion(); } }
+
+        function confirmSubmit() {
+            const stats = { answered: questionStatus.filter(s => s === 'answered' || s === 'answered-marked').length, notAnswered: questionStatus.filter(s => s === 'not-answered').length, marked: questionStatus.filter(s => s === 'marked').length, notVisited: questionStatus.filter(s => s === 'not-visited').length };
+            document.getElementById('summaryTable').innerHTML = `<tr><td class="p-2 border">उत्तर दिए</td><td class="p-2 border text-center">${stats.answered}</td></tr><tr><td class="p-2 border">उत्तर नहीं दिए</td><td class="p-2 border text-center">${stats.notAnswered}</td></tr><tr><td class="p-2 border">रिव्यू के लिए</td><td class="p-2 border text-center">${stats.marked}</td></tr><tr class="bg-gray-100 font-bold"><td class="p-2 border">कुल</td><td class="p-2 border text-center">${currentQuestions.length}</td></tr>`;
+            document.getElementById('submitModal').classList.remove('hidden-all');
+        }
+
+        function closeSubmitModal() { document.getElementById('submitModal').classList.add('hidden-all'); }
+
+        function finalSubmit() {
+            clearInterval(timerInterval);
+            closeSubmitModal();
+            showResults();
+        }
+
+        function showResults() {
+            document.getElementById('examSection').classList.add('hidden-all');
+            document.getElementById('resultSection').classList.remove('hidden-all');
+            let correct = 0, wrong = 0, unattempted = 0;
+            const wrongQuestions = [], correctQuestions = [], skippedQuestions = [];
+            currentQuestions.forEach((q, i) => {
+                const userAns = userAnswers[i];
+                const correctAns = (q.Answer || '').toString().trim().toUpperCase();
+                let correctNum = '';
+                if (correctAns === 'A' || correctAns === '1') correctNum = '1';
+                else if (correctAns === 'B' || correctAns === '2') correctNum = '2';
+                else if (correctAns === 'C' || correctAns === '3') correctNum = '3';
+                else if (correctAns === 'D' || correctAns === '4') correctNum = '4';
+                const result = { index: i + 1, question: q.Question, userAnswer: userAns, correctAnswer: correctNum, correctText: q['Option ' + correctAns] || q['Option' + correctAns], explanation: q.Explanation || 'कोई व्याख्या नहीं।', options: { A: q['Option A'] || q['OptionA'], B: q['Option B'] || q['OptionB'], C: q['Option C'] || q['OptionC'], D: q['Option D'] || q['OptionD'] } };
+                if (!userAns) { unattempted++; skippedQuestions.push(result); }
+                else if (userAns === correctNum) { correct++; correctQuestions.push(result); }
+                else { wrong++; wrongQuestions.push(result); }
+            });
+            const score = correct - (wrong * 0.25);
+            document.getElementById('resTotal').textContent = currentQuestions.length;
+            document.getElementById('resCorrect').textContent = correct;
+            document.getElementById('resWrong').textContent = wrong;
+            document.getElementById('resUnattempted').textContent = unattempted;
+            document.getElementById('resScore').textContent = score.toFixed(2);
+            renderList('wrongQuestionsList', wrongQuestions, 'wrong');
+            renderList('correctQuestionsList', correctQuestions, 'correct');
+            renderList('skippedQuestionsList', skippedQuestions, 'skipped');
+        }
+
+        function renderList(containerId, questions, type) {
+            const container = document.getElementById(containerId);
+            if (questions.length === 0) { container.innerHTML = '<p class="text-gray-500 italic">कोई प्रश्न नहीं।</p>'; return; }
+            container.innerHTML = questions.map(q => {
+                const userOpt = q.userAnswer ? ['A', 'B', 'C', 'D'][q.userAnswer - 1] : '-';
+                const correctOpt = ['A', 'B', 'C', 'D'][q.correctAnswer - 1];
+                let statusHtml = '';
+                if (type === 'wrong') statusHtml = `<span class="bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm font-bold">गलत</span>`;
+                else if (type === 'correct') statusHtml = `<span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-bold">सही</span>`;
+                else statusHtml = `<span class="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm font-bold">अनुत्तरित</span>`;
+                return `<div class="bg-white rounded-lg shadow p-4"><div class="flex items-center justify-between mb-3"><h4 class="font-bold text-gray-800">प्रश्न ${q.index}</h4>${statusHtml}</div><p class="text-gray-700 mb-3">${q.question}</p><div class="grid md:grid-cols-2 gap-2 mb-3 text-sm"><div class="bg-green-50 p-2 rounded border border-green-200"><span class="font-semibold text-green-700">सही उत्तर: ${correctOpt}</span><p class="text-gray-600">${q.options[correctOpt] || ''}</p></div>${type === 'wrong' ? `<div class="bg-red-50 p-2 rounded border border-red-200"><span class="font-semibold text-red-700">आपका उत्तर: ${userOpt}</span><p class="text-gray-600">${q.options[userOpt] || 'प्रयास नहीं किया'}</p></div>` : ''}</div><div class="bg-blue-50 p-3 rounded-lg"><p class="font-semibold text-blue-700 mb-1"><i class="fas fa-lightbulb mr-2"></i>व्याख्या:</p><p class="text-gray-700 text-sm">${q.explanation}</p></div></div>`;
+            }).join('');
+        }
+
+        function shuffleArray(array) { for (let i = array.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [array[i], array[j]] = [array[j], array[i]]; } return array; }
+        function restartTest() { userAnswers = new Array(currentQuestions.length).fill(null); questionStatus = new Array(currentQuestions.length).fill('not-visited'); currentIndex = 0; selectedOption = null; currentQuestions = shuffleArray([...currentQuestions]); document.getElementById('resultSection').classList.add('hidden-all'); document.getElementById('examSection').classList.remove('hidden-all'); timeRemaining = currentQuestions.length * 60; startTimer(); renderQuestion(); renderPalette(); updateStats(); }
+        function newTest() { location.reload(); }
     </script>
 </body>
 </html>
