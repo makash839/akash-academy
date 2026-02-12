@@ -436,6 +436,7 @@
                 <div class="flex-1 bg-white rounded-lg shadow p-6">
                     <h3 class="text-lg font-bold mb-4">Question <span id="qNumber">1</span>:</h3>
                     <div id="questionText" class="text-gray-800 mb-6 text-lg leading-relaxed"></div>
+                    <div id="imageContainer"></div>
                     <div id="listMatchingContainer"></div>
                     <div id="optionsContainer" class="space-y-3"></div>
 
@@ -576,12 +577,13 @@
                         
                         if (allQuestions.length > 0) {
                             const keys = Object.keys(allQuestions[0]);
-                            // Check if List columns exist (just check column names, not data)
+                            // Check if List columns exist
                             hasListColumns = keys.includes('List1_A') && keys.includes('List2_1');
                             hasEnglishColumns = keys.includes('English_Question') || keys.includes('English Question');
                             
                             console.log('Sheet columns found:', keys);
                             console.log('Has List Columns:', hasListColumns);
+                            console.log('Has Image_URL:', keys.includes('Image_URL'));
                         }
                         
                         populateSubjects();
@@ -664,7 +666,7 @@
             return { list1, list2 };
         }
 
-        // ==================== GET OPTIONS ====================
+        // ==================== GET OPTIONS (UPDATED FOR IMAGE_URL COLUMN) ====================
         function getAvailableOptions(q, lang) {
             const useEnglish = lang === 'en' && hasEnglishColumns;
             const options = [];
@@ -675,6 +677,7 @@
                 if (useEnglish) {
                     optionText = q[`English_Option_${key}`] || q[`English Option ${key}`] || q[`Option ${key}`] || q[`Option${key}`] || q[key];
                 } else {
+                    // After Image_URL column, options are Option A, Option B, etc.
                     optionText = q[`Option ${key}`] || q[`Option${key}`] || q[key];
                 }
                 
@@ -767,7 +770,7 @@
                 `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
         }
 
-        // ==================== RENDER QUESTION ====================
+        // ==================== RENDER QUESTION (UPDATED WITH IMAGE_URL) ====================
         function renderQuestion() {
             const q = currentQuestions[currentIndex];
             const lang = document.getElementById('languageSelect').value;
@@ -778,29 +781,21 @@
                 questionStatus[currentIndex] = 'not-answered';
             }
 
+            // Question text (no embedded images now)
             let questionText = q.Question || '';
-            const images = [];
-            const imageRegex = /\[IMAGE:(.*?)\]/g;
-            let match;
-            
-            while ((match = imageRegex.exec(questionText)) !== null) {
-                images.push(match[1]);
-            }
-            questionText = questionText.replace(/\[IMAGE:.*?\]/g, '').trim();
+            document.getElementById('questionText').innerHTML = `<div class="mb-4">${questionText}</div>`;
 
-            let fullHtml = `<div class="mb-4">${questionText}</div>`;
+            // Handle Image_URL column (NEW)
+            const imageContainer = document.getElementById('imageContainer');
+            imageContainer.innerHTML = '';
             
-            if (images.length > 0) {
-                images.forEach((imgUrl, idx) => {
-                    fullHtml += `
-                        <div class="my-4 text-center">
-                            <img src="${imgUrl}" alt="Question Image ${idx + 1}" class="question-image"
-                                 onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'image-error\'>Image not loaded</div>';">
-                        </div>`;
-                });
+            if (q.Image_URL && q.Image_URL.trim() !== '') {
+                imageContainer.innerHTML = `
+                    <div class="my-4 text-center">
+                        <img src="${q.Image_URL.trim()}" alt="Question Image" class="question-image"
+                             onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'bg-red-100 text-red-700 p-4 rounded\'>Image not loaded</div>';">
+                    </div>`;
             }
-
-            document.getElementById('questionText').innerHTML = fullHtml;
 
             // Handle List Matching Display
             const listContainer = document.getElementById('listMatchingContainer');
@@ -977,7 +972,7 @@
             showResults();
         }
 
-        // ==================== RESULTS ====================
+        // ==================== RESULTS (UPDATED WITH IMAGE) ====================
         function showResults() {
             document.getElementById('examSection').classList.add('hidden-all');
             document.getElementById('resultSection').classList.remove('hidden-all');
@@ -997,7 +992,7 @@
                 
                 const result = {
                     index: i + 1,
-                    question: (q.Question || '').replace(/\[IMAGE:.*?\]/g, ''),
+                    question: q.Question || '',
                     userAnswer: userAns,
                     correctAnswer: correctNum,
                     correctLetter: availableOptions.find(opt => opt.index.toString() === correctNum)?.key || correctNum,
@@ -1005,7 +1000,8 @@
                     explanation: explanation,
                     availableOptions: availableOptions,
                     questionType: qType,
-                    listData: qType === 'list-matching' ? getListData(q) : null
+                    listData: qType === 'list-matching' ? getListData(q) : null,
+                    imageUrl: q.Image_URL || null  // NEW: Include image URL
                 };
 
                 if (!userAns) {
@@ -1052,6 +1048,17 @@
                 else statusHtml = `<span class="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm font-bold">प्रयास नहीं</span>`;
 
                 let questionDisplay = q.question;
+                
+                // Add image if exists
+                let imageHtml = '';
+                if (q.imageUrl) {
+                    imageHtml = `
+                        <div class="mt-3 mb-3 text-center">
+                            <img src="${q.imageUrl}" alt="Question Image" class="max-h-48 border rounded mx-auto"
+                                 onerror="this.style.display='none'">
+                        </div>`;
+                }
+
                 if (q.questionType === 'list-matching' && q.listData && (q.listData.list1.length > 0 || q.listData.list2.length > 0)) {
                     questionDisplay += `
                         <div class="mt-3 grid md:grid-cols-2 gap-4 text-sm bg-gray-50 p-3 rounded border">
@@ -1067,6 +1074,7 @@
                             ${statusHtml}
                         </div>
                         <div class="text-gray-700 mb-3">${questionDisplay}</div>
+                        ${imageHtml}
                         <div class="grid md:grid-cols-2 gap-2 mb-3 text-sm">
                             <div class="bg-green-50 p-2 rounded border border-green-200">
                                 <span class="font-semibold text-green-700">सही उत्तर: ${q.correctLetter}</span>
