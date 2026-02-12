@@ -12,15 +12,14 @@
         body { font-family: 'Segoe UI', Arial, sans-serif; }
         .hidden-all { display: none !important; }
 
-        /* NTA Official Colors */
+        /* NTA Colors */
         .nta-blue { background-color: #003366; }
         .nta-orange { background-color: #FF9933; }
         .nta-green { background-color: #28a745; }
         .nta-purple { background-color: #6f42c1; }
         .nta-red { background-color: #dc3545; }
-        .nta-gray { background-color: #6c757d; }
 
-        /* Password Page Styling */
+        /* Password Page */
         .password-container {
             background: linear-gradient(135deg, #003366 0%, #004080 50%, #0059b3 100%);
             min-height: 100vh;
@@ -29,23 +28,20 @@
             justify-content: center;
             padding: 20px;
         }
-
         .password-card {
             background: white;
             border-radius: 16px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.4);
             width: 100%;
             max-width: 420px;
             overflow: hidden;
         }
-
         .password-header {
             background: linear-gradient(135deg, #003366 0%, #004080 100%);
             padding: 30px;
             text-align: center;
             position: relative;
         }
-
         .password-header::after {
             content: '';
             position: absolute;
@@ -53,9 +49,8 @@
             left: 0;
             right: 0;
             height: 4px;
-            background: linear-gradient(90deg, #FF9933 0%, #FF9933 33%, #ffffff 33%, #ffffff 66%, #138808 66%, #138808 100%);
+            background: linear-gradient(90deg, #FF9933 0%, #FF9933 33%, #fff 33%, #fff 66%, #138808 66%, #138808 100%);
         }
-
         .nta-logo {
             width: 80px;
             height: 80px;
@@ -67,47 +62,24 @@
             margin: 0 auto 15px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
-
         .nta-logo-inner {
             width: 65px;
             height: 65px;
             border-radius: 50%;
-            background: conic-gradient(from 0deg, #FF9933 0deg 120deg, #ffffff 120deg 240deg, #138808 240deg 360deg);
+            background: conic-gradient(from 0deg, #FF9933 0deg 120deg, #fff 120deg 240deg, #138808 240deg 360deg);
         }
-
-        .password-body {
-            padding: 35px 30px;
-        }
-
-        .password-input-wrapper {
-            position: relative;
-            margin-bottom: 20px;
-        }
-
         .password-input {
             width: 100%;
             padding: 15px 15px 15px 50px;
             border: 2px solid #e0e0e0;
             border-radius: 10px;
             font-size: 16px;
-            transition: all 0.3s;
         }
-
         .password-input:focus {
             border-color: #003366;
             outline: none;
-            box-shadow: 0 0 0 4px rgba(0, 51, 102, 0.1);
+            box-shadow: 0 0 0 4px rgba(0,51,102,0.1);
         }
-
-        .password-icon {
-            position: absolute;
-            left: 18px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #003366;
-            font-size: 18px;
-        }
-
         .unlock-btn {
             width: 100%;
             padding: 15px;
@@ -118,57 +90,19 @@
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
         }
 
-        .unlock-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(0, 51, 102, 0.3);
-        }
-
-        .error-message {
-            background: #fee2e2;
-            color: #dc2626;
-            padding: 12px;
-            border-radius: 8px;
-            margin-top: 15px;
-            display: none;
-            align-items: center;
-            gap: 8px;
-            font-size: 14px;
-        }
-
-        .error-message.show {
-            display: flex;
-        }
-
-        .secure-badge {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            margin-top: 20px;
-            color: #6b7280;
-            font-size: 12px;
-        }
-
-        /* Question Palette Buttons */
+        /* Palette Buttons */
         .palette-btn {
             width: 40px;
             height: 40px;
             border: 2px solid #ddd;
             background: white;
-            color: #333;
             font-weight: bold;
             cursor: pointer;
             transition: all 0.2s;
         }
         .palette-btn:hover { transform: scale(1.1); }
-
         .palette-not-visited { background: #f8f9fa; border-color: #adb5bd; color: #6c757d; }
         .palette-not-answered { background: #dc3545; border-color: #dc3545; color: white; }
         .palette-answered { background: #28a745; border-color: #28a745; color: white; }
@@ -190,11 +124,11 @@
             border-radius: 50%;
         }
         .palette-current { 
-            box-shadow: 0 0 0 3px #FF9933, 0 0 10px rgba(255,153,51,0.5);
+            box-shadow: 0 0 0 3px #FF9933;
             transform: scale(1.15);
         }
 
-        /* Option Styling */
+        /* Options */
         .option-label {
             display: flex;
             align-items: center;
@@ -222,7 +156,6 @@
             justify-content: center;
             margin-right: 12px;
             font-weight: bold;
-            color: #495057;
         }
         .option-label.selected .option-circle {
             background: #2196f3;
@@ -238,7 +171,6 @@
             border-radius: 8px;
             font-family: 'Courier New', monospace;
             font-weight: bold;
-            font-size: 1.1rem;
         }
 
         /* Buttons */
@@ -257,7 +189,7 @@
         .btn-submit { background: #dc3545; color: white; }
         .btn-proceed { background: #003366; color: white; padding: 12px 40px; font-size: 1.1rem; }
 
-        /* Loading Animation */
+        /* Loading */
         .loading-spinner {
             width: 60px;
             height: 60px;
@@ -266,61 +198,90 @@
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
-
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
+        }
+
+        /* Images */
+        .question-image {
+            max-width: 100%;
+            max-height: 400px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            margin: 15px auto;
+            display: block;
+        }
+        .image-error {
+            background: #fee2e2;
+            color: #dc2626;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        /* List Matching */
+        .list-matching-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .list-column {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border: 2px solid #dee2e6;
+        }
+        .list-item {
+            padding: 10px;
+            margin-bottom: 8px;
+            background: white;
+            border-radius: 6px;
+            border-left: 4px solid #003366;
         }
     </style>
 </head>
 <body class="bg-gray-100 min-h-screen">
 
-    <!-- ==================== PASSWORD OVERLAY ==================== -->
+    <!-- PASSWORD OVERLAY -->
     <div id="passwordOverlay" class="password-container">
         <div class="password-card">
             <div class="password-header">
-                <div class="nta-logo">
-                    <div class="nta-logo-inner"></div>
-                </div>
+                <div class="nta-logo"><div class="nta-logo-inner"></div></div>
                 <h1 class="text-white text-xl font-bold">NATIONAL TESTING AGENCY</h1>
                 <p class="text-blue-200 text-sm mt-1">Excellence in Assessment</p>
             </div>
-            <div class="password-body">
+            <div class="p-8">
                 <h2 class="text-center text-gray-800 text-lg font-semibold mb-2">Secure Login</h2>
                 <p class="text-center text-gray-500 text-sm mb-6">Please enter your password to access the mock test</p>
-                <div class="password-input-wrapper">
-                    <i class="fas fa-lock password-icon"></i>
+                <div class="relative mb-4">
+                    <i class="fas fa-lock absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500"></i>
                     <input type="password" id="sitePass" class="password-input" placeholder="Enter Password">
                 </div>
-                <button onclick="checkPass()" class="unlock-btn">
-                    <i class="fas fa-unlock-alt"></i>Access Test
-                </button>
-                <div id="passError" class="error-message">
-                    <i class="fas fa-exclamation-triangle"></i>Incorrect password. Please try again.
-                </div>
-                <div class="secure-badge">
-                    <i class="fas fa-shield-alt"></i>256-bit SSL Secured Connection
+                <button onclick="checkPass()" class="unlock-btn"><i class="fas fa-unlock-alt mr-2"></i>Access Test</button>
+                <div id="passError" class="hidden mt-4 p-3 bg-red-100 text-red-700 rounded text-center">
+                    <i class="fas fa-exclamation-triangle mr-2"></i>Incorrect password. Please try again.
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- ==================== LOADING SECTION ==================== -->
+    <!-- LOADING SECTION -->
     <div id="loadingSection" class="hidden-all min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
         <div class="text-center">
             <div class="loading-spinner mx-auto mb-4"></div>
             <p class="text-xl font-semibold text-gray-700">Loading Questions...</p>
-            <p class="text-gray-500 text-sm mt-2">Please wait while we prepare your test</p>
         </div>
     </div>
 
-    <!-- ==================== SUBJECT SELECTION ==================== -->
+    <!-- SUBJECT SELECTION -->
     <div id="subjectSection" class="hidden-all min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-blue-50 to-indigo-100">
-        <div class="bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden">
-            <div class="nta-orange text-white p-4 text-center">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-md p-6">
+            <div class="nta-orange text-white p-4 rounded-t-lg -mx-6 -mt-6 mb-6 text-center">
                 <h2 class="text-xl font-bold"><i class="fas fa-book mr-2"></i>Select Subject</h2>
             </div>
-            <div class="p-6 space-y-4">
+            <div class="space-y-4">
                 <div>
                     <label class="block text-gray-700 font-semibold mb-2">Subject</label>
                     <select id="mainSubject" onchange="updateSubSubjects()" class="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-orange-500 focus:outline-none">
@@ -343,14 +304,12 @@
                         <option value="all">All Available</option>
                     </select>
                 </div>
-                <button onclick="startExam()" class="w-full btn-nta btn-proceed mt-4">
-                    <i class="fas fa-play mr-2"></i>Start Exam
-                </button>
+                <button onclick="startExam()" class="w-full btn-nta btn-proceed mt-4"><i class="fas fa-play mr-2"></i>Start Exam</button>
             </div>
         </div>
     </div>
 
-    <!-- ==================== INSTRUCTIONS SECTION ==================== -->
+    <!-- INSTRUCTIONS -->
     <div id="instructionSection" class="hidden-all">
         <div class="nta-blue text-white p-4">
             <div class="max-w-7xl mx-auto flex items-center justify-between">
@@ -363,82 +322,63 @@
                         <p class="text-xs text-blue-200">Excellence in Assessment</p>
                     </div>
                 </div>
-                <div>
-                    <select id="languageSelect" onchange="changeLanguage()" class="p-2 rounded text-gray-800 text-sm border-2 border-gray-300">
-                        <option value="hi">हिंदी</option>
-                        <option value="en">English</option>
-                    </select>
-                </div>
+                <select id="languageSelect" onchange="changeLanguage()" class="p-2 rounded text-gray-800 text-sm border-2 border-gray-300">
+                    <option value="hi">हिंदी</option>
+                    <option value="en">English</option>
+                </select>
             </div>
         </div>
-
         <div class="nta-orange text-white p-3">
-            <div class="max-w-7xl mx-auto">
-                <h2 class="text-lg font-bold">GENERAL INSTRUCTIONS</h2>
-            </div>
+            <div class="max-w-7xl mx-auto"><h2 class="text-lg font-bold">GENERAL INSTRUCTIONS</h2></div>
         </div>
-
         <div class="max-w-5xl mx-auto p-6">
             <h3 class="text-xl font-bold text-center mb-6">Please read the instructions carefully</h3>
-
             <div class="bg-white p-6 rounded-lg shadow mb-6">
-                <h4 class="font-bold text-lg mb-4">General Instructions:</h4>
                 <ol class="list-decimal list-inside space-y-3 text-gray-700">
                     <li>Total duration of the test will be displayed on the timer.</li>
-                    <li>The clock will be set at the server. The countdown timer in the top right corner of screen will display the remaining time available for you to complete the examination.</li>
+                    <li>The clock will be set at the server.</li>
                     <li>When the timer reaches zero, the examination will end by itself.</li>
-                    <li>The Questions Palette displayed on the right side of screen will show the status of each question using one of the following symbols:</li>
                 </ol>
-
-                <div class="mt-6 grid md:grid-cols-2 gap-4">
-                    <div class="flex items-center gap-2 text-sm">
-                        <div class="w-6 h-6 rounded bg-gray-400 border-2 border-gray-400"></div>
+                <div class="mt-6 grid md:grid-cols-2 gap-4 text-sm">
+                    <div class="flex items-center gap-2">
+                        <div class="w-6 h-6 rounded bg-gray-400"></div>
                         <span>You have <strong>not visited</strong> the question yet.</span>
                     </div>
-                    <div class="flex items-center gap-2 text-sm">
-                        <div class="w-6 h-6 rounded bg-red-500 border-2 border-red-500"></div>
+                    <div class="flex items-center gap-2">
+                        <div class="w-6 h-6 rounded bg-red-500"></div>
                         <span>You have <strong>not answered</strong> the question.</span>
                     </div>
-                    <div class="flex items-center gap-2 text-sm">
-                        <div class="w-6 h-6 rounded bg-green-500 border-2 border-green-500"></div>
+                    <div class="flex items-center gap-2">
+                        <div class="w-6 h-6 rounded bg-green-500"></div>
                         <span>You have <strong>answered</strong> the question.</span>
                     </div>
-                    <div class="flex items-center gap-2 text-sm">
-                        <div class="w-6 h-6 rounded bg-purple-600 border-2 border-purple-600"></div>
-                        <span>You have <strong>NOT answered</strong> but marked for review.</span>
-                    </div>
-                    <div class="flex items-center gap-2 text-sm">
-                        <div class="w-6 h-6 rounded bg-purple-600 border-2 border-green-500"></div>
-                        <span>Answered & Marked for Review (will be considered for evaluation).</span>
+                    <div class="flex items-center gap-2">
+                        <div class="w-6 h-6 rounded bg-purple-600"></div>
+                        <span>You have <strong>marked for review</strong>.</span>
                     </div>
                 </div>
-
-                <div class="mt-6 text-gray-700">
-                    <p class="mb-2 font-bold">Marking Scheme:</p>
-                    <ul class="list-disc list-inside space-y-1">
-                        <li><span class="text-green-600 font-bold">+1 Mark</span> for each correct answer</li>
-                        <li><span class="text-red-600 font-bold">-1/4 Mark</span> (0.25 negative) for each wrong answer</li>
-                        <li><span class="text-gray-600 font-bold">0 Mark</span> for unattempted questions</li>
+                <div class="mt-6">
+                    <p class="font-bold">Marking Scheme:</p>
+                    <ul class="list-disc list-inside mt-2">
+                        <li><span class="text-green-600 font-bold">+1 Mark</span> for correct answer</li>
+                        <li><span class="text-red-600 font-bold">-0.25 Mark</span> for wrong answer</li>
+                        <li><span class="text-gray-600 font-bold">0 Mark</span> for unattempted</li>
                     </ul>
                 </div>
             </div>
-
             <div class="bg-white p-6 rounded-lg shadow mb-6">
                 <label class="flex items-start gap-3 cursor-pointer">
                     <input type="checkbox" id="declaration" class="mt-1 w-5 h-5">
-                    <span class="text-gray-700">I have read and understood the instructions. I am ready to take the test.</span>
+                    <span class="text-gray-700">I have read and understood the instructions.</span>
                 </label>
             </div>
-
             <div class="text-center">
-                <button onclick="proceedToExam()" class="btn-nta btn-proceed">
-                    <i class="fas fa-arrow-right mr-2"></i>PROCEED
-                </button>
+                <button onclick="proceedToExam()" class="btn-nta btn-proceed"><i class="fas fa-arrow-right mr-2"></i>PROCEED</button>
             </div>
         </div>
     </div>
 
-    <!-- ==================== EXAM SECTION ==================== -->
+    <!-- EXAM SECTION -->
     <div id="examSection" class="hidden-all">
         <div class="nta-blue text-white p-3">
             <div class="max-w-7xl mx-auto flex items-center justify-between flex-wrap gap-3">
@@ -453,10 +393,6 @@
                 </div>
                 <div class="flex items-center gap-4">
                     <div class="text-right hidden sm:block">
-                        <p class="text-xs text-blue-200">Candidate Name</p>
-                        <p class="font-semibold">Student</p>
-                    </div>
-                    <div class="text-right hidden sm:block">
                         <p class="text-xs text-blue-200">Subject</p>
                         <p class="font-semibold" id="examSubject">Test</p>
                     </div>
@@ -467,122 +403,70 @@
             </div>
         </div>
 
-        <div class="nta-orange text-white p-2">
-            <div class="max-w-7xl mx-auto flex items-center justify-between">
-                <h2 class="font-bold" id="examTitle">Mock Test</h2>
-                <button class="bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded text-sm">
-                    <i class="fas fa-download mr-1"></i>Download Question
-                </button>
-            </div>
-        </div>
-
         <div class="max-w-7xl mx-auto p-4">
             <div class="flex flex-col lg:flex-row gap-4">
+                <!-- Question Area -->
                 <div class="flex-1 bg-white rounded-lg shadow p-6">
-                    <div id="questionContainer">
-                        <h3 class="text-lg font-bold mb-4">Question <span id="qNumber">1</span>:</h3>
-                        <div id="questionText" class="text-gray-800 mb-6 text-lg leading-relaxed"></div>
-                        <div id="optionsContainer" class="space-y-3"></div>
-                    </div>
+                    <h3 class="text-lg font-bold mb-4">Question <span id="qNumber">1</span>:</h3>
+                    <div id="questionText" class="text-gray-800 mb-6 text-lg leading-relaxed"></div>
+                    <div id="optionsContainer" class="space-y-3"></div>
 
                     <div class="mt-8 flex flex-wrap gap-3">
-                        <button onclick="saveAndNext()" class="btn-nta btn-save-next">
-                            <i class="fas fa-save mr-1"></i>Save & Next
-                        </button>
-                        <button onclick="saveAndMarkReview()" class="btn-nta btn-save-review">
-                            <i class="fas fa-bookmark mr-1"></i>Save & Mark for Review
-                        </button>
-                        <button onclick="clearResponse()" class="btn-nta btn-clear">
-                            <i class="fas fa-eraser mr-1"></i>Clear Response
-                        </button>
-                        <button onclick="markReviewAndNext()" class="btn-nta btn-mark-review">
-                            <i class="fas fa-flag mr-1"></i>Mark for Review & Next
-                        </button>
+                        <button onclick="saveAndNext()" class="btn-nta btn-save-next"><i class="fas fa-save mr-1"></i>Save & Next</button>
+                        <button onclick="saveAndMarkReview()" class="btn-nta btn-save-review"><i class="fas fa-bookmark mr-1"></i>Save & Mark for Review</button>
+                        <button onclick="clearResponse()" class="btn-nta btn-clear"><i class="fas fa-eraser mr-1"></i>Clear Response</button>
+                        <button onclick="markReviewAndNext()" class="btn-nta btn-mark-review"><i class="fas fa-flag mr-1"></i>Mark for Review & Next</button>
                     </div>
 
                     <div class="mt-6 flex justify-between">
-                        <button onclick="prevQuestion()" class="px-4 py-2 border-2 border-gray-300 rounded hover:bg-gray-100">
-                            <i class="fas fa-chevron-left mr-1"></i>&lt;&lt; Back
-                        </button>
-                        <button onclick="nextQuestion()" class="px-4 py-2 border-2 border-gray-300 rounded hover:bg-gray-100">
-                            Next &gt;&gt;<i class="fas fa-chevron-right ml-1"></i>
-                        </button>
+                        <button onclick="prevQuestion()" class="px-4 py-2 border-2 border-gray-300 rounded hover:bg-gray-100"><i class="fas fa-chevron-left mr-1"></i>Back</button>
+                        <button onclick="nextQuestion()" class="px-4 py-2 border-2 border-gray-300 rounded hover:bg-gray-100">Next<i class="fas fa-chevron-right ml-1"></i></button>
                     </div>
                 </div>
 
+                <!-- Palette -->
                 <div class="lg:w-80 bg-white rounded-lg shadow p-4">
                     <h4 class="font-bold text-gray-700 mb-3 border-b pb-2">Question Palette</h4>
-
                     <div class="grid grid-cols-2 gap-2 mb-4 text-xs">
-                        <div class="flex items-center gap-2">
-                            <span class="w-6 h-6 rounded bg-gray-400 flex items-center justify-center text-white font-bold" id="statNotVisited">0</span>
-                            <span>Not Visited</span>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <span class="w-6 h-6 rounded bg-red-500 flex items-center justify-center text-white font-bold" id="statNotAnswered">0</span>
-                            <span>Not Answered</span>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <span class="w-6 h-6 rounded bg-green-500 flex items-center justify-center text-white font-bold" id="statAnswered">0</span>
-                            <span>Answered</span>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <span class="w-6 h-6 rounded bg-purple-600 flex items-center justify-center text-white font-bold" id="statMarked">0</span>
-                            <span>Marked for Review</span>
-                        </div>
-                        <div class="flex items-center gap-2 col-span-2">
-                            <span class="w-6 h-6 rounded bg-purple-600 border-2 border-green-500 flex items-center justify-center text-white font-bold" id="statAnsweredMarked">0</span>
-                            <span>Answered & Marked for Review</span>
-                        </div>
+                        <div class="flex items-center gap-2"><span class="w-6 h-6 rounded bg-gray-400 flex items-center justify-center text-white font-bold" id="statNotVisited">0</span><span>Not Visited</span></div>
+                        <div class="flex items-center gap-2"><span class="w-6 h-6 rounded bg-red-500 flex items-center justify-center text-white font-bold" id="statNotAnswered">0</span><span>Not Answered</span></div>
+                        <div class="flex items-center gap-2"><span class="w-6 h-6 rounded bg-green-500 flex items-center justify-center text-white font-bold" id="statAnswered">0</span><span>Answered</span></div>
+                        <div class="flex items-center gap-2"><span class="w-6 h-6 rounded bg-purple-600 flex items-center justify-center text-white font-bold" id="statMarked">0</span><span>Marked</span></div>
                     </div>
-
                     <div id="questionPalette" class="grid grid-cols-5 gap-2 max-h-80 overflow-y-auto p-2"></div>
-
-                    <button onclick="confirmSubmit()" class="w-full mt-4 btn-nta btn-submit py-3">
-                        <i class="fas fa-check-circle mr-2"></i>SUBMIT
-                    </button>
+                    <button onclick="confirmSubmit()" class="w-full mt-4 btn-nta btn-submit py-3"><i class="fas fa-check-circle mr-2"></i>SUBMIT</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- ==================== SUBMIT MODAL ==================== -->
+    <!-- SUBMIT MODAL -->
     <div id="submitModal" class="hidden-all fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
         <div class="bg-white rounded-lg shadow-2xl p-6 max-w-md w-full mx-4">
             <h3 class="text-xl font-bold text-center mb-4">Exam Summary</h3>
             <table class="w-full mb-6 text-sm">
-                <thead class="bg-gray-100">
-                    <tr><th class="p-2 text-left">Status</th><th class="p-2 text-center">Count</th></tr>
-                </thead>
                 <tbody id="summaryTable"></tbody>
             </table>
-            <p class="text-center text-gray-700 mb-4 font-semibold">
-                Are you sure you want to submit for final marking?<br>
-                <span class="text-red-600 text-sm">No changes will be allowed after submission.</span>
-            </p>
+            <p class="text-center text-gray-700 mb-4 font-semibold">Are you sure you want to submit?</p>
             <div class="flex justify-center gap-4">
-                <button onclick="finalSubmit()" class="px-6 py-2 bg-green-500 text-white rounded hover:bg-green-600 font-semibold">YES</button>
-                <button onclick="closeSubmitModal()" class="px-6 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 font-semibold">NO</button>
+                <button onclick="finalSubmit()" class="px-6 py-2 bg-green-500 text-white rounded font-semibold">YES</button>
+                <button onclick="closeSubmitModal()" class="px-6 py-2 bg-gray-500 text-white rounded font-semibold">NO</button>
             </div>
         </div>
     </div>
 
-    <!-- ==================== RESULT SECTION ==================== -->
+    <!-- RESULT SECTION -->
     <div id="resultSection" class="hidden-all">
-        <div class="nta-blue text-white p-4">
-            <div class="max-w-7xl mx-auto text-center">
-                <h1 class="text-2xl font-bold">NATIONAL TESTING AGENCY</h1>
-                <p class="text-blue-200">Excellence in Assessment</p>
-            </div>
+        <div class="nta-blue text-white p-4 text-center">
+            <h1 class="text-2xl font-bold">NATIONAL TESTING AGENCY</h1>
+            <p class="text-blue-200">Excellence in Assessment</p>
         </div>
-
         <div class="max-w-5xl mx-auto p-6">
             <h2 class="text-2xl font-bold text-center mb-6">Result</h2>
-
             <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
                     <div class="text-center p-4 bg-blue-50 rounded-lg">
-                        <p class="text-gray-600 text-sm">Total Questions</p>
+                        <p class="text-gray-600 text-sm">Total</p>
                         <p class="text-2xl font-bold text-blue-600" id="resTotal">0</p>
                     </div>
                     <div class="text-center p-4 bg-green-50 rounded-lg">
@@ -598,42 +482,30 @@
                         <p class="text-2xl font-bold text-yellow-600" id="resUnattempted">0</p>
                     </div>
                 </div>
-
                 <div class="text-center p-6 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg text-white">
                     <p class="text-lg mb-2">Final Score</p>
                     <p class="text-5xl font-bold" id="resScore">0.00</p>
                     <p class="text-sm mt-2 opacity-80">(+1 for correct, -0.25 for wrong)</p>
                 </div>
-
                 <div class="mt-6 text-center">
-                    <button onclick="restartTest()" class="btn-nta btn-proceed mr-3">
-                        <i class="fas fa-redo mr-2"></i>Take Test Again
-                    </button>
-                    <button onclick="newTest()" class="btn-nta bg-gray-600 hover:bg-gray-700 text-white px-6 py-3 rounded">
-                        <i class="fas fa-home mr-2"></i>New Test
-                    </button>
+                    <button onclick="restartTest()" class="btn-nta btn-proceed mr-3"><i class="fas fa-redo mr-2"></i>Take Again</button>
+                    <button onclick="newTest()" class="btn-nta bg-gray-600 text-white px-6 py-3 rounded"><i class="fas fa-home mr-2"></i>New Test</button>
                 </div>
             </div>
 
-            <h3 class="text-xl font-bold mb-4 text-red-600">
-                <i class="fas fa-times-circle mr-2"></i>Wrong Answers (Review with Explanation)
-            </h3>
+            <h3 class="text-xl font-bold mb-4 text-red-600"><i class="fas fa-times-circle mr-2"></i>Wrong Answers</h3>
             <div id="wrongQuestionsList" class="space-y-4 mb-8"></div>
 
-            <h3 class="text-xl font-bold mb-4 text-green-600">
-                <i class="fas fa-check-circle mr-2"></i>Correct Answers
-            </h3>
+            <h3 class="text-xl font-bold mb-4 text-green-600"><i class="fas fa-check-circle mr-2"></i>Correct Answers</h3>
             <div id="correctQuestionsList" class="space-y-4 mb-8"></div>
 
-            <h3 class="text-xl font-bold mb-4 text-gray-600">
-                <i class="fas fa-minus-circle mr-2"></i>Unattempted Questions
-            </h3>
+            <h3 class="text-xl font-bold mb-4 text-gray-600"><i class="fas fa-minus-circle mr-2"></i>Unattempted</h3>
             <div id="skippedQuestionsList" class="space-y-4"></div>
         </div>
     </div>
 
     <script>
-        // ==================== CONFIG (HIDDEN) ====================
+        // ==================== CONFIG ====================
         const CONFIG = {
             PASSWORD: '208019',
             SHEET_URL: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS-DLQLn-selNmHf2J8_Qp8cdOz8_YF0VUAMt1QxxePnK09bCAPDJvJznZndAuxuGr5E4UCQHZwhOkl/pub?output=csv'
@@ -649,6 +521,7 @@
         let timeRemaining = 0;
         let selectedOption = null;
         let hasEnglishColumns = false;
+        let hasListColumns = false;
 
         // ==================== PASSWORD ====================
         function checkPass() {
@@ -657,7 +530,7 @@
                 document.getElementById('loadingSection').classList.remove('hidden-all');
                 loadData();
             } else {
-                document.getElementById('passError').classList.add('show');
+                document.getElementById('passError').classList.remove('hidden');
             }
         }
 
@@ -672,17 +545,16 @@
                 complete: function(results) {
                     if (results.data && results.data.length > 0) {
                         allQuestions = results.data.filter(q => q.Question && q.Question.trim() !== '');
-
-                        // Check if English columns exist
+                        
                         hasEnglishColumns = allQuestions.length > 0 && (
                             'English_Question' in allQuestions[0] || 
                             'English Question' in allQuestions[0]
                         );
-
-                        if (allQuestions.length === 0) {
-                            alert('No valid questions found!');
-                            return;
-                        }
+                        
+                        hasListColumns = allQuestions.length > 0 && (
+                            'List1_A' in allQuestions[0] || 
+                            'List1A' in allQuestions[0]
+                        );
 
                         populateSubjects();
                         document.getElementById('loadingSection').classList.add('hidden-all');
@@ -723,42 +595,109 @@
             }
         }
 
-        // ==================== UTILITY: Get available options for a question ====================
+        // ==================== QUESTION TYPE DETECTION ====================
+        function getQuestionType(q) {
+            const questionText = (q.Question || '').toLowerCase();
+            
+            // Check for explicit matching keywords
+            const isMatchingQuestion = 
+                questionText.includes('मिलान') || 
+                questionText.includes('सुमेलित') ||
+                questionText.includes('match') ||
+                questionText.includes('matching');
+            
+            // Check if List columns have data
+            const hasListData = hasListColumns && (q.List1_A || q.List1A);
+            
+            // Only treat as list-matching if BOTH conditions are true
+            if (isMatchingQuestion && hasListData) {
+                return 'list-matching';
+            }
+            return 'regular';
+        }
+
+        // ==================== GET LIST DATA ====================
+        function getListData(q) {
+            const list1 = [];
+            const list2 = [];
+            
+            const prefixes1 = ['List1_', 'List1'];
+            const prefixes2 = ['List2_', 'List2'];
+            const letters = ['A', 'B', 'C', 'D'];
+            const numbers = ['1', '2', '3', '4'];
+            
+            letters.forEach(letter => {
+                let value = null;
+                for (let prefix of prefixes1) {
+                    if (q[prefix + letter] && q[prefix + letter].trim() !== '') {
+                        value = q[prefix + letter];
+                        break;
+                    }
+                }
+                if (value) list1.push({ key: letter, text: value });
+            });
+            
+            numbers.forEach(num => {
+                let value = null;
+                for (let prefix of prefixes2) {
+                    if (q[prefix + num] && q[prefix + num].trim() !== '') {
+                        value = q[prefix + num];
+                        break;
+                    }
+                }
+                if (value) list2.push({ key: num, text: value });
+            });
+            
+            return { list1, list2 };
+        }
+
+        // ==================== GET OPTIONS ====================
         function getAvailableOptions(q, lang) {
             const useEnglish = lang === 'en' && hasEnglishColumns;
             const options = [];
-            
-            // Check for Option A-E (both Hindi and English)
             const optionKeys = ['A', 'B', 'C', 'D', 'E'];
             
             optionKeys.forEach(key => {
                 let optionText = null;
                 
                 if (useEnglish) {
-                    // Try English columns first
                     optionText = q[`English_Option_${key}`] || 
                                 q[`English Option ${key}`] || 
                                 q[`Option ${key}`] || 
                                 q[`Option${key}`] || 
                                 q[key];
                 } else {
-                    // Hindi columns
                     optionText = q[`Option ${key}`] || 
                                 q[`Option${key}`] || 
                                 q[key];
                 }
                 
-                // If option text exists and is not empty, add it
                 if (optionText && optionText.toString().trim() !== '') {
                     options.push({
                         key: key,
                         text: optionText.toString().trim(),
-                        index: options.length + 1  // 1-based index for answer mapping
+                        index: options.length + 1
                     });
                 }
             });
             
             return options;
+        }
+
+        // ==================== GET CORRECT ANSWER ====================
+        function getCorrectAnswerIndex(q, availableOptions) {
+            const correctAns = (q.Answer || '').toString().trim();
+            
+            // Remove brackets and convert to uppercase: (a) -> A, (b) -> B
+            const cleanAns = correctAns.replace(/[()]/g, '').toUpperCase();
+            
+            // Find matching option
+            const correctOption = availableOptions.find(opt => 
+                opt.key === cleanAns || 
+                opt.index.toString() === cleanAns
+            );
+            
+            return correctOption ? correctOption.index.toString() : cleanAns;
         }
 
         // ==================== START EXAM ====================
@@ -769,7 +708,6 @@
 
             if (!subject) { alert('Please select a subject!'); return; }
 
-            // Filter questions
             currentQuestions = allQuestions.filter(q => {
                 if (q.Subject !== subject) return false;
                 if (subSubject) {
@@ -797,7 +735,7 @@
         function changeLanguage() {
             const lang = document.getElementById('languageSelect').value;
             if (lang === 'en' && !hasEnglishColumns) {
-                alert('English questions not available in this sheet. Using Hindi.');
+                alert('English questions not available. Using Hindi.');
                 document.getElementById('languageSelect').value = 'hi';
             }
         }
@@ -826,7 +764,6 @@
                 updateTimerDisplay();
                 if (timeRemaining <= 0) {
                     clearInterval(timerInterval);
-                    alert('Time up! Submitting...');
                     finalSubmit();
                 }
             }, 1000);
@@ -840,55 +777,88 @@
                 `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
         }
 
-        // ==================== GET QUESTION TEXT ====================
-        function getQuestionText(q, lang) {
-            const useEnglish = lang === 'en' && hasEnglishColumns;
-
-            return {
-                question: useEnglish ? (q['English_Question'] || q['English Question'] || q.Question) : q.Question,
-                explanation: useEnglish ? (q['English_Explanation'] || q['English Explanation'] || q.Explanation || 'No explanation.') : (q.Explanation || 'कोई व्याख्या नहीं।')
-            };
-        }
-
         // ==================== RENDER QUESTION ====================
         function renderQuestion() {
             const q = currentQuestions[currentIndex];
             const lang = document.getElementById('languageSelect').value;
-            const text = getQuestionText(q, lang);
+            const qType = getQuestionType(q);
             
-            // Get available options dynamically (supports 4 or 5 options)
-            const availableOptions = getAvailableOptions(q, lang);
-
             document.getElementById('qNumber').textContent = currentIndex + 1;
-            document.getElementById('questionText').innerHTML = text.question;
-
+            
             if (questionStatus[currentIndex] === 'not-visited') {
                 questionStatus[currentIndex] = 'not-answered';
             }
 
+            // Parse images from question
+            let questionText = q.Question;
+            const images = [];
+            const imageRegex = /\[IMAGE:(.*?)\]/g;
+            let match;
+            
+            while ((match = imageRegex.exec(q.Question)) !== null) {
+                images.push(match[1]);
+            }
+            
+            questionText = questionText.replace(/\[IMAGE:.*?\]/g, '').trim();
+
+            // Build question HTML
+            let fullHtml = `<div class="mb-4">${questionText}</div>`;
+            
+            // Add images if found
+            if (images.length > 0) {
+                images.forEach((imgUrl, idx) => {
+                    fullHtml += `
+                        <div class="my-4 text-center">
+                            <img src="${imgUrl}" alt="Question Image ${idx + 1}" 
+                                 class="question-image"
+                                 onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'image-error\'><i class=\'fas fa-exclamation-triangle\'></i><br>Image load nahi hui<br><small>${imgUrl}</small></div>';">
+                        </div>
+                    `;
+                });
+            }
+
+            // Add list matching display if applicable
+            if (qType === 'list-matching') {
+                const { list1, list2 } = getListData(q);
+                if (list1.length > 0 && list2.length > 0) {
+                    fullHtml += `
+                        <div class="list-matching-container">
+                            <div class="list-column">
+                                <h4 class="font-bold mb-3 text-gray-700">सूची-I</h4>
+                                ${list1.map(item => `<div class="list-item"><strong>${item.key}.</strong> ${item.text}</div>`).join('')}
+                            </div>
+                            <div class="list-column">
+                                <h4 class="font-bold mb-3 text-gray-700">सूची-II</h4>
+                                ${list2.map(item => `<div class="list-item"><strong>${item.key}.</strong> ${item.text}</div>`).join('')}
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+
+            document.getElementById('questionText').innerHTML = fullHtml;
+
+            // Render options
             const optionsDiv = document.getElementById('optionsContainer');
             optionsDiv.innerHTML = '';
+            
+            const availableOptions = getAvailableOptions(q, lang);
 
-            // Render only available options
             availableOptions.forEach((opt) => {
                 const label = document.createElement('label');
                 label.className = 'option-label';
                 
-                // Check if this option was previously selected
                 const userAnswerNum = userAnswers[currentIndex];
                 const isSelected = userAnswerNum && parseInt(userAnswerNum) === opt.index;
                 
-                if (isSelected) {
-                    label.classList.add('selected');
-                }
+                if (isSelected) label.classList.add('selected');
                 
                 label.onclick = () => selectOption(opt.index.toString(), availableOptions.length);
 
                 label.innerHTML = `
                     <div class="option-circle">${opt.key}</div>
                     <div class="flex-1">${opt.text}</div>
-                    <input type="radio" name="option" value="${opt.index}" class="hidden" 
-                        ${isSelected ? 'checked' : ''}>
+                    <input type="radio" name="option" value="${opt.index}" class="hidden" ${isSelected ? 'checked' : ''}>
                 `;
                 optionsDiv.appendChild(label);
             });
@@ -932,7 +902,6 @@
             document.getElementById('statNotAnswered').textContent = questionStatus.filter(s => s === 'not-answered').length;
             document.getElementById('statAnswered').textContent = questionStatus.filter(s => s === 'answered').length;
             document.getElementById('statMarked').textContent = questionStatus.filter(s => s === 'marked').length;
-            document.getElementById('statAnsweredMarked').textContent = questionStatus.filter(s => s === 'answered-marked').length;
         }
 
         // ==================== BUTTONS ====================
@@ -987,11 +956,11 @@
             };
 
             document.getElementById('summaryTable').innerHTML = `
-                <tr><td class="p-2 border">Answered</td><td class="p-2 border text-center">${stats.answered}</td></tr>
-                <tr><td class="p-2 border">Not Answered</td><td class="p-2 border text-center">${stats.notAnswered}</td></tr>
-                <tr><td class="p-2 border">Marked for Review</td><td class="p-2 border text-center">${stats.marked}</td></tr>
-                <tr><td class="p-2 border">Not Visited</td><td class="p-2 border text-center">${stats.notVisited}</td></tr>
-                <tr class="bg-gray-100 font-bold"><td class="p-2 border">Total</td><td class="p-2 border text-center">${currentQuestions.length}</td></tr>
+                <tr class="border-b"><td class="p-2">Answered</td><td class="p-2 text-center font-bold">${stats.answered}</td></tr>
+                <tr class="border-b"><td class="p-2">Not Answered</td><td class="p-2 text-center font-bold">${stats.notAnswered}</td></tr>
+                <tr class="border-b"><td class="p-2">Marked for Review</td><td class="p-2 text-center font-bold">${stats.marked}</td></tr>
+                <tr class="border-b"><td class="p-2">Not Visited</td><td class="p-2 text-center font-bold">${stats.notVisited}</td></tr>
+                <tr class="bg-gray-100 font-bold"><td class="p-2">Total</td><td class="p-2 text-center">${currentQuestions.length}</td></tr>
             `;
 
             document.getElementById('submitModal').classList.remove('hidden-all');
@@ -1021,42 +990,28 @@
 
             currentQuestions.forEach((q, i) => {
                 const userAns = userAnswers[i];
-                const correctAns = (q.Answer || '').toString().trim();
-                
-                // Get available options for this question
                 const availableOptions = getAvailableOptions(q, lang);
+                const correctNum = getCorrectAnswerIndex(q, availableOptions);
                 
-                // Map correct answer letter to option index
-                let correctNum = '';
-                const correctLetter = correctAns.toUpperCase();
+                const qType = getQuestionType(q);
+                const explanation = q.Explanation || 'कोई व्याख्या नहीं।';
                 
-                // Find which index corresponds to the correct answer letter
-                const correctOption = availableOptions.find(opt => opt.key === correctLetter);
-                if (correctOption) {
-                    correctNum = correctOption.index.toString();
-                } else {
-                    // Fallback: if answer is numeric
-                    correctNum = correctAns;
-                }
-
-                const text = getQuestionText(q, lang);
-                
-                // Create options map for display
-                const optionsMap = {};
+                let optionsMap = {};
                 availableOptions.forEach(opt => {
                     optionsMap[opt.key] = opt.text;
                 });
 
                 const result = {
                     index: i + 1,
-                    question: text.question,
+                    question: q.Question.replace(/\[IMAGE:.*?\]/g, ''),
                     userAnswer: userAns,
                     correctAnswer: correctNum,
-                    correctLetter: correctLetter,
-                    correctText: optionsMap[correctLetter] || 'N/A',
-                    explanation: text.explanation,
-                    options: optionsMap,
-                    availableOptions: availableOptions
+                    correctLetter: availableOptions.find(opt => opt.index.toString() === correctNum)?.key || correctNum,
+                    correctText: availableOptions.find(opt => opt.index.toString() === correctNum)?.text || correctNum,
+                    explanation: explanation,
+                    availableOptions: availableOptions,
+                    questionType: qType,
+                    listData: qType === 'list-matching' ? getListData(q) : null
                 };
 
                 if (!userAns) {
@@ -1079,25 +1034,21 @@
             document.getElementById('resUnattempted').textContent = unattempted;
             document.getElementById('resScore').textContent = score.toFixed(2);
 
-            renderList('wrongQuestionsList', wrongQuestions, 'wrong');
-            renderList('correctQuestionsList', correctQuestions, 'correct');
-            renderList('skippedQuestionsList', skippedQuestions, 'skipped');
+            renderResultList('wrongQuestionsList', wrongQuestions, 'wrong');
+            renderResultList('correctQuestionsList', correctQuestions, 'correct');
+            renderResultList('skippedQuestionsList', skippedQuestions, 'skipped');
         }
 
-        function renderList(containerId, questions, type) {
+        function renderResultList(containerId, questions, type) {
             const container = document.getElementById(containerId);
             if (questions.length === 0) {
                 container.innerHTML = '<p class="text-gray-500 italic">No questions in this category.</p>';
                 return;
             }
 
-            const lang = document.getElementById('languageSelect').value;
-            const isHindi = lang === 'hi';
-
             container.innerHTML = questions.map(q => {
-                // Get user's selected letter
                 let userOpt = '-';
-                let userText = isHindi ? 'प्रयास नहीं किया' : 'Not attempted';
+                let userText = 'Not attempted';
                 
                 if (q.userAnswer) {
                     const userOption = q.availableOptions.find(opt => opt.index.toString() === q.userAnswer);
@@ -1108,36 +1059,41 @@
                 }
 
                 let statusHtml = '';
-                if (type === 'wrong') statusHtml = `<span class="bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm font-bold">${isHindi ? 'गलत' : 'WRONG'}</span>`;
-                else if (type === 'correct') statusHtml = `<span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-bold">${isHindi ? 'सही' : 'CORRECT'}</span>`;
-                else statusHtml = `<span class="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm font-bold">${isHindi ? 'प्रयास नहीं' : 'NOT ATTEMPTED'}</span>`;
+                if (type === 'wrong') statusHtml = `<span class="bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm font-bold">गलत</span>`;
+                else if (type === 'correct') statusHtml = `<span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-bold">सही</span>`;
+                else statusHtml = `<span class="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm font-bold">प्रयास नहीं</span>`;
 
-                const qLabel = isHindi ? 'प्रश्न' : 'Question';
-                const correctLabel = isHindi ? 'सही उत्तर' : 'Correct Answer';
-                const yourLabel = isHindi ? 'आपका उत्तर' : 'Your Answer';
-                const expLabel = isHindi ? 'व्याख्या' : 'Explanation';
+                let questionDisplay = q.question;
+                if (q.questionType === 'list-matching' && q.listData) {
+                    questionDisplay += `
+                        <div class="mt-3 grid grid-cols-2 gap-4 text-sm">
+                            <div class="bg-gray-50 p-3 rounded"><strong>सूची-I:</strong><br>${q.listData.list1.map(i => `${i.key}. ${i.text}`).join('<br>')}</div>
+                            <div class="bg-gray-50 p-3 rounded"><strong>सूची-II:</strong><br>${q.listData.list2.map(i => `${i.key}. ${i.text}`).join('<br>')}</div>
+                        </div>
+                    `;
+                }
 
                 return `
-                    <div class="bg-white rounded-lg shadow p-4 result-${type}">
+                    <div class="bg-white rounded-lg shadow p-4">
                         <div class="flex items-center justify-between mb-3">
-                            <h4 class="font-bold text-gray-800">${qLabel} ${q.index}</h4>
+                            <h4 class="font-bold text-gray-800">प्रश्न ${q.index}</h4>
                             ${statusHtml}
                         </div>
-                        <p class="text-gray-700 mb-3">${q.question}</p>
+                        <div class="text-gray-700 mb-3">${questionDisplay}</div>
                         <div class="grid md:grid-cols-2 gap-2 mb-3 text-sm">
                             <div class="bg-green-50 p-2 rounded border border-green-200">
-                                <span class="font-semibold text-green-700">${correctLabel}: ${q.correctLetter}</span>
+                                <span class="font-semibold text-green-700">सही उत्तर: ${q.correctLetter}</span>
                                 <p class="text-gray-600">${q.correctText}</p>
                             </div>
                             ${type === 'wrong' ? `
                             <div class="bg-red-50 p-2 rounded border border-red-200">
-                                <span class="font-semibold text-red-700">${yourLabel}: ${userOpt}</span>
+                                <span class="font-semibold text-red-700">आपका उत्तर: ${userOpt}</span>
                                 <p class="text-gray-600">${userText}</p>
                             </div>
                             ` : ''}
                         </div>
                         <div class="bg-blue-50 p-3 rounded-lg">
-                            <p class="font-semibold text-blue-700 mb-1"><i class="fas fa-lightbulb mr-2"></i>${expLabel}:</p>
+                            <p class="font-semibold text-blue-700 mb-1"><i class="fas fa-lightbulb mr-2"></i>व्याख्या:</p>
                             <p class="text-gray-700 text-sm">${q.explanation}</p>
                         </div>
                     </div>
@@ -1145,7 +1101,7 @@
             }).join('');
         }
 
-        // ==================== RESTART TEST ====================
+        // ==================== RESTART ====================
         function restartTest() {
             userAnswers = new Array(currentQuestions.length).fill(null);
             questionStatus = new Array(currentQuestions.length).fill('not-visited');
