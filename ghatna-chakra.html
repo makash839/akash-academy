@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NTA Mock Test - National Testing Agency</title>
-    <script src="https://cdn.tailwindcss.com "></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js "></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css " rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         * { box-sizing: border-box; }
         body { font-family: 'Segoe UI', Arial, sans-serif; }
@@ -272,8 +272,6 @@
             100% { transform: rotate(360deg); }
         }
     </style>
-<base target="_blank">
-<base target="_blank">
 </head>
 <body class="bg-gray-100 min-h-screen">
 
@@ -637,7 +635,7 @@
     <script>
         // ==================== CONFIG (HIDDEN) ====================
         const CONFIG = {
-            PASSWORD: '208025',
+            PASSWORD: '208019',
             SHEET_URL: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS-DLQLn-selNmHf2J8_Qp8cdOz8_YF0VUAMt1QxxePnK09bCAPDJvJznZndAuxuGr5E4UCQHZwhOkl/pub?output=csv'
         };
 
@@ -725,7 +723,7 @@
             }
         }
 
-        // ==================== START EXAM (ROCKET FAST!) ====================
+        // ==================== START EXAM (NO SHUFFLING) ====================
         function startExam() {
             const subject = document.getElementById('mainSubject').value;
             const subSubject = document.getElementById('subSubject').value;
@@ -733,7 +731,7 @@
 
             if (!subject) { alert('Please select a subject!'); return; }
 
-            // Filter questions - INSTANT!
+            // Filter questions
             currentQuestions = allQuestions.filter(q => {
                 if (q.Subject !== subject) return false;
                 if (subSubject) {
@@ -745,8 +743,9 @@
 
             if (currentQuestions.length === 0) { alert('No questions found!'); return; }
 
-            // Shuffle and limit - INSTANT!
-            currentQuestions = shuffleArray([...currentQuestions]);
+            // ❌ SHUFFLING REMOVED - Questions in original order
+            currentQuestions = [...currentQuestions];
+
             if (count !== 'all' && currentQuestions.length > parseInt(count)) {
                 currentQuestions = currentQuestions.slice(0, parseInt(count));
             }
@@ -806,7 +805,7 @@
                 `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
         }
 
-        // ==================== GET QUESTION TEXT (INSTANT!) ====================
+        // ==================== GET QUESTION TEXT ====================
         function getQuestionText(q, lang) {
             const useEnglish = lang === 'en' && hasEnglishColumns;
 
@@ -822,7 +821,7 @@
             };
         }
 
-        // ==================== RENDER QUESTION (INSTANT!) ====================
+        // ==================== RENDER QUESTION ====================
         function renderQuestion() {
             const q = currentQuestions[currentIndex];
             const lang = document.getElementById('languageSelect').value;
@@ -1092,14 +1091,15 @@
             return array;
         }
 
+        // ==================== RESTART TEST (NO SHUFFLING) ====================
         function restartTest() {
             userAnswers = new Array(currentQuestions.length).fill(null);
             questionStatus = new Array(currentQuestions.length).fill('not-visited');
             currentIndex = 0;
             selectedOption = null;
 
-            // Re-shuffle for new test
-            currentQuestions = shuffleArray([...currentQuestions]);
+            // ❌ SHUFFLING REMOVED - Keep original order
+            currentQuestions = [...currentQuestions];
 
             document.getElementById('resultSection').classList.add('hidden-all');
             document.getElementById('examSection').classList.remove('hidden-all');
