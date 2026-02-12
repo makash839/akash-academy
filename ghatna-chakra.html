@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ghatna Chakra Practice - Akash Academy</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #f3f4f6; overflow: hidden; }
+        .header-top { background: linear-gradient(135deg, #4b6cb7 0%, #182848 100%); }
+        
+        /* Palette Styles */
+        .palette-btn {
+            width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;
+            border-radius: 5px; font-size: 0.9rem; border: 1px solid #d1d5db; cursor: pointer; transition: 0.2s;
+            background: white;
+        }
+        .answered { background-color: #10b981 !important; color: white; border-color: #059669; }
+        .not-answered { background-color: #ef4444 !important; color: white; border-color: #dc2626; }
+        .marked { background-color: #8b5cf6 !important; color: white; border-color: #7c3aed; }
+        .current { border: 3px solid #182848; font-weight: bold; transform: scale(1.1); }
+        
+        .sticky-footer { position: fixed; bottom: 0; width: 100%; background: white; box-shadow: 0 -4px 10px rgba(0,0,0,0.1); z-index: 50; }
+        .main-content { height: calc(100vh - 140px); overflow-y: auto; }
+    </style>
+</head>
+<body class="flex flex-col h-screen">
+
+    <header class="header-top text-white p-4 flex justify-between items-center shadow-lg">
+        <div class="flex items-center gap-3">
+            <div class="bg-white text-[#182848] px-3 py-1 rounded font-black text-xl">GC</div>
+            <div>
+                <h1 class="text-lg font-bold leading-tight">Ghatna Chakra Test Series</h1>
+                <p class="text-xs opacity-75">Subject: General Studies (History)</p>
+            </div>
+        </div>
+        <div class="bg-black/20 px-4 py-2 rounded-lg border border-white/20">
+            <span class="text-xs block uppercase opacity-70">Time Remaining</span>
+            <span id="timer" class="font-mono text-xl font-bold text-yellow-300">60:00</span>
+        </div>
+    </header>
+
+    <div class="flex flex-grow overflow-hidden">
+        <main class="flex-grow main-content p-6 bg-white">
+            <div class="max-w-4xl mx-auto">
+                <div class="flex justify-between items-center mb-6 border-b pb-4">
+                    <span class="text-xl font-bold text-gray-700">Question <span id="q-num-display">1</span></span>
+                    <div class="flex gap-4 text-sm font-semibold">
+                        <span class="text-green-600">Correct: +2.0</span>
+                        <span class="text-red-500">Wrong: -0.66</span>
+                    </div>
+                </div>
+
+                <div id="question-container" class="mb-8">
+                    <p id="question-text" class="text-2xl text-gray-800 mb-8 font-medium leading-snug">
+                        लोडिंग...
+                    </p>
+
+                    <div id="options-container" class="grid grid-cols-1 gap-4">
+                        </div>
+                </div>
+            </div>
+        </main>
+
+        <aside class="w-80 bg-gray-50 border-l border-gray-200 p-5 hidden md:block overflow-y-auto">
+            <div class="flex items-center gap-3 mb-8 p-3 bg-white rounded-xl shadow-sm border border-gray-100">
+                <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center text-[#182848]">
+                    <i class="fas fa-user-graduate text-xl"></i>
+                </div>
+                <div>
+                    <p class="text-xs text-gray-400 font-bold uppercase">Candidate</p>
+                    <p class="text-sm font-bold text-gray-800">Akash Student</p>
+                </div>
+            </div>
+
+            <h3 class="text-xs font-black text-gray-400 uppercase tracking-widest mb-4">Question Palette</h3>
+            <div class="grid grid-cols-5 gap-3 mb-8" id="palette-container">
+                </div>
+
+            <div class="border-t pt-4 space-y-3">
+                <div class="flex items-center gap-3 text-xs font-bold text-gray-600">
+                    <span class="palette-btn answered scale-75"></span> Answered
+                </div>
+                <div class="flex items-center gap-3 text-xs font-bold text-gray-600">
+                    <span class="palette-btn not-answered scale-75"></span> Not Answered
+                </div>
+                <div class="flex items-center gap-3 text-xs font-bold text-gray-600">
+                    <span class="palette-btn marked scale-75"></span> Marked for Review
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <footer class="sticky-footer p-4 flex justify-between items-center bg-white border-t">
+        <div class="flex gap-3">
+            <button onclick="markForReview()" class="px-5 py-2.5 border-2 border-purple-600 text-purple-700 rounded-lg font-bold hover:bg-purple-50 transition">Mark for Review</button>
+            <button onclick="clearResponse()" class="px-5 py-2.5 border-2 border-gray-300 text-gray-600 rounded-lg font-bold hover:bg-gray-100 transition">Clear Response</button>
+        </div>
+        <div class="flex gap-3">
+            <button onclick="prevQuestion()" class="px-6 py-2.5 bg-gray-700 text-white rounded-lg font-bold hover:bg-gray-800 shadow-md">Previous</button>
+            <button onclick="nextQuestion()" class="px-8 py-2.5 bg-blue-700 text-white rounded-lg font-bold hover:bg-blue-800 shadow-md">Save & Next</button>
+            <button onclick="submitExam()" class="px-8 py-2.5 bg-green-600 text-white rounded-lg font-bold hover:bg-green-700 shadow-md">Submit Test</button>
+        </div>
+    </footer>
+
+    <script>
+        // --- 1. QUESTIONS DATA (यहाँ प्रश्न जोड़ें) ---
+        const questions = [
+            {
+                q: "सिंधु घाटी सभ्यता का कौन सा स्थल भारत में स्थित है?",
+                options: ["हड़प्पा", "मोहनजोदड़ो", "लोथल", "कोटदीजी"],
+                correct: 2
+            },
+            {
+                q: "पुराणों की कुल संख्या कितनी है?",
+                options: ["12", "16", "18", "20"],
+                correct: 2
+            },
+            {
+                q: "गौतम बुद्ध ने अपना प्रथम उपदेश कहाँ दिया था?",
+                options: ["बोधगया", "लुम्बिनी", "सारनाथ", "कुशीनगर"],
+                correct: 2
+            },
+            {
+                q: "कलिंग युद्ध किस वर्ष हुआ था?",
+                options: ["261 ई.पू.", "263 ई.पू.", "232 ई.पू.", "240 ई.पू."],
+                correct: 0
+            }
+        ];
+
+        let currentIndex = 0;
+        let userAnswers = new Array(questions.length).fill(null);
+        let questionStatus = new Array(questions.length).fill('not-visited'); // answered, marked, not-answered
+
+        // --- 2. INITIALIZE ---
+        function init() {
+            renderPalette();
+            loadQuestion(0);
+            startTimer(3600);
+        }
+
+        // --- 3. LOAD QUESTION ---
+        function loadQuestion(index) {
+            currentIndex = index;
+            document.getElementById('q-num-display').innerText = index + 1;
+            document.getElementById('question-text').innerText = questions[index].q;
+            
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+
+            questions[index].options.forEach((opt, i) => {
+                const isChecked = userAnswers[index] === i ? 'checked' : '';
+                optionsContainer.innerHTML += `
+                    <label class="flex items-center p-4 border-2 rounded-xl cursor-pointer hover:border-blue-500 transition ${userAnswers[index] === i ? 'border-blue-500 bg-blue-50' : 'border-gray-200'}">
+                        <input type="radio" name="option" value="${i}" ${isChecked} onchange="selectOption(${i})" class="w-5 h-5 text-blue-600">
+                        <span class="ml-4 text-lg text-gray-700 font-medium">${opt}</span>
+                    </label>
+                `;
+            });
+
+            updatePaletteUI();
+        }
+
+        // --- 4. CONTROLS ---
+        function selectOption(optIndex) {
+            userAnswers[currentIndex] = optIndex;
+            questionStatus[currentIndex] = 'answered';
+            loadQuestion(currentIndex); // Refresh UI to show highlight
+        }
+
+        function nextQuestion() {
+            if (questionStatus[currentIndex] === 'not-visited') questionStatus[currentIndex] = 'not-answered';
+            if (currentIndex < questions.length - 1) {
+                loadQuestion(currentIndex + 1);
+            }
+        }
+
+        function prevQuestion() {
+            if (currentIndex > 0) {
+                loadQuestion(currentIndex - 1);
+            }
+        }
+
+        function markForReview() {
+            questionStatus[currentIndex] = 'marked';
+            updatePaletteUI();
+            nextQuestion();
+        }
+
+        function clearResponse() {
+            userAnswers[currentIndex] = null;
+            questionStatus[currentIndex] = 'not-answered';
+            loadQuestion(currentIndex);
+        }
+
+        // --- 5. PALETTE LOGIC ---
+        function renderPalette() {
+            const container = document.getElementById('palette-container');
+            container.innerHTML = '';
+            questions.forEach((_, i) => {
+                container.innerHTML += `<div id="p-btn-${i}" onclick="loadQuestion(${i})" class="palette-btn">${i + 1}</div>`;
+            });
+        }
+
+        function updatePaletteUI() {
+            questions.forEach((_, i) => {
+                const btn = document.getElementById(`p-btn-${i}`);
+                btn.className = 'palette-btn'; // Reset
+                if (i === currentIndex) btn.classList.add('current');
+                if (questionStatus[i] === 'answered') btn.classList.add('answered');
+                if (questionStatus[i] === 'marked') btn.classList.add('marked');
+                if (questionStatus[i] === 'not-answered') btn.classList.add('not-answered');
+            });
+        }
+
+        // --- 6. TIMER ---
+        function startTimer(duration) {
+            let timer = duration, minutes, seconds;
+            const display = document.getElementById('timer');
+            setInterval(() => {
+                minutes = parseInt(timer / 60, 10);
+                seconds = parseInt(timer % 60, 10);
+                display.textContent = (minutes < 10 ? "0" + minutes : minutes) + ":" + (seconds < 10 ? "0" + seconds : seconds);
+                if (--timer < 0) timer = 0;
+            }, 1000);
+        }
+
+        function submitExam() {
+            if(confirm("क्या आप वाकई टेस्ट सबमिट करना चाहते हैं?")) {
+                alert("Test Submitted Successfully! Your Score: Processing...");
+                window.location.href = 'index.html'; // वापस होम पेज पर
+            }
+        }
+
+        window.onload = init;
+    </script>
+</body>
+</html>
