@@ -12,14 +12,12 @@
         body { font-family: 'Segoe UI', Arial, sans-serif; }
         .hidden-all { display: none !important; }
 
-        /* NTA Colors */
         .nta-blue { background-color: #003366; }
         .nta-orange { background-color: #FF9933; }
         .nta-green { background-color: #28a745; }
         .nta-purple { background-color: #6f42c1; }
         .nta-red { background-color: #dc3545; }
 
-        /* Password Page */
         .password-container {
             background: linear-gradient(135deg, #003366 0%, #004080 50%, #0059b3 100%);
             min-height: 100vh;
@@ -92,7 +90,6 @@
             cursor: pointer;
         }
 
-        /* Palette Buttons */
         .palette-btn {
             width: 40px;
             height: 40px;
@@ -128,7 +125,6 @@
             transform: scale(1.15);
         }
 
-        /* Options */
         .option-label {
             display: flex;
             align-items: center;
@@ -163,7 +159,6 @@
             color: white;
         }
 
-        /* Timer */
         .timer-box {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
@@ -173,7 +168,6 @@
             font-weight: bold;
         }
 
-        /* Buttons */
         .btn-nta {
             padding: 10px 20px;
             border: none;
@@ -189,7 +183,6 @@
         .btn-submit { background: #dc3545; color: white; }
         .btn-proceed { background: #003366; color: white; padding: 12px 40px; font-size: 1.1rem; }
 
-        /* Loading */
         .loading-spinner {
             width: 60px;
             height: 60px;
@@ -203,7 +196,6 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* Images */
         .question-image {
             max-width: 100%;
             max-height: 400px;
@@ -212,33 +204,68 @@
             margin: 15px auto;
             display: block;
         }
-        .image-error {
-            background: #fee2e2;
-            color: #dc2626;
-            padding: 15px;
-            border-radius: 8px;
-            text-align: center;
-        }
 
-        /* List Matching */
-        .list-matching-container {
+        /* LIST MATCHING STYLES - ENHANCED */
+        .list-matching-wrapper {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border: 2px solid #003366;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        .list-matching-title {
+            text-align: center;
+            color: #003366;
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #003366;
+            padding-bottom: 10px;
+        }
+        .list-matching-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 20px;
-            margin-bottom: 20px;
         }
-        .list-column {
-            background: #f8f9fa;
-            padding: 15px;
+        @media (max-width: 768px) {
+            .list-matching-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+        }
+        .list-box {
+            background: white;
+            border: 2px solid #cbd5e1;
             border-radius: 8px;
-            border: 2px solid #dee2e6;
+            padding: 15px;
         }
-        .list-item {
+        .list-box-header {
+            background: #003366;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 12px;
+            font-size: 1.1rem;
+        }
+        .list-box-item {
             padding: 10px;
             margin-bottom: 8px;
-            background: white;
+            background: #f1f5f9;
             border-radius: 6px;
-            border-left: 4px solid #003366;
+            border-left: 4px solid #FF9933;
+            font-size: 0.95rem;
+            line-height: 1.4;
+        }
+        .list-box-item:last-child {
+            margin-bottom: 0;
+        }
+        .list-key {
+            font-weight: bold;
+            color: #003366;
+            margin-right: 5px;
         }
     </style>
 </head>
@@ -409,6 +436,7 @@
                 <div class="flex-1 bg-white rounded-lg shadow p-6">
                     <h3 class="text-lg font-bold mb-4">Question <span id="qNumber">1</span>:</h3>
                     <div id="questionText" class="text-gray-800 mb-6 text-lg leading-relaxed"></div>
+                    <div id="listMatchingContainer"></div>
                     <div id="optionsContainer" class="space-y-3"></div>
 
                     <div class="mt-8 flex flex-wrap gap-3">
@@ -546,16 +574,16 @@
                     if (results.data && results.data.length > 0) {
                         allQuestions = results.data.filter(q => q.Question && q.Question.trim() !== '');
                         
-                        hasEnglishColumns = allQuestions.length > 0 && (
-                            'English_Question' in allQuestions[0] || 
-                            'English Question' in allQuestions[0]
-                        );
+                        if (allQuestions.length > 0) {
+                            const keys = Object.keys(allQuestions[0]);
+                            // Check if List columns exist (just check column names, not data)
+                            hasListColumns = keys.includes('List1_A') && keys.includes('List2_1');
+                            hasEnglishColumns = keys.includes('English_Question') || keys.includes('English Question');
+                            
+                            console.log('Sheet columns found:', keys);
+                            console.log('Has List Columns:', hasListColumns);
+                        }
                         
-                        hasListColumns = allQuestions.length > 0 && (
-                            'List1_A' in allQuestions[0] || 
-                            'List1A' in allQuestions[0]
-                        );
-
                         populateSubjects();
                         document.getElementById('loadingSection').classList.add('hidden-all');
                         document.getElementById('subjectSection').classList.remove('hidden-all');
@@ -597,23 +625,23 @@
 
         // ==================== QUESTION TYPE DETECTION ====================
         function getQuestionType(q) {
+            if (!hasListColumns) return 'regular';
+            
             const questionText = (q.Question || '').toLowerCase();
             
-            // Check for explicit matching keywords
-            const isMatchingQuestion = 
+            // Check for matching keywords
+            const hasMatchingKeywords = 
                 questionText.includes('मिलान') || 
                 questionText.includes('सुमेलित') ||
+                questionText.includes('सूची') ||
                 questionText.includes('match') ||
                 questionText.includes('matching');
             
-            // Check if List columns have data
-            const hasListData = hasListColumns && (q.List1_A || q.List1A);
+            // Check if THIS specific question has list data
+            const hasListData = (q.List1_A && q.List1_A.trim() !== '') || 
+                               (q.List1_B && q.List1_B.trim() !== '');
             
-            // Only treat as list-matching if BOTH conditions are true
-            if (isMatchingQuestion && hasListData) {
-                return 'list-matching';
-            }
-            return 'regular';
+            return (hasMatchingKeywords && hasListData) ? 'list-matching' : 'regular';
         }
 
         // ==================== GET LIST DATA ====================
@@ -621,32 +649,17 @@
             const list1 = [];
             const list2 = [];
             
-            const prefixes1 = ['List1_', 'List1'];
-            const prefixes2 = ['List2_', 'List2'];
-            const letters = ['A', 'B', 'C', 'D'];
-            const numbers = ['1', '2', '3', '4'];
+            // List 1: A, B, C, D
+            if (q.List1_A && q.List1_A.trim() !== '') list1.push({ key: 'A', text: q.List1_A.trim() });
+            if (q.List1_B && q.List1_B.trim() !== '') list1.push({ key: 'B', text: q.List1_B.trim() });
+            if (q.List1_C && q.List1_C.trim() !== '') list1.push({ key: 'C', text: q.List1_C.trim() });
+            if (q.List1_D && q.List1_D.trim() !== '') list1.push({ key: 'D', text: q.List1_D.trim() });
             
-            letters.forEach(letter => {
-                let value = null;
-                for (let prefix of prefixes1) {
-                    if (q[prefix + letter] && q[prefix + letter].trim() !== '') {
-                        value = q[prefix + letter];
-                        break;
-                    }
-                }
-                if (value) list1.push({ key: letter, text: value });
-            });
-            
-            numbers.forEach(num => {
-                let value = null;
-                for (let prefix of prefixes2) {
-                    if (q[prefix + num] && q[prefix + num].trim() !== '') {
-                        value = q[prefix + num];
-                        break;
-                    }
-                }
-                if (value) list2.push({ key: num, text: value });
-            });
+            // List 2: 1, 2, 3, 4
+            if (q.List2_1 && q.List2_1.trim() !== '') list2.push({ key: '1', text: q.List2_1.trim() });
+            if (q.List2_2 && q.List2_2.trim() !== '') list2.push({ key: '2', text: q.List2_2.trim() });
+            if (q.List2_3 && q.List2_3.trim() !== '') list2.push({ key: '3', text: q.List2_3.trim() });
+            if (q.List2_4 && q.List2_4.trim() !== '') list2.push({ key: '4', text: q.List2_4.trim() });
             
             return { list1, list2 };
         }
@@ -659,44 +672,24 @@
             
             optionKeys.forEach(key => {
                 let optionText = null;
-                
                 if (useEnglish) {
-                    optionText = q[`English_Option_${key}`] || 
-                                q[`English Option ${key}`] || 
-                                q[`Option ${key}`] || 
-                                q[`Option${key}`] || 
-                                q[key];
+                    optionText = q[`English_Option_${key}`] || q[`English Option ${key}`] || q[`Option ${key}`] || q[`Option${key}`] || q[key];
                 } else {
-                    optionText = q[`Option ${key}`] || 
-                                q[`Option${key}`] || 
-                                q[key];
+                    optionText = q[`Option ${key}`] || q[`Option${key}`] || q[key];
                 }
                 
                 if (optionText && optionText.toString().trim() !== '') {
-                    options.push({
-                        key: key,
-                        text: optionText.toString().trim(),
-                        index: options.length + 1
-                    });
+                    options.push({ key: key, text: optionText.toString().trim(), index: options.length + 1 });
                 }
             });
-            
             return options;
         }
 
         // ==================== GET CORRECT ANSWER ====================
         function getCorrectAnswerIndex(q, availableOptions) {
             const correctAns = (q.Answer || '').toString().trim();
-            
-            // Remove brackets and convert to uppercase: (a) -> A, (b) -> B
             const cleanAns = correctAns.replace(/[()]/g, '').toUpperCase();
-            
-            // Find matching option
-            const correctOption = availableOptions.find(opt => 
-                opt.key === cleanAns || 
-                opt.index.toString() === cleanAns
-            );
-            
+            const correctOption = availableOptions.find(opt => opt.key === cleanAns || opt.index.toString() === cleanAns);
             return correctOption ? correctOption.index.toString() : cleanAns;
         }
 
@@ -718,7 +711,6 @@
             });
 
             if (currentQuestions.length === 0) { alert('No questions found!'); return; }
-
             if (count !== 'all' && currentQuestions.length > parseInt(count)) {
                 currentQuestions = currentQuestions.slice(0, parseInt(count));
             }
@@ -745,10 +737,8 @@
                 alert('Please accept the declaration!');
                 return;
             }
-
             document.getElementById('instructionSection').classList.add('hidden-all');
             document.getElementById('examSection').classList.remove('hidden-all');
-
             timeRemaining = currentQuestions.length * 60;
             startTimer();
             renderQuestion();
@@ -784,75 +774,89 @@
             const qType = getQuestionType(q);
             
             document.getElementById('qNumber').textContent = currentIndex + 1;
-            
             if (questionStatus[currentIndex] === 'not-visited') {
                 questionStatus[currentIndex] = 'not-answered';
             }
 
-            // Parse images from question
-            let questionText = q.Question;
+            let questionText = q.Question || '';
             const images = [];
             const imageRegex = /\[IMAGE:(.*?)\]/g;
             let match;
             
-            while ((match = imageRegex.exec(q.Question)) !== null) {
+            while ((match = imageRegex.exec(questionText)) !== null) {
                 images.push(match[1]);
             }
-            
             questionText = questionText.replace(/\[IMAGE:.*?\]/g, '').trim();
 
-            // Build question HTML
             let fullHtml = `<div class="mb-4">${questionText}</div>`;
             
-            // Add images if found
             if (images.length > 0) {
                 images.forEach((imgUrl, idx) => {
                     fullHtml += `
                         <div class="my-4 text-center">
-                            <img src="${imgUrl}" alt="Question Image ${idx + 1}" 
-                                 class="question-image"
-                                 onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'image-error\'><i class=\'fas fa-exclamation-triangle\'></i><br>Image load nahi hui<br><small>${imgUrl}</small></div>';">
-                        </div>
-                    `;
+                            <img src="${imgUrl}" alt="Question Image ${idx + 1}" class="question-image"
+                                 onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'image-error\'>Image not loaded</div>';">
+                        </div>`;
                 });
-            }
-
-            // Add list matching display if applicable
-            if (qType === 'list-matching') {
-                const { list1, list2 } = getListData(q);
-                if (list1.length > 0 && list2.length > 0) {
-                    fullHtml += `
-                        <div class="list-matching-container">
-                            <div class="list-column">
-                                <h4 class="font-bold mb-3 text-gray-700">सूची-I</h4>
-                                ${list1.map(item => `<div class="list-item"><strong>${item.key}.</strong> ${item.text}</div>`).join('')}
-                            </div>
-                            <div class="list-column">
-                                <h4 class="font-bold mb-3 text-gray-700">सूची-II</h4>
-                                ${list2.map(item => `<div class="list-item"><strong>${item.key}.</strong> ${item.text}</div>`).join('')}
-                            </div>
-                        </div>
-                    `;
-                }
             }
 
             document.getElementById('questionText').innerHTML = fullHtml;
 
+            // Handle List Matching Display
+            const listContainer = document.getElementById('listMatchingContainer');
+            listContainer.innerHTML = '';
+            
+            if (qType === 'list-matching') {
+                const { list1, list2 } = getListData(q);
+                
+                if (list1.length > 0 || list2.length > 0) {
+                    let listHtml = '<div class="list-matching-wrapper">';
+                    listHtml += '<div class="list-matching-title">सूचियों का मिलान करें</div>';
+                    listHtml += '<div class="list-matching-grid">';
+                    
+                    listHtml += '<div class="list-box">';
+                    listHtml += '<div class="list-box-header">सूची - I</div>';
+                    if (list1.length > 0) {
+                        list1.forEach(item => {
+                            listHtml += `<div class="list-box-item"><span class="list-key">${item.key}.</span>${item.text}</div>`;
+                        });
+                    } else {
+                        listHtml += '<div class="list-box-item" style="color:#999">No data</div>';
+                    }
+                    listHtml += '</div>';
+                    
+                    listHtml += '<div class="list-box">';
+                    listHtml += '<div class="list-box-header">सूची - II</div>';
+                    if (list2.length > 0) {
+                        list2.forEach(item => {
+                            listHtml += `<div class="list-box-item"><span class="list-key">${item.key}.</span>${item.text}</div>`;
+                        });
+                    } else {
+                        listHtml += '<div class="list-box-item" style="color:#999">No data</div>';
+                    }
+                    listHtml += '</div>';
+                    
+                    listHtml += '</div></div>';
+                    listContainer.innerHTML = listHtml;
+                }
+            }
+
             // Render options
             const optionsDiv = document.getElementById('optionsContainer');
             optionsDiv.innerHTML = '';
-            
             const availableOptions = getAvailableOptions(q, lang);
+
+            if (availableOptions.length === 0) {
+                optionsDiv.innerHTML = '<div class="text-red-500">No options found!</div>';
+                return;
+            }
 
             availableOptions.forEach((opt) => {
                 const label = document.createElement('label');
                 label.className = 'option-label';
-                
                 const userAnswerNum = userAnswers[currentIndex];
                 const isSelected = userAnswerNum && parseInt(userAnswerNum) === opt.index;
-                
                 if (isSelected) label.classList.add('selected');
-                
                 label.onclick = () => selectOption(opt.index.toString(), availableOptions.length);
 
                 label.innerHTML = `
@@ -883,14 +887,12 @@
                 const btn = document.createElement('button');
                 btn.className = 'palette-btn';
                 btn.textContent = i + 1;
-
                 let statusClass = 'palette-not-visited';
                 if (questionStatus[i] === 'not-answered') statusClass = 'palette-not-answered';
                 else if (questionStatus[i] === 'answered') statusClass = 'palette-answered';
                 else if (questionStatus[i] === 'marked') statusClass = 'palette-marked';
                 else if (questionStatus[i] === 'answered-marked') statusClass = 'palette-answered-marked';
                 btn.classList.add(statusClass);
-
                 if (i === currentIndex) btn.classList.add('palette-current');
                 btn.onclick = () => { currentIndex = i; renderQuestion(); };
                 palette.appendChild(btn);
@@ -900,11 +902,11 @@
         function updateStats() {
             document.getElementById('statNotVisited').textContent = questionStatus.filter(s => s === 'not-visited').length;
             document.getElementById('statNotAnswered').textContent = questionStatus.filter(s => s === 'not-answered').length;
-            document.getElementById('statAnswered').textContent = questionStatus.filter(s => s === 'answered').length;
-            document.getElementById('statMarked').textContent = questionStatus.filter(s => s === 'marked').length;
+            document.getElementById('statAnswered').textContent = questionStatus.filter(s => s === 'answered' || s === 'answered-marked').length;
+            document.getElementById('statMarked').textContent = questionStatus.filter(s => s === 'marked' || s === 'answered-marked').length;
         }
 
-        // ==================== BUTTONS ====================
+        // ==================== NAVIGATION ====================
         function saveAndNext() {
             if (selectedOption) {
                 userAnswers[currentIndex] = selectedOption;
@@ -951,7 +953,7 @@
             const stats = {
                 answered: questionStatus.filter(s => s === 'answered' || s === 'answered-marked').length,
                 notAnswered: questionStatus.filter(s => s === 'not-answered').length,
-                marked: questionStatus.filter(s => s === 'marked').length,
+                marked: questionStatus.filter(s => s === 'marked' || s === 'answered-marked').length,
                 notVisited: questionStatus.filter(s => s === 'not-visited').length
             };
 
@@ -962,7 +964,6 @@
                 <tr class="border-b"><td class="p-2">Not Visited</td><td class="p-2 text-center font-bold">${stats.notVisited}</td></tr>
                 <tr class="bg-gray-100 font-bold"><td class="p-2">Total</td><td class="p-2 text-center">${currentQuestions.length}</td></tr>
             `;
-
             document.getElementById('submitModal').classList.remove('hidden-all');
         }
 
@@ -985,25 +986,18 @@
             const wrongQuestions = [];
             const correctQuestions = [];
             const skippedQuestions = [];
-
             const lang = document.getElementById('languageSelect').value;
 
             currentQuestions.forEach((q, i) => {
                 const userAns = userAnswers[i];
                 const availableOptions = getAvailableOptions(q, lang);
                 const correctNum = getCorrectAnswerIndex(q, availableOptions);
-                
                 const qType = getQuestionType(q);
                 const explanation = q.Explanation || 'कोई व्याख्या नहीं।';
                 
-                let optionsMap = {};
-                availableOptions.forEach(opt => {
-                    optionsMap[opt.key] = opt.text;
-                });
-
                 const result = {
                     index: i + 1,
-                    question: q.Question.replace(/\[IMAGE:.*?\]/g, ''),
+                    question: (q.Question || '').replace(/\[IMAGE:.*?\]/g, ''),
                     userAnswer: userAns,
                     correctAnswer: correctNum,
                     correctLetter: availableOptions.find(opt => opt.index.toString() === correctNum)?.key || correctNum,
@@ -1027,7 +1021,6 @@
             });
 
             const score = correct - (wrong * 0.25);
-
             document.getElementById('resTotal').textContent = currentQuestions.length;
             document.getElementById('resCorrect').textContent = correct;
             document.getElementById('resWrong').textContent = wrong;
@@ -1047,15 +1040,10 @@
             }
 
             container.innerHTML = questions.map(q => {
-                let userOpt = '-';
-                let userText = 'Not attempted';
-                
+                let userOpt = '-', userText = 'Not attempted';
                 if (q.userAnswer) {
                     const userOption = q.availableOptions.find(opt => opt.index.toString() === q.userAnswer);
-                    if (userOption) {
-                        userOpt = userOption.key;
-                        userText = userOption.text;
-                    }
+                    if (userOption) { userOpt = userOption.key; userText = userOption.text; }
                 }
 
                 let statusHtml = '';
@@ -1064,17 +1052,16 @@
                 else statusHtml = `<span class="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm font-bold">प्रयास नहीं</span>`;
 
                 let questionDisplay = q.question;
-                if (q.questionType === 'list-matching' && q.listData) {
+                if (q.questionType === 'list-matching' && q.listData && (q.listData.list1.length > 0 || q.listData.list2.length > 0)) {
                     questionDisplay += `
-                        <div class="mt-3 grid grid-cols-2 gap-4 text-sm">
-                            <div class="bg-gray-50 p-3 rounded"><strong>सूची-I:</strong><br>${q.listData.list1.map(i => `${i.key}. ${i.text}`).join('<br>')}</div>
-                            <div class="bg-gray-50 p-3 rounded"><strong>सूची-II:</strong><br>${q.listData.list2.map(i => `${i.key}. ${i.text}`).join('<br>')}</div>
-                        </div>
-                    `;
+                        <div class="mt-3 grid md:grid-cols-2 gap-4 text-sm bg-gray-50 p-3 rounded border">
+                            <div><strong class="text-blue-700">सूची-I:</strong><br>${q.listData.list1.map(i => `<span class="text-gray-700">${i.key}. ${i.text}</span>`).join('<br>') || 'No data'}</div>
+                            <div><strong class="text-blue-700">सूची-II:</strong><br>${q.listData.list2.map(i => `<span class="text-gray-700">${i.key}. ${i.text}</span>`).join('<br>') || 'No data'}</div>
+                        </div>`;
                 }
 
                 return `
-                    <div class="bg-white rounded-lg shadow p-4">
+                    <div class="bg-white rounded-lg shadow p-4 border-l-4 ${type === 'wrong' ? 'border-red-500' : type === 'correct' ? 'border-green-500' : 'border-gray-400'}">
                         <div class="flex items-center justify-between mb-3">
                             <h4 class="font-bold text-gray-800">प्रश्न ${q.index}</h4>
                             ${statusHtml}
@@ -1089,38 +1076,27 @@
                             <div class="bg-red-50 p-2 rounded border border-red-200">
                                 <span class="font-semibold text-red-700">आपका उत्तर: ${userOpt}</span>
                                 <p class="text-gray-600">${userText}</p>
-                            </div>
-                            ` : ''}
+                            </div>` : ''}
                         </div>
                         <div class="bg-blue-50 p-3 rounded-lg">
                             <p class="font-semibold text-blue-700 mb-1"><i class="fas fa-lightbulb mr-2"></i>व्याख्या:</p>
                             <p class="text-gray-700 text-sm">${q.explanation}</p>
                         </div>
-                    </div>
-                `;
+                    </div>`;
             }).join('');
         }
 
-        // ==================== RESTART ====================
         function restartTest() {
             userAnswers = new Array(currentQuestions.length).fill(null);
             questionStatus = new Array(currentQuestions.length).fill('not-visited');
-            currentIndex = 0;
-            selectedOption = null;
-
+            currentIndex = 0; selectedOption = null;
             document.getElementById('resultSection').classList.add('hidden-all');
             document.getElementById('examSection').classList.remove('hidden-all');
-
             timeRemaining = currentQuestions.length * 60;
-            startTimer();
-            renderQuestion();
-            renderPalette();
-            updateStats();
+            startTimer(); renderQuestion(); renderPalette(); updateStats();
         }
 
-        function newTest() {
-            location.reload();
-        }
+        function newTest() { location.reload(); }
     </script>
 </body>
 </html>
