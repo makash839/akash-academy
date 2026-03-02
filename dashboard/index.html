@@ -386,7 +386,7 @@
             color: var(--text-muted);
         }
 
-        /* ARS Dashboard - YEH RAHA! */
+        /* ARS Dashboard */
         .ars-dashboard {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -923,7 +923,7 @@
         
         <div class="welcome">
             <h1 id="welcomeText">Welcome! 👋</h1>
-            <p>AI Course Prediction + ARS Revision System - Everything Automatic!</p>
+            <p>AI-powered course completion predictor with automatic ARS revisions</p>
         </div>
 
         <!-- Stats Grid -->
@@ -1011,8 +1011,8 @@
             <strong>👋 Get Started:</strong> Add subjects and topics, then finish them. The AI will automatically learn your study speed and predict course completion!
         </div>
 
-        <!-- ARS Dashboard - YEH RAHA COMPLETE! -->
-        <div class="ars-dashboard" id="arsDashboard">
+        <!-- ARS Dashboard -->
+        <div class="ars-dashboard" id="arsDashboard" style="display: none;">
             <div class="ars-section today">
                 <div class="ars-header">
                     <div class="ars-title">
@@ -1024,9 +1024,7 @@
                 <div class="info-box" style="background: rgba(239, 68, 68, 0.1); border-color: var(--danger);">
                     Complete these now to maintain memory!
                 </div>
-                <div class="ars-list" id="todayList">
-                    <div class="empty-ars">No revisions due today. Great job!</div>
-                </div>
+                <div class="ars-list" id="todayList"></div>
             </div>
 
             <div class="ars-section upcoming">
@@ -1040,9 +1038,7 @@
                 <div class="info-box">
                     Next 7 days schedule
                 </div>
-                <div class="ars-list" id="upcomingList">
-                    <div class="empty-ars">No upcoming revisions.</div>
-                </div>
+                <div class="ars-list" id="upcomingList"></div>
             </div>
         </div>
 
@@ -1077,7 +1073,7 @@
         let data = { 
             subjects: [], 
             revisions: [],
-            completions: []
+            completions: [] // {topicId, subjectId, subjectName, topicName, finishedAt, dateString}
         };
         let modalCb = null;
 
@@ -1133,12 +1129,12 @@
 
         // Data Management
         function loadLocal() {
-            const saved = localStorage.getItem('aa_complete_v2');
+            const saved = localStorage.getItem('aa_complete_v1');
             if (saved) data = JSON.parse(saved);
         }
 
         function saveLocal() {
-            localStorage.setItem('aa_complete_v2', JSON.stringify(data));
+            localStorage.setItem('aa_complete_v1', JSON.stringify(data));
         }
 
         async function loadCloud(uid) {
@@ -1175,6 +1171,7 @@
             
             if (totalTopics === 0) return null;
             
+            // Calculate speed from completions
             const completions = data.completions || [];
             const studyDays = new Set(completions.map(c => c.dateString)).size;
             
@@ -1201,6 +1198,7 @@
                     return { name: s.name, done: true, total: subTotal, doneCount: subDone };
                 }
                 
+                // Subject-specific speed
                 const subCompletions = completions.filter(c => c.subjectId === s.id);
                 const subDays = new Set(subCompletions.map(c => c.dateString)).size;
                 const subSpeed = subDays > 0 ? subDone / subDays : avgTopicsPerDay;
@@ -1245,12 +1243,12 @@
             };
         }
 
-        // ARS Logic - YEH RAHA COMPLETE!
+        // ARS Logic
         function scheduleRevisions(subject, topic, finishDate) {
-            // Remove existing revisions for this topic
+            // Remove existing
             data.revisions = data.revisions.filter(r => !(r.subject === subject && r.topic === topic));
             
-            // Schedule new cycle: 1, 3, 7, 14, 30 days
+            // Schedule new cycle
             ARS_INTERVALS.forEach((days, i) => {
                 const revDate = new Date(finishDate);
                 revDate.setDate(revDate.getDate() + days);
@@ -1321,7 +1319,7 @@
             topic.done = true;
             topic.finishedAt = finishDate.toISOString();
             
-            // Record for AI
+            // Record completion for AI
             if (!data.completions) data.completions = [];
             data.completions.push({
                 topicId: `${sid}-${idx}`,
@@ -1332,12 +1330,12 @@
                 dateString: dateString
             });
             
-            // Schedule ARS revisions
+            // Schedule ARS
             scheduleRevisions(subject.name, topic.title, dateString);
             
             saveCloud();
             updateUI();
-            showToast(`🎉 ${topic.title} done! ARS scheduled.`, 'success');
+            showToast(`🎉 ${topic.title} done! AI updated.`, 'success');
         }
 
         function resetTopic(sid, idx) {
@@ -1435,7 +1433,7 @@
             updateUI();
         }
 
-        // UI Update - COMPLETE WITH ARS!
+        // UI Update
         function updateUI() {
             const pred = calculatePrediction();
             const todayRevs = getTodayRevisions();
@@ -1462,13 +1460,17 @@
                     document.getElementById('predictionBox').style.display = 'block';
                     
                     if (pred) {
+                        // Main predictions
                         if (pred.pendingTopics === 0) {
                             document.getElementById('predDays').textContent = '✓';
+                            document.getElementById('predDays').style.color = 'var(--success)';
                             document.getElementById('predDate').textContent = 'Course Complete!';
                             document.getElementById('predPending').textContent = '0';
                             document.getElementById('predSpeed').textContent = 'Great job!';
                         } else {
                             document.getElementById('predDays').textContent = pred.daysNeeded || '--';
+                            document.getElementById('predDays').style.color = 'var(--success)';
+                            
                             const dateStr = pred.completionDate ? 
                                 pred.completionDate.toLocaleDateString('en-IN', {
                                     weekday: 'short',
@@ -1476,15 +1478,18 @@
                                     month: 'long',
                                     day: 'numeric'
                                 }) : 'Keep studying!';
+                            
                             document.getElementById('predDate').textContent = dateStr;
                             document.getElementById('predPending').textContent = pred.pendingTopics;
                             document.getElementById('predSpeed').textContent = `Speed: ${pred.avgTopicsPerDay} topics/day`;
                         }
                         
+                        // Speed stats
                         document.getElementById('speedTopics').textContent = pred.doneTopics;
                         document.getElementById('speedDays').textContent = pred.studyDays;
                         document.getElementById('speedRate').textContent = pred.avgTopicsPerDay;
                         
+                        // Trend
                         const trendEl = document.getElementById('trendText');
                         if (pred.trend === 'up') {
                             trendEl.className = 'trend-indicator trend-up';
@@ -1497,6 +1502,7 @@
                             trendEl.textContent = '📊 Consistent speed. Keep it up!';
                         }
                         
+                        // Subject predictions
                         if (pred.subjectPreds && pred.subjectPreds.length > 0) {
                             document.getElementById('subjectPredictions').style.display = 'block';
                             
@@ -1546,6 +1552,7 @@
                         }
                     }
                 } else {
+                    // Not enough data yet
                     document.getElementById('predictionBox').style.display = 'none';
                     document.getElementById('startMessage').style.display = 'block';
                     document.getElementById('startMessage').innerHTML = 
@@ -1556,82 +1563,88 @@
                 document.getElementById('startMessage').style.display = 'block';
             }
             
-            // ARS Dashboard - YEH RAHA COMPLETE!
-            document.getElementById('todayCount').textContent = todayRevs.length;
-            
-            if (todayRevs.length > 0) {
-                document.getElementById('todayList').innerHTML = todayRevs.map(r => `
-                    <div class="ars-item today">
-                        <div class="ars-info">
-                            <h4>${r.topic}</h4>
-                            <p>${r.subject}</p>
-                            <div class="date-label">Due today</div>
-                        </div>
-                        <div class="ars-meta">
-                            <span class="rev-badge rev-${r.revisionNumber}">#${r.revisionNumber}</span>
-                            <button class="ars-btn done" onclick="completeRevision(${r.id})">Done</button>
-                        </div>
-                    </div>
-                `).join('');
-            } else {
-                document.getElementById('todayList').innerHTML = `
-                    <div class="empty-ars" style="background: rgba(16, 185, 129, 0.1); border-radius: 10px; padding: 2rem;">
-                        <div style="font-size: 2rem; margin-bottom: 0.5rem;">🎉</div>
-                        <div>All caught up! No revisions due today.</div>
-                    </div>
-                `;
-            }
-            
-            // Upcoming revisions
-            document.getElementById('upcomingCount').textContent = upcomingRevs.length;
-            
-            if (upcomingRevs.length > 0) {
-                const grouped = {};
-                upcomingRevs.forEach(r => {
-                    if (!grouped[r.scheduledDate]) grouped[r.scheduledDate] = [];
-                    grouped[r.scheduledDate].push(r);
-                });
+            // ARS Dashboard
+            if (todayRevs.length > 0 || upcomingRevs.length > 0) {
+                document.getElementById('arsDashboard').style.display = 'grid';
                 
-                let html = '';
-                Object.keys(grouped).sort().forEach(date => {
-                    const daysDiff = Math.ceil((new Date(date) - new Date()) / 86400000);
-                    let label = '';
-                    let itemClass = 'future';
-                    
-                    if (daysDiff === 1) {
-                        label = 'Tomorrow';
-                        itemClass = 'tomorrow';
-                    } else {
-                        label = new Date(date).toLocaleDateString('en-IN', {
-                            weekday: 'short',
-                            month: 'short',
-                            day: 'numeric'
-                        });
-                    }
-                    
-                    html += `<div style="margin-bottom: 1rem;">`;
-                    html += `<div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem; font-weight: 600;">${label}</div>`;
-                    
-                    html += grouped[date].map(r => `
-                        <div class="ars-item ${itemClass}" style="margin-bottom: 0.5rem;">
+                // Today's revisions
+                document.getElementById('todayCount').textContent = todayRevs.length;
+                if (todayRevs.length > 0) {
+                    document.getElementById('todayList').innerHTML = todayRevs.map(r => `
+                        <div class="ars-item today">
                             <div class="ars-info">
                                 <h4>${r.topic}</h4>
                                 <p>${r.subject}</p>
+                                <div class="date-label">Due today</div>
                             </div>
                             <div class="ars-meta">
                                 <span class="rev-badge rev-${r.revisionNumber}">#${r.revisionNumber}</span>
+                                <button class="ars-btn done" onclick="completeRevision(${r.id})">Done</button>
                             </div>
                         </div>
                     `).join('');
-                    
-                    html += `</div>`;
-                });
+                } else {
+                    document.getElementById('todayList').innerHTML = `
+                        <div class="empty-ars" style="background: rgba(16, 185, 129, 0.1); border-radius: 10px;">
+                            <div style="font-size: 2rem; margin-bottom: 0.5rem;">🎉</div>
+                            <div>All caught up!</div>
+                        </div>
+                    `;
+                }
                 
-                document.getElementById('upcomingList').innerHTML = html;
+                // Upcoming revisions
+                document.getElementById('upcomingCount').textContent = upcomingRevs.length;
+                if (upcomingRevs.length > 0) {
+                    // Group by date
+                    const grouped = {};
+                    upcomingRevs.forEach(r => {
+                        if (!grouped[r.scheduledDate]) grouped[r.scheduledDate] = [];
+                        grouped[r.scheduledDate].push(r);
+                    });
+                    
+                    let html = '';
+                    Object.keys(grouped).sort().forEach(date => {
+                        const daysDiff = Math.ceil((new Date(date) - new Date()) / 86400000);
+                        let label = '';
+                        let itemClass = 'future';
+                        
+                        if (daysDiff === 1) {
+                            label = 'Tomorrow';
+                            itemClass = 'tomorrow';
+                        } else {
+                            label = new Date(date).toLocaleDateString('en-IN', {
+                                weekday: 'short',
+                                month: 'short',
+                                day: 'numeric'
+                            });
+                        }
+                        
+                        html += `<div style="margin-bottom: 1rem;">`;
+                        html += `<div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem; font-weight: 600;">${label}</div>`;
+                        
+                        html += grouped[date].map(r => `
+                            <div class="ars-item ${itemClass}" style="margin-bottom: 0.5rem;">
+                                <div class="ars-info">
+                                    <h4>${r.topic}</h4>
+                                    <p>${r.subject}</p>
+                                </div>
+                                <div class="ars-meta">
+                                    <span class="rev-badge rev-${r.revisionNumber}">#${r.revisionNumber}</span>
+                                </div>
+                            </div>
+                        `).join('');
+                        
+                        html += `</div>`;
+                    });
+                    
+                    document.getElementById('upcomingList').innerHTML = html;
+                } else {
+                    document.getElementById('upcomingList').innerHTML = `
+                        <div class="empty-ars">No upcoming revisions.</div>
+                    `;
+                }
             } else {
-                document.getElementById('upcomingList').innerHTML = `
-                    <div class="empty-ars">No upcoming revisions in next 7 days.</div>
-                `;
+                document.getElementById('arsDashboard').style.display = 'none';
             }
             
             // Subjects List
