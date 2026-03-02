@@ -4,277 +4,168 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Akash Academy – AI Study Dashboard</title>
+
+<!-- PWA -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#6366f1">
+
+<!-- Firebase (optional – fill config later) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
 <style>
-/* --- trimmed: keep your existing CSS --- */
+:root{--primary:#6366f1;--bg:#0f172a;--card:#111827;--text:#e5e7eb;--muted:#94a3b8;--border:#1f2937;}
+*{box-sizing:border-box}
+body{margin:0;font-family:Segoe UI,system-ui,Arial;background:linear-gradient(135deg,#0f172a,#020617);color:var(--text)}
+.container{max-width:1200px;margin:auto;padding:24px}
+.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px}
+.title{font-size:28px;font-weight:800}
+.btn{background:var(--primary);border:none;color:#fff;padding:10px 16px;border-radius:10px;cursor:pointer}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px}
+.card h3{margin:0 0 12px 0}
+input{padding:10px;border-radius:8px;border:1px solid var(--border);background:#020617;color:#fff}
+#heatmap{display:grid;grid-template-columns:repeat(14,1fr);gap:6px}
+.box{height:14px;border-radius:3px;background:#1f2937}
 </style>
 </head>
 <body>
-<div id="app"></div>
+<div class="container">
+
+<div class="header">
+<div class="title">🎓 Akash Academy AI Dashboard</div>
+<div>
+<button class="btn" onclick="login()">☁️ Login</button>
+</div>
+</div>
+
+<div class="grid">
+
+<div class="card">
+<h3>📅 Exam Planner</h3>
+<input type="date" id="examDate" onchange="setExamDate(this.value)">
+<div id="planner"></div>
+</div>
+
+<div class="card">
+<h3>📊 Study Heatmap</h3>
+<div id="heatmap"></div>
+</div>
+
+<div class="card">
+<h3>🔥 Today Revisions</h3>
+<div id="revisions">No revisions yet</div>
+</div>
+
+</div>
+</div>
+
 <script>
-// ===============================
-// SMART REVISION PREDICTION AI
-// ===============================
-function predictRevisionLoad(days=7){
- const map={};
- data.subjects.forEach(s=>s.topics.forEach(tp=>{
-  (tp.revisions||[]).forEach(r=>{
-    if(r.done) return;
-    const d=r.due;
-    map[d]=(map[d]||0)+1;
-  });
- }));
- const out=[];
- const base=new Date();
- for(let i=0;i<days;i++){
-   const d=new Date(base); d.setDate(d.getDate()+i);
-   const k=d.toISOString().slice(0,10);
-   out.push({date:k,count:map[k]||0});
+// =====================
+// BASIC DATA ENGINE
+// =====================
+const STORAGE_KEY='akash_ai_dashboard_v1';
+let data={subjects:[],studyDates:[],examDate:null};
+
+function today(){return new Date().toISOString().slice(0,10)}
+
+function load(){
+ const s=localStorage.getItem(STORAGE_KEY);
+ if(s) data={...data,...JSON.parse(s)};
+}
+
+function save(){
+ localStorage.setItem(STORAGE_KEY,JSON.stringify(data));
+ if(window.auth && auth.currentUser){
+   db.collection('users').doc(auth.currentUser.uid).set({data});
  }
- return out;
 }
 
-// ===============================
-// AI AUTO TIMETABLE GENERATOR
-// ===============================
-function autoTimetable(){
- const p=planner();
- if(!p) return '<p>Set exam date first</p>';
- const sessions=[
-  {slot:'Morning (High Focus)', weight:0.5},
-  {slot:'Afternoon (Medium)', weight:0.3},
-  {slot:'Evening (Light)', weight:0.2}
- ];
- const rows=sessions.map(s=>{
-  const topics=Math.max(1,Math.round(p.perDay*s.weight));
-  return `<tr><td>${s.slot}</td><td>${topics} topics</td></tr>`;
- }).join('');
- return `
- <h3>🧭 Auto Timetable</h3>
- <table border="1" cellpadding="8" cellspacing="0" style="border-collapse:collapse;max-width:520px">
- <tr><th>Session</th><th>Target</th></tr>
- ${rows}
- </table>`;
+// =====================
+// FIREBASE LOGIN
+// =====================
+let auth,db;
+try{
+ const firebaseConfig={
+  apiKey:"ADD_KEY",
+  authDomain:"ADD_DOMAIN",
+  projectId:"ADD_PROJECT"
+ };
+ firebase.initializeApp(firebaseConfig);
+ auth=firebase.auth();
+ db=firebase.firestore();
+
+ auth.onAuthStateChanged(async user=>{
+  if(!user) return;
+  const ref=db.collection('users').doc(user.uid);
+  const snap=await ref.get();
+  if(snap.exists){data=snap.data().data;save();renderAll();}
+  else await ref.set({data});
+ });
+}catch(e){console.log('Firebase not configured yet');}
+
+async function login(){
+ if(!auth) return alert('Add Firebase config first');
+ const provider=new firebase.auth.GoogleAuthProvider();
+ await auth.signInWithPopup(provider);
 }
 
-// ===============================
-// BURNOUT DETECTION
-// ===============================
-function burnoutScore(){
- const p=planner();
- if(!p) return {level:'low',msg:'Set exam date'};
- const streak=data.studyStreak||0;
- const load=p.perDay + dueRevisions().length*0.3;
- let score=0;
- if(streak>10) score+=2;
- if(load>6) score+=2;
- if(data.totalStudyMinutes>2400) score+=1; // 40h
- const level= score>=4?'high':score>=2?'moderate':'low';
- const msg= level==='high'?'⚠️ High burnout risk. Take active recovery + light revision day.'
-   : level==='moderate'?'⚠️ Moderate fatigue. Schedule a lighter evening.'
-   : '✅ Healthy pace.';
- return {level,msg};
+// =====================
+// PLANNER
+// =====================
+function setExamDate(v){data.examDate=v;save();renderPlanner();}
+
+function planner(){
+ if(!data.examDate) return null;
+ const days=Math.max(1,Math.ceil((new Date(data.examDate)-new Date())/86400000));
+ return{days};
 }
 
-// ===============================
-// VOICE STUDY ASSISTANT
-// ===============================
-function speak(text){
- if(!('speechSynthesis' in window)) return;
- const u=new SpeechSynthesisUtterance(text);
- u.rate=1; u.pitch=1;
- speechSynthesis.speak(u);
-}
-
-function voiceCoach(){
- const p=planner();
- if(!p) return;
- const b=burnoutScore();
- const msg=`Today study ${p.perDay} new topics and complete ${p.revisions} revisions. ${b.msg}`;
- speak(msg);
-}
-
-// ===============================
-// SIMPLE UI RENDER (ENHANCED)
-// ===============================
 function renderPlanner(){
  const p=planner();
- if(!p) return '<p>Add exam date to enable AI planner</p>';
- const pred=predictRevisionLoad(7).map(d=>`<li>${d.date}: <b>${d.count}</b> rev</li>`).join('');
- const b=burnoutScore();
- return `
- <h2>AI Daily Plan</h2>
- <ul>
- <li>New Topics Today: <b>${p.perDay}</b></li>
- <li>Revisions Due: <b>${p.revisions}</b></li>
- <li>Days Left: <b>${p.days}</b></li>
- <li>Remaining Topics: <b>${p.remain}</b></li>
- </ul>
- ${autoTimetable()}
- <h3>🔮 Next 7 Days Revision Forecast</h3>
- <ul>${pred}</ul>
- <h3>🧠 Burnout Status</h3>
- <p><b>${b.level.toUpperCase()}</b> — ${b.msg}</p>
- <button onclick="voiceCoach()">🎤 Voice Coach</button>
- `;
+ const el=document.getElementById('planner');
+ if(!p){el.innerHTML='Set exam date';return}
+ el.innerHTML=`Days Left: <b>${p.days}</b>`;
 }
 
-function render(){
- document.getElementById('app').innerHTML=`
- <div style="padding:30px;font-family:sans-serif">
- <h1>Akash Academy AI Study System</h1>
- <input type="date" onchange="data.examDate=this.value;save();render()" value="${data.examDate||''}"/>
- ${renderPlanner()}
- </div>`;
+// =====================
+// HEATMAP
+// =====================
+function renderHeatmap(){
+ const el=document.getElementById('heatmap');
+ el.innerHTML='';
+ const now=new Date();
+ for(let i=180;i>=0;i--){
+  const d=new Date(now);
+  d.setDate(d.getDate()-i);
+  const ds=d.toISOString().slice(0,10);
+  const box=document.createElement('div');
+  box.className='box';
+  if(data.studyDates.includes(ds)) box.style.background='#10b981';
+  el.appendChild(box);
+ }
 }
 
-load();
-resumeTimer();
-render();
-
-// ===============================
-// 🧬 SELF-LEARNING AI (LEARN YOUR SPEED)
-// ===============================
-if(!data.learning){
-  data.learning={ avgTopicMinutes:45, samples:0 };
-}
-function updateLearningModel(topicMinutes){
-  const m=data.learning;
-  m.samples++;
-  m.avgTopicMinutes = Math.round((m.avgTopicMinutes*(m.samples-1)+topicMinutes)/m.samples);
-  save();
-}
-
-// ===============================
-// 🧠 FORGETTING-CURVE NEURAL OPTIMIZER
-// ===============================
-function neuralAdjust(baseDays, topic){
-  const qh = topic.qualityHistory||[];
-  const avg = qh.length? qh.reduce((a,b)=>a+b,0)/qh.length : 3;
-  const difficultyFactor = avg>=3.5?1.25: avg<=2.5?0.75:1;
-  return baseDays.map(d=> Math.max(1, Math.round(d*difficultyFactor)));
-}
-// wrap original scheduler
-const _scheduleRevisions = scheduleRevisions;
-scheduleRevisions = function(topic, quality){
-  _scheduleRevisions(topic, quality);
-  const base = BASE_ARS[topic.difficulty||'medium'];
-  const adj = neuralAdjust(base, topic);
-  topic.revisions = adj.map(d=>{
-    const dt=new Date(); dt.setDate(dt.getDate()+d);
-    return {due:dt.toISOString().slice(0,10), done:false};
-  });
-};
-
-// ===============================
-// 📈 PRODUCTIVITY PREDICTION GRAPH
-// ===============================
-function productivitySeries(days=14){
-  const map={};
-  (data.studyDates||[]).forEach(d=>{ map[d]=(map[d]||0)+1; });
-  const arr=[]; const now=new Date();
-  for(let i=days-1;i>=0;i--){
-    const dt=new Date(now); dt.setDate(now.getDate()-i);
-    const k=dt.toISOString().slice(0,10);
-    arr.push(map[k]||0);
-  }
-  // EMA smoothing
-  const alpha=0.4; let ema=0; const sm=[];
-  arr.forEach(v=>{ ema=alpha*v+(1-alpha)*ema; sm.push(ema); });
-  return sm;
-}
-function drawProductivity(){
-  const c=document.getElementById('prodCanvas'); if(!c) return;
-  const ctx=c.getContext('2d');
-  const w=c.width=c.parentElement.clientWidth; const h=c.height=140;
-  ctx.clearRect(0,0,w,h);
-  const s=productivitySeries();
-  const max=Math.max(1,...s);
-  ctx.beginPath();
-  s.forEach((v,i)=>{
-    const x=i*(w/(s.length-1));
-    const y=h-(v/max)*h+4;
-    i?ctx.lineTo(x,y):ctx.moveTo(x,y);
-  });
-  ctx.lineWidth=2; ctx.strokeStyle='#6366f1'; ctx.stroke();
-}
-
-// ===============================
-// 🤖 CHATGPT-STYLE STUDY MENTOR (OFFLINE RULE-BASED)
-// ===============================
-function mentorReply(q){
-  const p=planner()||{perDay:0,revisions:0,days:0,remain:0};
-  q=q.toLowerCase();
-  if(q.includes('plan')||q.includes('today')){
-    return `Today: ${p.perDay} new topics & ${p.revisions} revisions. Focus hard topics first.`;
-  }
-  if(q.includes('burn')||q.includes('tired')){
-    const hrs=Math.floor(data.totalStudyMinutes/60);
-    return hrs>6? 'You may be overloading. Take a 20‑min break and do light revisions.' : 'Pace looks healthy. Continue with medium topics.';
-  }
-  if(q.includes('rev')){
-    return `You have ${p.revisions} revisions due. Clear overdue items first.`;
-  }
-  return 'Ask about plan, revisions, or burnout for guidance.';
-}
-function initMentor(){
-  const box=document.getElementById('mentorBox'); if(!box) return;
-  box.innerHTML=`
-    <div style="display:flex;gap:8px;">
-      <input id="mentorInput" placeholder="Ask Study Mentor..." style="flex:1;padding:8px;border:1px solid #e2e8f0;border-radius:8px;"/>
-      <button onclick="sendMentor()">Ask</button>
-    </div>
-    <div id="mentorLog" style="margin-top:8px;font-size:14px;color:#64748b"></div>`;
-}
-function sendMentor(){
-  const i=document.getElementById('mentorInput');
-  const log=document.getElementById('mentorLog');
-  const a=mentorReply(i.value||'');
-  log.innerHTML+=`<div><b>You:</b> ${i.value}</div><div><b>Mentor:</b> ${a}</div>`;
-  i.value='';
-}
-
-// ===============================
-// 📴 OFFLINE MOBILE (PWA) MODE
-// ===============================
+// =====================
+// PWA SERVICE WORKER
+// =====================
 if('serviceWorker' in navigator){
-  window.addEventListener('load',()=>{
-    const sw=`self.addEventListener('install',e=>{e.waitUntil(caches.open('akash-v1').then(c=>c.addAll(['./'])))});
-    self.addEventListener('fetch',e=>{e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request)))})`;
-    const blob=new Blob([sw],{type:'text/javascript'});
-    const url=URL.createObjectURL(blob);
-    navigator.serviceWorker.register(url);
-  });
+ navigator.serviceWorker.register('/sw.js').catch(()=>{});
 }
 
-// ===============================
-// UI ENHANCER HOOK
-// ===============================
-function enhanceUI(){
-  const app=document.getElementById('app');
-  if(!app) return;
-  if(!document.getElementById('aiExtras')){
-    const wrap=document.createElement('div');
-    wrap.id='aiExtras';
-    wrap.style.marginTop='20px';
-    wrap.innerHTML=`
-      <div style="padding:16px;border:1px solid #e2e8f0;border-radius:12px;margin-bottom:12px;">
-        <h3>📈 Productivity Prediction</h3>
-        <canvas id="prodCanvas"></canvas>
-      </div>
-      <div style="padding:16px;border:1px solid #e2e8f0;border-radius:12px;">
-        <h3>🤖 Study Mentor</h3>
-        <div id="mentorBox"></div>
-      </div>`;
-    app.appendChild(wrap);
-  }
-  initMentor();
-  drawProductivity();
+// =====================
+// MAIN RENDER
+// =====================
+function renderAll(){
+ renderPlanner();
+ renderHeatmap();
 }
 
-// wrap render to inject extras
-const _render=render;
-render=function(){ _render(); setTimeout(enhanceUI,0); };
-
+window.onload=()=>{
+ load();
+ renderAll();
+};
 </script>
 </body>
 </html>
