@@ -10,9 +10,6 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
     
-    <!-- Chart.js for analytics -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
     <style>
         * {
             margin: 0;
@@ -36,7 +33,7 @@
         }
 
         body {
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            font-family: 'Segoe UI', system-ui, sans-serif;
             background: linear-gradient(135deg, var(--darker) 0%, var(--dark) 100%);
             color: var(--text);
             min-height: 100vh;
@@ -67,6 +64,37 @@
 
         @keyframes spin {
             to { transform: rotate(360deg); }
+        }
+
+        /* Sync Status */
+        .sync-status {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            z-index: 99;
+            transition: all 0.3s;
+        }
+
+        .sync-status.syncing {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--warning);
+            border: 1px solid var(--warning);
+        }
+
+        .sync-status.synced {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success);
+            border: 1px solid var(--success);
+        }
+
+        .sync-status.offline {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--danger);
+            border: 1px solid var(--danger);
         }
 
         /* Header */
@@ -111,7 +139,6 @@
             -webkit-text-fill-color: white;
         }
 
-        /* User Section */
         .user-section {
             display: flex;
             align-items: center;
@@ -185,14 +212,12 @@
             color: white;
         }
 
-        /* Main Container */
         .container {
             max-width: 1400px;
             margin: 0 auto;
             padding: 2rem;
         }
 
-        /* Welcome Section */
         .welcome {
             margin-bottom: 2rem;
         }
@@ -206,7 +231,6 @@
             color: var(--text-muted);
         }
 
-        /* Stats Grid */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -265,7 +289,6 @@
             font-size: 0.9rem;
         }
 
-        /* Dashboard Grid */
         .dashboard-grid {
             display: grid;
             grid-template-columns: 2fr 1fr;
@@ -279,7 +302,6 @@
             }
         }
 
-        /* Cards */
         .card {
             background: var(--card);
             border: 1px solid var(--border);
@@ -323,7 +345,6 @@
             cursor: not-allowed;
         }
 
-        /* Heatmap */
         .heatmap-container {
             margin-top: 1rem;
         }
@@ -384,7 +405,6 @@
             opacity: 1;
         }
 
-        /* Exam Planner */
         .exam-input {
             width: 100%;
             background: var(--dark);
@@ -423,7 +443,6 @@
             margin-top: 0.5rem;
         }
 
-        /* AI Suggestion */
         .ai-box {
             background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(139, 92, 246, 0.15));
             border: 1px solid rgba(99, 102, 241, 0.3);
@@ -450,7 +469,6 @@
             color: var(--text);
         }
 
-        /* Subjects Section */
         .subjects-section {
             margin-top: 2rem;
         }
@@ -617,7 +635,6 @@
             color: var(--primary);
         }
 
-        /* Empty State */
         .empty-state {
             text-align: center;
             padding: 3rem;
@@ -630,7 +647,6 @@
             opacity: 0.5;
         }
 
-        /* Modal */
         .modal-overlay {
             position: fixed;
             inset: 0;
@@ -713,7 +729,6 @@
             font-weight: 600;
         }
 
-        /* Toast Notifications */
         .toast-container {
             position: fixed;
             top: 100px;
@@ -752,7 +767,6 @@
         .toast.error { border-left: 4px solid var(--danger); }
         .toast.info { border-left: 4px solid var(--primary); }
 
-        /* Responsive */
         @media (max-width: 768px) {
             .container {
                 padding: 1rem;
@@ -767,24 +781,19 @@
                 grid-template-columns: 1fr;
             }
         }
-
-        /* Animations */
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
-        }
-
-        .pulse {
-            animation: pulse 2s infinite;
-        }
     </style>
 </head>
 <body>
 
-    <!-- Loader -->
+    <!-- Loading Screen -->
     <div id="loader">
         <div class="spinner"></div>
         <p style="margin-top: 1rem; color: var(--text-muted);">Loading Dashboard...</p>
+    </div>
+
+    <!-- Sync Status Indicator -->
+    <div id="syncStatus" class="sync-status offline" style="display: none;">
+        ⚠️ Offline Mode
     </div>
 
     <!-- Toast Container -->
@@ -834,7 +843,7 @@
         <!-- Welcome -->
         <div class="welcome">
             <h1 id="welcomeText">Welcome back, Scholar! 👋</h1>
-            <p>Track your progress, plan your studies, and achieve your goals with AI-powered insights.</p>
+            <p>Track your progress, plan your studies, and achieve your goals.</p>
         </div>
 
         <!-- Stats -->
@@ -947,7 +956,7 @@
                             <span>AI Suggestion</span>
                         </div>
                         <div class="ai-text" id="aiSuggestion">
-                            Login to get personalized study recommendations based on your progress and exam date.
+                            Login to get personalized study recommendations.
                         </div>
                     </div>
                 </div>
@@ -969,12 +978,19 @@
         // ================= GLOBAL STATE =================
         let auth, db;
         let currentUser = null;
+        let isOnline = false;
+        let dataLoaded = false;
+        
+        // Default data structure
         let appData = {
             subjects: [],
             studyDates: [],
-            exam: null
+            exam: null,
+            lastSync: null
         };
+
         let modalCallback = null;
+        let pendingSync = false;
 
         // ================= INITIALIZATION =================
         document.addEventListener('DOMContentLoaded', async () => {
@@ -983,14 +999,19 @@
                 firebase.initializeApp(firebaseConfig);
                 auth = firebase.auth();
                 db = firebase.firestore();
+                
+                // Enable offline persistence
+                await db.enablePersistence({ synchronizeTabs: true })
+                    .catch(err => console.log('Persistence error:', err));
 
                 console.log('✅ Firebase initialized');
 
                 // Setup auth listener
                 setupAuthListener();
 
-                // Load local data
+                // Load local data IMMEDIATELY (don't wait for auth)
                 loadLocalData();
+                updateUI();
 
                 // Hide loader
                 setTimeout(() => {
@@ -999,11 +1020,11 @@
                         document.getElementById('loader').style.display = 'none';
                         document.getElementById('mainContent').style.display = 'block';
                     }, 500);
-                }, 1000);
+                }, 500);
 
             } catch (error) {
                 console.error('❌ Initialization error:', error);
-                showToast('Error loading dashboard. Please refresh.', 'error');
+                showToast('Error loading dashboard', 'error');
             }
         });
 
@@ -1012,40 +1033,54 @@
             auth.onAuthStateChanged(async (user) => {
                 console.log('Auth state:', user ? 'LOGGED IN' : 'LOGGED OUT');
                 
+                // Show syncing status
+                updateSyncStatus('syncing');
+                
                 currentUser = user;
                 
                 if (user) {
-                    // Update UI for logged in user
+                    // Update UI immediately
                     document.getElementById('loginBtn').style.display = 'none';
                     document.getElementById('userProfile').style.display = 'flex';
                     document.getElementById('userName').textContent = user.displayName || 'User';
                     document.getElementById('userEmail').textContent = user.email;
-                    document.getElementById('userAvatar').src = user.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.displayName || 'User')}&background=6366f1&color=fff`;
+                    document.getElementById('userAvatar').src = user.photoURL || 
+                        `https://ui-avatars.com/api/?name=${encodeURIComponent(user.displayName || 'User')}&background=6366f1&color=fff`;
                     document.getElementById('welcomeText').textContent = `Welcome back, ${user.displayName || 'Scholar'}! 👋`;
                     
-                    // Enable buttons
+                    // Enable buttons immediately
                     document.getElementById('studyTodayBtn').disabled = false;
                     document.getElementById('addSubjectBtn').disabled = false;
                     
-                    // Load user data
-                    await loadUserData(user.uid);
+                    // Load user data from cloud (with timeout)
+                    try {
+                        await Promise.race([
+                            loadUserData(user.uid),
+                            new Promise((_, reject) => 
+                                setTimeout(() => reject(new Error('Timeout')), 5000)
+                            )
+                        ]);
+                        updateSyncStatus('synced');
+                    } catch (error) {
+                        console.log('Using local data:', error.message);
+                        updateSyncStatus('offline');
+                    }
                     
-                    showToast('Welcome back!', 'success');
                 } else {
-                    // Update UI for logged out user
+                    // Logged out
                     document.getElementById('loginBtn').style.display = 'flex';
                     document.getElementById('userProfile').style.display = 'none';
                     document.getElementById('welcomeText').textContent = 'Welcome, Scholar! 👋';
                     
-                    // Disable buttons
                     document.getElementById('studyTodayBtn').disabled = true;
                     document.getElementById('addSubjectBtn').disabled = true;
                     
-                    // Reset to local data
                     loadLocalData();
+                    updateSyncStatus('offline');
                 }
                 
                 updateUI();
+                dataLoaded = true;
             });
         }
 
@@ -1055,48 +1090,91 @@
             provider.addScope('email');
             
             auth.signInWithPopup(provider)
+                .then(() => showToast('Welcome!', 'success'))
                 .catch(error => {
                     console.error('Login error:', error);
                     let message = 'Login failed';
-                    if (error.code === 'auth/popup-blocked') message = 'Popup blocked! Please allow popups.';
-                    else if (error.code === 'auth/unauthorized-domain') message = 'Domain not authorized in Firebase!';
+                    if (error.code === 'auth/popup-blocked') message = 'Popup blocked!';
+                    else if (error.code === 'auth/unauthorized-domain') message = 'Domain not authorized!';
                     showToast(message, 'error');
                 });
         }
 
         function logout() {
-            auth.signOut().then(() => {
-                showToast('Logged out successfully', 'success');
-            });
+            // Save before logout
+            if (currentUser) {
+                saveToCloud().finally(() => {
+                    auth.signOut().then(() => {
+                        showToast('Logged out', 'success');
+                    });
+                });
+            } else {
+                auth.signOut();
+            }
         }
 
         // ================= DATA MANAGEMENT =================
         async function loadUserData(uid) {
-            try {
-                const doc = await db.collection('users').doc(uid).get();
-                if (doc.exists && doc.data().data) {
-                    appData = doc.data().data;
-                    saveLocalData(); // Backup
-                    console.log('✅ Cloud data loaded');
+            const doc = await db.collection('users').doc(uid).get();
+            
+            if (doc.exists && doc.data().data) {
+                const cloudData = doc.data().data;
+                
+                // Merge strategy: Use cloud data if newer, else keep local
+                const cloudTime = cloudData.lastSync || 0;
+                const localTime = appData.lastSync || 0;
+                
+                if (cloudTime > localTime) {
+                    appData = cloudData;
+                    console.log('✅ Cloud data loaded (newer)');
                 } else {
-                    // Create new user document
-                    await db.collection('users').doc(uid).set({ data: appData });
-                    console.log('✅ New user created');
+                    console.log('✅ Local data is newer, keeping local');
                 }
-            } catch (error) {
-                console.error('Error loading data:', error);
-                loadLocalData();
+                
+                saveLocalData();
+            } else {
+                // New user - upload current local data
+                await saveToCloud();
+                console.log('✅ New user created with local data');
+            }
+            
+            updateUI();
+        }
+
+        // IMMEDIATE save function
+        function saveData() {
+            // 1. Save to localStorage immediately
+            appData.lastSync = Date.now();
+            localStorage.setItem('akash_academy_data', JSON.stringify(appData));
+            
+            // 2. Update UI immediately
+            updateUI();
+            
+            // 3. Queue cloud save
+            if (currentUser && !pendingSync) {
+                pendingSync = true;
+                setTimeout(() => {
+                    saveToCloud();
+                    pendingSync = false;
+                }, 1000); // Debounce 1 second
             }
         }
 
-        function saveData() {
-            // Save to localStorage
-            localStorage.setItem('akash_academy_data', JSON.stringify(appData));
+        async function saveToCloud() {
+            if (!currentUser || !db) return;
             
-            // Save to Firestore if logged in
-            if (currentUser) {
-                db.collection('users').doc(currentUser.uid).set({ data: appData })
-                    .catch(err => console.error('Save error:', err));
+            updateSyncStatus('syncing');
+            
+            try {
+                await db.collection('users').doc(currentUser.uid).set({ 
+                    data: appData,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                updateSyncStatus('synced');
+                console.log('✅ Saved to cloud');
+            } catch (error) {
+                console.error('❌ Cloud save failed:', error);
+                updateSyncStatus('offline');
             }
         }
 
@@ -1104,7 +1182,18 @@
             const saved = localStorage.getItem('akash_academy_data');
             if (saved) {
                 appData = JSON.parse(saved);
+                console.log('✅ Local data loaded');
             }
+        }
+
+        function updateSyncStatus(status) {
+            const el = document.getElementById('syncStatus');
+            el.style.display = 'block';
+            el.className = 'sync-status ' + status;
+            
+            if (status === 'syncing') el.textContent = '🔄 Syncing...';
+            else if (status === 'synced') el.textContent = '✓ Synced';
+            else if (status === 'offline') el.textContent = '⚠️ Offline';
         }
 
         // ================= UI UPDATES =================
@@ -1114,6 +1203,11 @@
             renderSubjects();
             updateExamCountdown();
             updateAIInsights();
+            
+            // Restore exam date in input
+            if (appData.exam) {
+                document.getElementById('examDate').value = appData.exam;
+            }
         }
 
         function updateStats() {
@@ -1154,7 +1248,6 @@
             const container = document.getElementById('heatmap');
             container.innerHTML = '';
             
-            // Generate last 168 days (24 weeks)
             for (let i = 167; i >= 0; i--) {
                 const d = new Date();
                 d.setDate(d.getDate() - i);
@@ -1163,15 +1256,9 @@
                 const cell = document.createElement('div');
                 cell.className = 'heat-cell';
                 
-                // Determine level based on study data
-                let level = 0;
-                if (appData.studyDates.includes(dateStr)) {
-                    level = 4; // Studied
-                }
-                
+                let level = appData.studyDates.includes(dateStr) ? 4 : 0;
                 cell.classList.add(`level-${level}`);
                 
-                // Tooltip
                 const tooltip = document.createElement('div');
                 tooltip.className = 'heat-tooltip';
                 tooltip.textContent = `${dateStr}: ${level > 0 ? 'Studied!' : 'No study'}`;
@@ -1195,9 +1282,36 @@
             }
             
             appData.studyDates.push(today);
-            saveData();
-            updateUI();
+            saveData(); // This updates UI and queues cloud save
             showToast('Great job! Study session recorded!', 'success');
+        }
+
+        // ================= EXAM PLANNER =================
+        function setExamDate(date) {
+            appData.exam = date;
+            saveData(); // Immediate save
+            showToast('Exam date saved!', 'success');
+        }
+
+        function updateExamCountdown() {
+            const numberEl = document.getElementById('countdownNumber');
+            const textEl = document.getElementById('countdownText');
+            
+            if (!appData.exam) {
+                numberEl.textContent = '--';
+                textEl.textContent = 'Set your exam date';
+                return;
+            }
+            
+            const days = Math.ceil((new Date(appData.exam) - new Date()) / 86400000);
+            
+            if (days < 0) {
+                numberEl.textContent = '0';
+                textEl.textContent = 'Exam date passed!';
+            } else {
+                numberEl.textContent = days;
+                textEl.textContent = days === 1 ? 'day remaining' : 'days remaining';
+            }
         }
 
         // ================= SUBJECTS =================
@@ -1270,7 +1384,6 @@
                     topics: []
                 });
                 saveData();
-                updateUI();
                 showToast('Subject added!', 'success');
             };
             openModal('Add New Subject', 'Enter subject name...');
@@ -1285,10 +1398,8 @@
                     createdAt: new Date().toISOString()
                 });
                 saveData();
-                updateUI();
                 showToast('Topic added!', 'success');
                 
-                // Keep subject expanded
                 setTimeout(() => {
                     document.getElementById(`topics-${subjectIndex}`).style.display = 'flex';
                 }, 100);
@@ -1303,7 +1414,6 @@
             topic.done = !topic.done;
             
             if (topic.done) {
-                // Add study date if not exists
                 const today = new Date().toISOString().slice(0, 10);
                 if (!appData.studyDates.includes(today)) {
                     appData.studyDates.push(today);
@@ -1311,9 +1421,7 @@
             }
             
             saveData();
-            updateUI();
             
-            // Keep expanded
             setTimeout(() => {
                 document.getElementById(`topics-${subjectIndex}`).style.display = 'flex';
             }, 100);
@@ -1324,39 +1432,7 @@
             
             appData.subjects.splice(index, 1);
             saveData();
-            updateUI();
             showToast('Subject deleted', 'success');
-        }
-
-        // ================= EXAM PLANNER =================
-        function setExamDate(date) {
-            appData.exam = date;
-            saveData();
-            updateExamCountdown();
-            updateAIInsights();
-        }
-
-        function updateExamCountdown() {
-            const numberEl = document.getElementById('countdownNumber');
-            const textEl = document.getElementById('countdownText');
-            
-            if (!appData.exam) {
-                numberEl.textContent = '--';
-                textEl.textContent = 'Set your exam date';
-                return;
-            }
-            
-            const days = Math.ceil((new Date(appData.exam) - new Date()) / 86400000);
-            
-            if (days < 0) {
-                numberEl.textContent = '0';
-                textEl.textContent = 'Exam date passed!';
-                numberEl.style.color = 'var(--danger)';
-            } else {
-                numberEl.textContent = days;
-                textEl.textContent = days === 1 ? 'day remaining' : 'days remaining';
-                numberEl.style.color = '';
-            }
         }
 
         // ================= AI INSIGHTS =================
@@ -1365,33 +1441,29 @@
             const completed = appData.subjects.reduce((acc, s) => 
                 acc + s.topics.filter(t => t.done).length, 0);
             
-            // Calculate speed (topics per study day)
             const studyDays = appData.studyDates.length || 1;
             const speed = (completed / studyDays).toFixed(1);
-            
-            // Completion percentage
             const completion = totalTopics > 0 ? Math.round((completed / totalTopics) * 100) : 0;
             
             document.getElementById('aiSpeed').textContent = `${speed} topics/day`;
             document.getElementById('aiCompletion').textContent = `${completion}%`;
             
-            // Generate suggestion
             let suggestion = '';
             const remaining = totalTopics - completed;
             
             if (!currentUser) {
-                suggestion = 'Login to get personalized study recommendations based on your progress and exam date.';
+                suggestion = 'Login to get personalized study recommendations.';
             } else if (remaining === 0 && totalTopics > 0) {
-                suggestion = '🎉 Congratulations! You\'ve completed all topics. Great job!';
+                suggestion = '🎉 Congratulations! You\'ve completed all topics!';
             } else if (!appData.exam) {
-                suggestion = `📚 You have <strong>${remaining}</strong> topics remaining. Set an exam date to get a personalized study plan!`;
+                suggestion = `📚 You have <strong>${remaining}</strong> topics remaining. Set an exam date to get a study plan!`;
             } else {
                 const daysLeft = Math.ceil((new Date(appData.exam) - new Date()) / 86400000);
                 if (daysLeft <= 0) {
-                    suggestion = '⚠️ Your exam date has passed! Update it to get new recommendations.';
+                    suggestion = '⚠️ Your exam date has passed! Update it.';
                 } else {
                     const perDay = Math.ceil(remaining / daysLeft);
-                    suggestion = `📅 <strong>${daysLeft}</strong> days left until exam.<br>You need to study <strong>${perDay}</strong> topics per day to complete everything on time.`;
+                    suggestion = `📅 <strong>${daysLeft}</strong> days left.<br>Study <strong>${perDay}</strong> topics/day to finish on time.`;
                 }
             }
             
@@ -1420,7 +1492,6 @@
             }
         }
 
-        // Close modal on escape
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') closeModal();
             if (e.key === 'Enter' && document.getElementById('modal').classList.contains('active')) {
@@ -1448,6 +1519,13 @@
                 setTimeout(() => toast.remove(), 300);
             }, 3000);
         }
+
+        // ================= BEFORE UNLOAD =================
+        window.addEventListener('beforeunload', () => {
+            if (currentUser && pendingSync) {
+                saveToCloud();
+            }
+        });
     </script>
 </body>
 </html>
