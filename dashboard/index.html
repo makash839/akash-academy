@@ -3,14 +3,11 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Akash Academy – AI Study Dashboard</title>
+<title>Akash Academy – OMNISCIENT AI Study OS</title>
 
-<!-- PWA -->
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#6366f1">
-<meta name="theme-color" content="#6366f1">
 
-<!-- Firebase (optional – fill config later) -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
@@ -19,26 +16,25 @@
 :root{--primary:#6366f1;--bg:#0f172a;--card:#111827;--text:#e5e7eb;--muted:#94a3b8;--border:#1f2937;}
 *{box-sizing:border-box}
 body{margin:0;font-family:Segoe UI,system-ui,Arial;background:linear-gradient(135deg,#0f172a,#020617);color:var(--text)}
-.container{max-width:1200px;margin:auto;padding:24px}
+.container{max-width:1300px;margin:auto;padding:24px}
 .header{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px}
 .title{font-size:28px;font-weight:800}
 .btn{background:var(--primary);border:none;color:#fff;padding:10px 16px;border-radius:10px;cursor:pointer}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
 .card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px}
 .card h3{margin:0 0 12px 0}
-input{padding:10px;border-radius:8px;border:1px solid var(--border);background:#020617;color:#fff}
+input{padding:10px;border-radius:8px;border:1px solid var(--border);background:#020617;color:#fff;width:100%}
 #heatmap{display:grid;grid-template-columns:repeat(14,1fr);gap:6px}
 .box{height:14px;border-radius:3px;background:#1f2937}
+.small{color:var(--muted);font-size:13px}
 </style>
 </head>
 <body>
 <div class="container">
 
 <div class="header">
-<div class="title">🎓 Akash Academy AI Dashboard</div>
-<div>
-<button class="btn" onclick="login()">☁️ Login</button>
-</div>
+<div class="title">🧠 Akash Academy OMNISCIENT AI</div>
+<button class="btn" onclick="login()">☁️ Google Login</button>
 </div>
 
 <div class="grid">
@@ -52,11 +48,6 @@ input{padding:10px;border-radius:8px;border:1px solid var(--border);background:#
 <div class="card">
 <h3>📊 Study Heatmap</h3>
 <div id="heatmap"></div>
-</div>
-
-<div class="card">
-<h3>🔥 Today Revisions</h3>
-<div id="revisions">No revisions yet</div>
 <button class="btn" style="margin-top:10px" onclick="markStudiedToday()">✅ I Studied Today</button>
 </div>
 
@@ -67,36 +58,40 @@ input{padding:10px;border-radius:8px;border:1px solid var(--border);background:#
 </div>
 
 <div class="card">
-<h3>🧠 Burnout Detector</h3>
-<div id="burnoutStatus">Checking...</div>
+<h3>🧠 Neural Revision</h3>
+<div id="revisionAI"></div>
 </div>
 
 <div class="card">
-<h3>🎙 Voice Assistant</h3>
-<button class="btn" onclick="startVoice()">Start Voice</button>
-<p style="color:var(--muted);margin-top:8px">Say: "I studied" or "Add subject"</p>
+<h3>☢️ Singularity Core</h3>
+<div id="singularity"></div>
 </div>
 
 <div class="card">
-<h3>🤖 Study Mentor</h3>
-<div id="mentorLog" style="height:120px;overflow:auto;background:#020617;border-radius:8px;padding:8px"></div>
-<div style="display:flex;gap:8px;margin-top:8px">
-<input id="mentorInput" placeholder="Ask mentor..." />
-<button class="btn" onclick="askMentor()">Send</button>
-</div>
-</div>
-
+<h3>🌌 OMNISCIENT AI</h3>
+<div id="omniscient"></div>
 </div>
 
 </div>
 </div>
 
 <script>
-// =====================
-// BASIC DATA ENGINE
-// =====================
-const STORAGE_KEY='akash_ai_dashboard_v1';
-let data={subjects:[],studyDates:[],examDate:null};
+const STORAGE_KEY='akash_ai_dashboard_final';
+
+let data={
+ subjects:[],
+ studyDates:[],
+ examDate:null,
+ ai:{
+  speed:1,
+  consistency:1,
+  intelligence:1,
+  evolution:0,
+  risk:0,
+  nextAction:"",
+  rankProbability:0
+ }
+};
 
 function today(){return new Date().toISOString().slice(0,10)}
 
@@ -108,70 +103,117 @@ function load(){
 function save(){
  localStorage.setItem(STORAGE_KEY,JSON.stringify(data));
  if(window.auth && auth.currentUser){
-   db.collection('users').doc(auth.currentUser.uid).set({data});
+  db.collection('users').doc(auth.currentUser.uid).set({data});
  }
 }
 
-// =====================
-// FIREBASE LOGIN (CONFIGURED)
-// =====================
+// FIREBASE
 let auth,db;
-
-const firebaseConfig = {
-  apiKey: "AIzaSyAm1EZtdULG_Qay6T0sO0k8D8dBfXpVMW4",
-  authDomain: "akashacademy-33513.firebaseapp.com",
-  projectId: "akashacademy-33513",
-  storageBucket: "akashacademy-33513.firebasestorage.app",
-  messagingSenderId: "169097190637",
-  appId: "1:169097190637:web:a843f1cf160808c055c0e4",
-  measurementId: "G-8WDC999WEQ"
+const firebaseConfig={
+ apiKey:"AIzaSyAm1EZtdULG_Qay6T0sO0k8D8dBfXpVMW4",
+ authDomain:"akashacademy-33513.firebaseapp.com",
+ projectId:"akashacademy-33513"
 };
-
 firebase.initializeApp(firebaseConfig);
-auth = firebase.auth();
-db = firebase.firestore();
+auth=firebase.auth();
+db=firebase.firestore();
 
-// AUTO CLOUD SYNC
 auth.onAuthStateChanged(async user=>{
-  if(!user) return;
-  const ref=db.collection('users').doc(user.uid);
-  const snap=await ref.get();
-  if(snap.exists){
-    data=snap.data().data;
-    save();
-    renderAll();
-  }else{
-    await ref.set({data});
-  }
+ if(!user) return;
+ const ref=db.collection('users').doc(user.uid);
+ const snap=await ref.get();
+ if(snap.exists){data=snap.data().data;save();renderAll();}
+ else await ref.set({data});
 });
 
-// GOOGLE LOGIN
 async function login(){
-  const provider=new firebase.auth.GoogleAuthProvider();
-  await auth.signInWithPopup(provider);
+ const provider=new firebase.auth.GoogleAuthProvider();
+ await auth.signInWithPopup(provider);
 }
 
-// =====================
+// STUDY ACTIONS
+function markStudiedToday(){
+ const t=today();
+ if(!data.studyDates.includes(t)) data.studyDates.push(t);
+ learnAI();
+ save();
+ renderAll();
+}
+
+function addSubject(){
+ const name=prompt('Subject name?');
+ if(!name) return;
+ data.subjects.push({id:Date.now().toString(),name,topics:[]});
+ save();renderAll();
+}
+
+function addTopic(id){
+ const s=data.subjects.find(x=>x.id===id);
+ const title=prompt('Topic?');
+ if(!title) return;
+ s.topics.push({title,done:false});
+ save();renderAll();
+}
+
+function finishTopic(id,i){
+ const s=data.subjects.find(x=>x.id===id);
+ s.topics[i].done=true;
+ markStudiedToday();
+ learnAI();
+ save();renderAll();
+}
+
+function renderSubjects(){
+ const el=document.getElementById('subjects');
+ el.innerHTML=data.subjects.map(s=>`<div><b>${s.name}</b> <button onclick=\"addTopic('${s.id}')\">+Topic</button>
+ <ul>${s.topics.map((t,i)=>`<li>${t.title} ${t.done?'✅':`<button onclick=\"finishTopic('${s.id}',${i})\">Finish</button>`}</li>`).join('')}</ul></div>`).join('')||'No subjects';
+}
+
+// AI LEARNING
+function learnAI(){
+ let total=0,done=0;
+ data.subjects.forEach(s=>s.topics.forEach(t=>{total++;if(t.done)done++;}));
+ const days=data.studyDates.length||1;
+ data.ai.speed=(done/days)||1;
+ data.ai.consistency=days;
+ singularityAI();
+ omniscientAI();
+}
+
+function singularityAI(){
+ let total=0,done=0;
+ data.subjects.forEach(s=>s.topics.forEach(t=>{total++;if(t.done)done++;}));
+ const rate=done/(total||1);
+ data.ai.intelligence=(rate*10).toFixed(2);
+ data.ai.evolution=(rate*data.studyDates.length).toFixed(2);
+ data.ai.risk=(100-(rate*80+data.studyDates.length)).toFixed(1);
+}
+
+function omniscientAI(){
+ const remaining=data.subjects.reduce((a,s)=>a+s.topics.filter(t=>!t.done).length,0);
+ const daysLeft=data.examDate?
+ Math.max(1,Math.ceil((new Date(data.examDate)-new Date())/86400000)):1;
+
+ const perDay=Math.ceil(remaining/daysLeft);
+ data.ai.nextAction=`Study ${perDay} topics today`;
+
+ data.ai.rankProbability=Math.min(
+ 99,
+ Math.round((data.ai.consistency+data.ai.speed*10))
+ );
+}
+
 // PLANNER
-// =====================
-function setExamDate(v){data.examDate=v;save();renderPlanner();}
-
-function planner(){
- if(!data.examDate) return null;
- const days=Math.max(1,Math.ceil((new Date(data.examDate)-new Date())/86400000));
- return{days};
-}
+function setExamDate(v){data.examDate=v;save();renderAll();}
 
 function renderPlanner(){
- const p=planner();
  const el=document.getElementById('planner');
- if(!p){el.innerHTML='Set exam date';return}
- el.innerHTML=`Days Left: <b>${p.days}</b>`;
+ if(!data.examDate){el.innerHTML='Set exam date';return}
+ const days=Math.ceil((new Date(data.examDate)-new Date())/86400000);
+ el.innerHTML=`Days Left: <b>${days}</b>`;
 }
 
-// =====================
 // HEATMAP
-// =====================
 function renderHeatmap(){
  const el=document.getElementById('heatmap');
  el.innerHTML='';
@@ -187,97 +229,29 @@ function renderHeatmap(){
  }
 }
 
-// =====================
-// AI PHASE-2 MODULES
-// =====================
-function markStudiedToday(){
- const t=today();
- if(!data.studyDates.includes(t)) data.studyDates.push(t);
- save();
- renderAll();
+function renderAI(){
+ document.getElementById('revisionAI').innerHTML=
+ `Speed: ${data.ai.speed.toFixed(2)} topics/day`;
+
+ document.getElementById('singularity').innerHTML=
+ `Evolution: ${data.ai.evolution}<br>Intelligence: ${data.ai.intelligence}<br>Risk: ${data.ai.risk}%`;
+
+ document.getElementById('omniscient').innerHTML=
+ `${data.ai.nextAction}<br>Selection Probability: ${data.ai.rankProbability}%`;
 }
 
-function addSubject(){
- const name=prompt('Subject name?');
- if(!name) return;
- data.subjects.push({id:Date.now().toString(),name,topics:[]});
- save();renderAll();
-}
-
-function addTopic(sid){
- const s=data.subjects.find(x=>x.id===sid);
- if(!s) return;
- const title=prompt('Topic name?');
- if(!title) return;
- s.topics.push({title,finished:false});
- save();renderAll();
-}
-
-function finishTopic(sid,idx){
- const s=data.subjects.find(x=>x.id===sid);
- if(!s) return;
- s.topics[idx].finished=true;
- markStudiedToday();
- save();renderAll();
-}
-
-function renderSubjects(){
- const el=document.getElementById('subjects');
- if(!el) return;
- el.innerHTML=(data.subjects||[]).map(s=>`<div style="margin:10px 0"><b>${s.name}</b> <button onclick=\"addTopic('${s.id}')\">+Topic</button>
- <ul>${(s.topics||[]).map((t,i)=>`<li>${t.title} ${t.finished?'✅':`<button onclick=\"finishTopic('${s.id}',${i})\">Finish</button>`}</li>`).join('')}</ul>
- </div>`).join('') || 'No subjects yet';
-}
-
-function burnoutAI(){
- const last7=(data.studyDates||[]).filter(d=>((new Date()-new Date(d))/86400000)<=7).length;
- return last7>=6? '⚠ Possible burnout: take a light day' : '✅ Energy good';
-}
-
-let recog;
-function startVoice(){
- if(!('webkitSpeechRecognition' in window)){
-  alert('Voice not supported');return;
- }
- recog=new webkitSpeechRecognition();
- recog.onresult=e=>{
-  const text=e.results[0][0].transcript.toLowerCase();
-  if(text.includes('studied')) markStudiedToday();
-  if(text.includes('add subject')) addSubject();
- };
- recog.start();
-}
-
-function askMentor(){
- const q=document.getElementById('mentorInput').value.trim();
- if(!q) return;
- const log=document.getElementById('mentorLog');
- log.innerHTML+=`<div><b>You:</b> ${q}</div><div><b>Mentor:</b> Do revisions first, then 1-2 new topics.</div>`;
- document.getElementById('mentorInput').value='';
-}
-
-// =====================
-// PWA SERVICE WORKER
-// =====================
 if('serviceWorker' in navigator){
- navigator.serviceWorker.register("/sw.js").catch(()=>{});
+ navigator.serviceWorker.register('/sw.js').catch(()=>{});
 }
 
-// =====================
-// MAIN RENDER
-// =====================
 function renderAll(){
  renderPlanner();
  renderHeatmap();
  renderSubjects();
- const b=document.getElementById('burnoutStatus');
- if(b) b.textContent=burnoutAI();
+ renderAI();
 }
 
-window.onload=()=>{
- load();
- renderAll();
-};
+window.onload=()=>{load();renderAll();};
 </script>
 </body>
 </html>
