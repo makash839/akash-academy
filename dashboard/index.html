@@ -1,0 +1,1453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Akash Academy AI Dashboard</title>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    
+    <!-- Chart.js for analytics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #8b5cf6;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --dark: #0f172a;
+            --darker: #020617;
+            --card: #1e293b;
+            --text: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #334155;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, var(--darker) 0%, var(--dark) 100%);
+            color: var(--text);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* Loading Screen */
+        #loader {
+            position: fixed;
+            inset: 0;
+            background: var(--darker);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.5s;
+        }
+
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid var(--border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Header */
+        header {
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            -webkit-text-fill-color: white;
+        }
+
+        /* User Section */
+        .user-section {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .login-btn {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.6);
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(99, 102, 241, 0.1);
+            padding: 8px 16px;
+            border-radius: 50px;
+            border: 1px solid rgba(99, 102, 241, 0.3);
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 2px solid var(--primary);
+        }
+
+        .user-info {
+            line-height: 1.3;
+        }
+
+        .user-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .user-email {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .logout-btn {
+            background: transparent;
+            color: var(--danger);
+            border: 1px solid var(--danger);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: var(--danger);
+            color: white;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Welcome Section */
+        .welcome {
+            margin-bottom: 2rem;
+        }
+
+        .welcome h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .welcome p {
+            color: var(--text-muted);
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 1.5rem;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .stat-icon.purple { background: rgba(99, 102, 241, 0.2); }
+        .stat-icon.green { background: rgba(16, 185, 129, 0.2); }
+        .stat-icon.orange { background: rgba(245, 158, 11, 0.2); }
+        .stat-icon.red { background: rgba(239, 68, 68, 0.2); }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* Dashboard Grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 1024px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Cards */
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 1.5rem;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-action {
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--primary);
+            border: 1px solid var(--primary);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .card-action:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .card-action:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Heatmap */
+        .heatmap-container {
+            margin-top: 1rem;
+        }
+
+        .heatmap-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .heatmap {
+            display: grid;
+            grid-template-columns: repeat(14, 1fr);
+            gap: 4px;
+        }
+
+        .heat-cell {
+            aspect-ratio: 1;
+            background: var(--border);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .heat-cell:hover {
+            transform: scale(1.2);
+            z-index: 10;
+        }
+
+        .heat-cell.level-0 { background: #1e293b; }
+        .heat-cell.level-1 { background: #0e4429; }
+        .heat-cell.level-2 { background: #006d32; }
+        .heat-cell.level-3 { background: #26a641; }
+        .heat-cell.level-4 { background: #39d353; box-shadow: 0 0 10px rgba(57, 211, 83, 0.5); }
+
+        .heat-tooltip {
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--dark);
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+            border: 1px solid var(--border);
+            z-index: 100;
+        }
+
+        .heat-cell:hover .heat-tooltip {
+            opacity: 1;
+        }
+
+        /* Exam Planner */
+        .exam-input {
+            width: 100%;
+            background: var(--dark);
+            border: 1px solid var(--border);
+            color: white;
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .exam-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .countdown {
+            text-align: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
+            border-radius: 16px;
+            border: 1px solid rgba(99, 102, 241, 0.3);
+        }
+
+        .countdown-number {
+            font-size: 4rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .countdown-label {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            margin-top: 0.5rem;
+        }
+
+        /* AI Suggestion */
+        .ai-box {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(139, 92, 246, 0.15));
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .ai-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .ai-text {
+            line-height: 1.6;
+            color: var(--text-muted);
+        }
+
+        .ai-text strong {
+            color: var(--text);
+        }
+
+        /* Subjects Section */
+        .subjects-section {
+            margin-top: 2rem;
+        }
+
+        .subject-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .subject-item {
+            background: var(--dark);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        .subject-item:hover {
+            border-color: var(--primary);
+        }
+
+        .subject-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.25rem;
+            cursor: pointer;
+            background: rgba(99, 102, 241, 0.05);
+        }
+
+        .subject-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .subject-meta {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .progress-bar {
+            width: 100px;
+            height: 6px;
+            background: var(--border);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 3px;
+            transition: width 0.5s;
+        }
+
+        .subject-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .icon-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            border: none;
+            background: var(--card);
+            color: var(--text);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .icon-btn:hover {
+            background: var(--primary);
+        }
+
+        .icon-btn.delete:hover {
+            background: var(--danger);
+        }
+
+        .topic-list {
+            padding: 1rem 1.25rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .topic-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            background: var(--card);
+            border-radius: 10px;
+            transition: all 0.3s;
+        }
+
+        .topic-item:hover {
+            background: rgba(99, 102, 241, 0.1);
+        }
+
+        .topic-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .topic-check {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid var(--border);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .topic-check:hover {
+            border-color: var(--success);
+        }
+
+        .topic-check.completed {
+            background: var(--success);
+            border-color: var(--success);
+        }
+
+        .topic-check.completed::after {
+            content: '✓';
+            color: white;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+
+        .topic-name {
+            transition: all 0.3s;
+        }
+
+        .topic-name.completed {
+            text-decoration: line-through;
+            opacity: 0.6;
+            color: var(--success);
+        }
+
+        .add-topic-btn {
+            width: 100%;
+            padding: 0.75rem;
+            background: transparent;
+            border: 2px dashed var(--border);
+            color: var(--text-muted);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 0.5rem;
+        }
+
+        .add-topic-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-muted);
+        }
+
+        .empty-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .modal {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 2rem;
+            width: 90%;
+            max-width: 500px;
+            transform: scale(0.9);
+            transition: transform 0.3s;
+        }
+
+        .modal-overlay.active .modal {
+            transform: scale(1);
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-input {
+            width: 100%;
+            background: var(--dark);
+            border: 1px solid var(--border);
+            color: white;
+            padding: 1rem;
+            border-radius: 12px;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .modal-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 1rem;
+        }
+
+        .btn-secondary {
+            background: var(--border);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        /* Toast Notifications */
+        .toast-container {
+            position: fixed;
+            top: 100px;
+            right: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            z-index: 1001;
+        }
+
+        .toast {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+            animation: slideIn 0.3s ease;
+            min-width: 300px;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .toast.success { border-left: 4px solid var(--success); }
+        .toast.error { border-left: 4px solid var(--danger); }
+        .toast.info { border-left: 4px solid var(--primary); }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Animations */
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Loader -->
+    <div id="loader">
+        <div class="spinner"></div>
+        <p style="margin-top: 1rem; color: var(--text-muted);">Loading Dashboard...</p>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Modal -->
+    <div class="modal-overlay" id="modal">
+        <div class="modal">
+            <h3 class="modal-title" id="modalTitle">Add New</h3>
+            <input type="text" class="modal-input" id="modalInput" placeholder="Enter name...">
+            <div class="modal-actions">
+                <button class="btn-secondary" onclick="closeModal()">Cancel</button>
+                <button class="btn-primary" onclick="modalSubmit()">Add</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">🎓</div>
+                Akash Academy AI
+            </div>
+            
+            <div class="user-section" id="userSection">
+                <button class="login-btn" id="loginBtn" onclick="login()">
+                    <span>☁️</span>
+                    Login with Google
+                </button>
+                
+                <div class="user-profile" id="userProfile" style="display: none;">
+                    <img src="" alt="User" class="user-avatar" id="userAvatar">
+                    <div class="user-info">
+                        <div class="user-name" id="userName">Loading...</div>
+                        <div class="user-email" id="userEmail">...</div>
+                    </div>
+                    <button class="logout-btn" onclick="logout()">Logout</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container" id="mainContent" style="display: none;">
+        
+        <!-- Welcome -->
+        <div class="welcome">
+            <h1 id="welcomeText">Welcome back, Scholar! 👋</h1>
+            <p>Track your progress, plan your studies, and achieve your goals with AI-powered insights.</p>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon purple">📚</div>
+                <div class="stat-value" id="statSubjects">0</div>
+                <div class="stat-label">Active Subjects</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon green">✅</div>
+                <div class="stat-value" id="statCompleted">0</div>
+                <div class="stat-label">Topics Completed</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon orange">🔥</div>
+                <div class="stat-value" id="statStreak">0</div>
+                <div class="stat-label">Day Streak</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon red">📅</div>
+                <div class="stat-value" id="statDays">0</div>
+                <div class="stat-label">Days to Exam</div>
+            </div>
+        </div>
+
+        <!-- Dashboard Grid -->
+        <div class="dashboard-grid">
+            
+            <!-- Left Column -->
+            <div class="left-column">
+                
+                <!-- Heatmap Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">📊 Study Heatmap</div>
+                        <button class="card-action" id="studyTodayBtn" onclick="markStudiedToday()" disabled>
+                            ✓ I Studied Today
+                        </button>
+                    </div>
+                    
+                    <div class="heatmap-container">
+                        <div class="heatmap-header">
+                            <span>Last 6 months</span>
+                            <span style="display: flex; gap: 8px; align-items: center;">
+                                Less <div class="heat-cell level-0" style="width: 12px; height: 12px;"></div>
+                                <div class="heat-cell level-2" style="width: 12px; height: 12px;"></div>
+                                <div class="heat-cell level-4" style="width: 12px; height: 12px;"></div> More
+                            </span>
+                        </div>
+                        <div class="heatmap" id="heatmap"></div>
+                    </div>
+                </div>
+
+                <!-- Subjects Card -->
+                <div class="card subjects-section" style="margin-top: 2rem;">
+                    <div class="card-header">
+                        <div class="card-title">📚 Your Subjects</div>
+                        <button class="card-action" id="addSubjectBtn" onclick="openAddSubject()" disabled>
+                            + Add Subject
+                        </button>
+                    </div>
+                    
+                    <div class="subject-list" id="subjectList">
+                        <div class="empty-state">
+                            <div class="empty-icon">📖</div>
+                            <p>No subjects yet. Login to add your first subject!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column -->
+            <div class="right-column">
+                
+                <!-- Exam Planner -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">📅 Exam Planner</div>
+                    </div>
+                    
+                    <input type="date" class="exam-input" id="examDate" onchange="setExamDate(this.value)">
+                    
+                    <div class="countdown" id="countdownBox">
+                        <div class="countdown-number" id="countdownNumber">--</div>
+                        <div class="countdown-label" id="countdownText">Set your exam date</div>
+                    </div>
+                </div>
+
+                <!-- AI Insights -->
+                <div class="card" style="margin-top: 2rem;">
+                    <div class="card-header">
+                        <div class="card-title">🌌 AI Insights</div>
+                    </div>
+                    
+                    <div style="margin-bottom: 1rem;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                            <span style="color: var(--text-muted);">Study Speed</span>
+                            <span style="font-weight: 600;" id="aiSpeed">0 topics/day</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between;">
+                            <span style="color: var(--text-muted);">Completion</span>
+                            <span style="font-weight: 600;" id="aiCompletion">0%</span>
+                        </div>
+                    </div>
+                    
+                    <div class="ai-box">
+                        <div class="ai-header">
+                            <span>💡</span>
+                            <span>AI Suggestion</span>
+                        </div>
+                        <div class="ai-text" id="aiSuggestion">
+                            Login to get personalized study recommendations based on your progress and exam date.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ================= FIREBASE CONFIG =================
+        const firebaseConfig = {
+            apiKey: "AIzaSyAm1EZtdULG_Qay6T0sO0k8D8dBfXpVMW4",
+            authDomain: "akashacademy-33513.firebaseapp.com",
+            projectId: "akashacademy-33513",
+            storageBucket: "akashacademy-33513.appspot.com",
+            messagingSenderId: "169097190637",
+            appId: "1:169097190637:web:e8523bc099374a6955c0e4"
+        };
+
+        // ================= GLOBAL STATE =================
+        let auth, db;
+        let currentUser = null;
+        let appData = {
+            subjects: [],
+            studyDates: [],
+            exam: null
+        };
+        let modalCallback = null;
+
+        // ================= INITIALIZATION =================
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                // Initialize Firebase
+                firebase.initializeApp(firebaseConfig);
+                auth = firebase.auth();
+                db = firebase.firestore();
+
+                console.log('✅ Firebase initialized');
+
+                // Setup auth listener
+                setupAuthListener();
+
+                // Load local data
+                loadLocalData();
+
+                // Hide loader
+                setTimeout(() => {
+                    document.getElementById('loader').style.opacity = '0';
+                    setTimeout(() => {
+                        document.getElementById('loader').style.display = 'none';
+                        document.getElementById('mainContent').style.display = 'block';
+                    }, 500);
+                }, 1000);
+
+            } catch (error) {
+                console.error('❌ Initialization error:', error);
+                showToast('Error loading dashboard. Please refresh.', 'error');
+            }
+        });
+
+        // ================= AUTHENTICATION =================
+        function setupAuthListener() {
+            auth.onAuthStateChanged(async (user) => {
+                console.log('Auth state:', user ? 'LOGGED IN' : 'LOGGED OUT');
+                
+                currentUser = user;
+                
+                if (user) {
+                    // Update UI for logged in user
+                    document.getElementById('loginBtn').style.display = 'none';
+                    document.getElementById('userProfile').style.display = 'flex';
+                    document.getElementById('userName').textContent = user.displayName || 'User';
+                    document.getElementById('userEmail').textContent = user.email;
+                    document.getElementById('userAvatar').src = user.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.displayName || 'User')}&background=6366f1&color=fff`;
+                    document.getElementById('welcomeText').textContent = `Welcome back, ${user.displayName || 'Scholar'}! 👋`;
+                    
+                    // Enable buttons
+                    document.getElementById('studyTodayBtn').disabled = false;
+                    document.getElementById('addSubjectBtn').disabled = false;
+                    
+                    // Load user data
+                    await loadUserData(user.uid);
+                    
+                    showToast('Welcome back!', 'success');
+                } else {
+                    // Update UI for logged out user
+                    document.getElementById('loginBtn').style.display = 'flex';
+                    document.getElementById('userProfile').style.display = 'none';
+                    document.getElementById('welcomeText').textContent = 'Welcome, Scholar! 👋';
+                    
+                    // Disable buttons
+                    document.getElementById('studyTodayBtn').disabled = true;
+                    document.getElementById('addSubjectBtn').disabled = true;
+                    
+                    // Reset to local data
+                    loadLocalData();
+                }
+                
+                updateUI();
+            });
+        }
+
+        function login() {
+            const provider = new firebase.auth.GoogleAuthProvider();
+            provider.addScope('profile');
+            provider.addScope('email');
+            
+            auth.signInWithPopup(provider)
+                .catch(error => {
+                    console.error('Login error:', error);
+                    let message = 'Login failed';
+                    if (error.code === 'auth/popup-blocked') message = 'Popup blocked! Please allow popups.';
+                    else if (error.code === 'auth/unauthorized-domain') message = 'Domain not authorized in Firebase!';
+                    showToast(message, 'error');
+                });
+        }
+
+        function logout() {
+            auth.signOut().then(() => {
+                showToast('Logged out successfully', 'success');
+            });
+        }
+
+        // ================= DATA MANAGEMENT =================
+        async function loadUserData(uid) {
+            try {
+                const doc = await db.collection('users').doc(uid).get();
+                if (doc.exists && doc.data().data) {
+                    appData = doc.data().data;
+                    saveLocalData(); // Backup
+                    console.log('✅ Cloud data loaded');
+                } else {
+                    // Create new user document
+                    await db.collection('users').doc(uid).set({ data: appData });
+                    console.log('✅ New user created');
+                }
+            } catch (error) {
+                console.error('Error loading data:', error);
+                loadLocalData();
+            }
+        }
+
+        function saveData() {
+            // Save to localStorage
+            localStorage.setItem('akash_academy_data', JSON.stringify(appData));
+            
+            // Save to Firestore if logged in
+            if (currentUser) {
+                db.collection('users').doc(currentUser.uid).set({ data: appData })
+                    .catch(err => console.error('Save error:', err));
+            }
+        }
+
+        function loadLocalData() {
+            const saved = localStorage.getItem('akash_academy_data');
+            if (saved) {
+                appData = JSON.parse(saved);
+            }
+        }
+
+        // ================= UI UPDATES =================
+        function updateUI() {
+            updateStats();
+            renderHeatmap();
+            renderSubjects();
+            updateExamCountdown();
+            updateAIInsights();
+        }
+
+        function updateStats() {
+            const totalSubjects = appData.subjects.length;
+            const totalTopics = appData.subjects.reduce((acc, s) => acc + s.topics.length, 0);
+            const completedTopics = appData.subjects.reduce((acc, s) => 
+                acc + s.topics.filter(t => t.done).length, 0);
+            
+            // Calculate streak
+            let streak = 0;
+            const today = new Date();
+            for (let i = 0; i < 365; i++) {
+                const d = new Date(today);
+                d.setDate(d.getDate() - i);
+                const dateStr = d.toISOString().slice(0, 10);
+                if (appData.studyDates.includes(dateStr)) {
+                    streak++;
+                } else if (i > 0) {
+                    break;
+                }
+            }
+            
+            // Days to exam
+            let daysToExam = 0;
+            if (appData.exam) {
+                daysToExam = Math.ceil((new Date(appData.exam) - new Date()) / 86400000);
+                if (daysToExam < 0) daysToExam = 0;
+            }
+            
+            document.getElementById('statSubjects').textContent = totalSubjects;
+            document.getElementById('statCompleted').textContent = completedTopics;
+            document.getElementById('statStreak').textContent = streak;
+            document.getElementById('statDays').textContent = daysToExam;
+        }
+
+        // ================= HEATMAP =================
+        function renderHeatmap() {
+            const container = document.getElementById('heatmap');
+            container.innerHTML = '';
+            
+            // Generate last 168 days (24 weeks)
+            for (let i = 167; i >= 0; i--) {
+                const d = new Date();
+                d.setDate(d.getDate() - i);
+                const dateStr = d.toISOString().slice(0, 10);
+                
+                const cell = document.createElement('div');
+                cell.className = 'heat-cell';
+                
+                // Determine level based on study data
+                let level = 0;
+                if (appData.studyDates.includes(dateStr)) {
+                    level = 4; // Studied
+                }
+                
+                cell.classList.add(`level-${level}`);
+                
+                // Tooltip
+                const tooltip = document.createElement('div');
+                tooltip.className = 'heat-tooltip';
+                tooltip.textContent = `${dateStr}: ${level > 0 ? 'Studied!' : 'No study'}`;
+                cell.appendChild(tooltip);
+                
+                container.appendChild(cell);
+            }
+        }
+
+        function markStudiedToday() {
+            if (!currentUser) {
+                showToast('Please login first!', 'error');
+                return;
+            }
+            
+            const today = new Date().toISOString().slice(0, 10);
+            
+            if (appData.studyDates.includes(today)) {
+                showToast('Already marked for today!', 'info');
+                return;
+            }
+            
+            appData.studyDates.push(today);
+            saveData();
+            updateUI();
+            showToast('Great job! Study session recorded!', 'success');
+        }
+
+        // ================= SUBJECTS =================
+        function renderSubjects() {
+            const container = document.getElementById('subjectList');
+            
+            if (appData.subjects.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">📖</div>
+                        <p>${currentUser ? 'No subjects yet. Click "Add Subject" to start!' : 'Login to add your first subject!'}</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = appData.subjects.map((subject, index) => {
+                const total = subject.topics.length;
+                const completed = subject.topics.filter(t => t.done).length;
+                const progress = total > 0 ? (completed / total * 100) : 0;
+                
+                return `
+                    <div class="subject-item">
+                        <div class="subject-header" onclick="toggleSubject(${index})">
+                            <div>
+                                <div class="subject-title">${subject.name}</div>
+                                <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 4px;">
+                                    ${completed}/${total} topics completed
+                                </div>
+                            </div>
+                            <div class="subject-meta">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: ${progress}%"></div>
+                                </div>
+                                <span style="font-size: 0.85rem; color: var(--text-muted);">${Math.round(progress)}%</span>
+                                <div class="subject-actions" onclick="event.stopPropagation()">
+                                    <button class="icon-btn" onclick="openAddTopic(${index})" title="Add topic">+</button>
+                                    <button class="icon-btn delete" onclick="deleteSubject(${index})" title="Delete">🗑</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="topic-list" id="topics-${index}" style="display: none;">
+                            ${subject.topics.map((topic, tIndex) => `
+                                <div class="topic-item">
+                                    <div class="topic-title">
+                                        <div class="topic-check ${topic.done ? 'completed' : ''}" 
+                                             onclick="toggleTopic(${index}, ${tIndex})"></div>
+                                        <span class="topic-name ${topic.done ? 'completed' : ''}">${topic.title}</span>
+                                    </div>
+                                </div>
+                            `).join('')}
+                            ${subject.topics.length === 0 ? '<p style="color: var(--text-muted); font-size: 0.9rem;">No topics yet</p>' : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function toggleSubject(index) {
+            const el = document.getElementById(`topics-${index}`);
+            el.style.display = el.style.display === 'none' ? 'flex' : 'none';
+        }
+
+        function openAddSubject() {
+            if (!currentUser) return;
+            modalCallback = (name) => {
+                appData.subjects.push({
+                    id: Date.now(),
+                    name: name,
+                    topics: []
+                });
+                saveData();
+                updateUI();
+                showToast('Subject added!', 'success');
+            };
+            openModal('Add New Subject', 'Enter subject name...');
+        }
+
+        function openAddTopic(subjectIndex) {
+            if (!currentUser) return;
+            modalCallback = (title) => {
+                appData.subjects[subjectIndex].topics.push({
+                    title: title,
+                    done: false,
+                    createdAt: new Date().toISOString()
+                });
+                saveData();
+                updateUI();
+                showToast('Topic added!', 'success');
+                
+                // Keep subject expanded
+                setTimeout(() => {
+                    document.getElementById(`topics-${subjectIndex}`).style.display = 'flex';
+                }, 100);
+            };
+            openModal('Add New Topic', 'Enter topic name...');
+        }
+
+        function toggleTopic(subjectIndex, topicIndex) {
+            if (!currentUser) return;
+            
+            const topic = appData.subjects[subjectIndex].topics[topicIndex];
+            topic.done = !topic.done;
+            
+            if (topic.done) {
+                // Add study date if not exists
+                const today = new Date().toISOString().slice(0, 10);
+                if (!appData.studyDates.includes(today)) {
+                    appData.studyDates.push(today);
+                }
+            }
+            
+            saveData();
+            updateUI();
+            
+            // Keep expanded
+            setTimeout(() => {
+                document.getElementById(`topics-${subjectIndex}`).style.display = 'flex';
+            }, 100);
+        }
+
+        function deleteSubject(index) {
+            if (!confirm('Delete this subject and all its topics?')) return;
+            
+            appData.subjects.splice(index, 1);
+            saveData();
+            updateUI();
+            showToast('Subject deleted', 'success');
+        }
+
+        // ================= EXAM PLANNER =================
+        function setExamDate(date) {
+            appData.exam = date;
+            saveData();
+            updateExamCountdown();
+            updateAIInsights();
+        }
+
+        function updateExamCountdown() {
+            const numberEl = document.getElementById('countdownNumber');
+            const textEl = document.getElementById('countdownText');
+            
+            if (!appData.exam) {
+                numberEl.textContent = '--';
+                textEl.textContent = 'Set your exam date';
+                return;
+            }
+            
+            const days = Math.ceil((new Date(appData.exam) - new Date()) / 86400000);
+            
+            if (days < 0) {
+                numberEl.textContent = '0';
+                textEl.textContent = 'Exam date passed!';
+                numberEl.style.color = 'var(--danger)';
+            } else {
+                numberEl.textContent = days;
+                textEl.textContent = days === 1 ? 'day remaining' : 'days remaining';
+                numberEl.style.color = '';
+            }
+        }
+
+        // ================= AI INSIGHTS =================
+        function updateAIInsights() {
+            const totalTopics = appData.subjects.reduce((acc, s) => acc + s.topics.length, 0);
+            const completed = appData.subjects.reduce((acc, s) => 
+                acc + s.topics.filter(t => t.done).length, 0);
+            
+            // Calculate speed (topics per study day)
+            const studyDays = appData.studyDates.length || 1;
+            const speed = (completed / studyDays).toFixed(1);
+            
+            // Completion percentage
+            const completion = totalTopics > 0 ? Math.round((completed / totalTopics) * 100) : 0;
+            
+            document.getElementById('aiSpeed').textContent = `${speed} topics/day`;
+            document.getElementById('aiCompletion').textContent = `${completion}%`;
+            
+            // Generate suggestion
+            let suggestion = '';
+            const remaining = totalTopics - completed;
+            
+            if (!currentUser) {
+                suggestion = 'Login to get personalized study recommendations based on your progress and exam date.';
+            } else if (remaining === 0 && totalTopics > 0) {
+                suggestion = '🎉 Congratulations! You\'ve completed all topics. Great job!';
+            } else if (!appData.exam) {
+                suggestion = `📚 You have <strong>${remaining}</strong> topics remaining. Set an exam date to get a personalized study plan!`;
+            } else {
+                const daysLeft = Math.ceil((new Date(appData.exam) - new Date()) / 86400000);
+                if (daysLeft <= 0) {
+                    suggestion = '⚠️ Your exam date has passed! Update it to get new recommendations.';
+                } else {
+                    const perDay = Math.ceil(remaining / daysLeft);
+                    suggestion = `📅 <strong>${daysLeft}</strong> days left until exam.<br>You need to study <strong>${perDay}</strong> topics per day to complete everything on time.`;
+                }
+            }
+            
+            document.getElementById('aiSuggestion').innerHTML = suggestion;
+        }
+
+        // ================= MODAL =================
+        function openModal(title, placeholder) {
+            document.getElementById('modalTitle').textContent = title;
+            document.getElementById('modalInput').placeholder = placeholder;
+            document.getElementById('modalInput').value = '';
+            document.getElementById('modal').classList.add('active');
+            setTimeout(() => document.getElementById('modalInput').focus(), 100);
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+            modalCallback = null;
+        }
+
+        function modalSubmit() {
+            const value = document.getElementById('modalInput').value.trim();
+            if (value && modalCallback) {
+                modalCallback(value);
+                closeModal();
+            }
+        }
+
+        // Close modal on escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeModal();
+            if (e.key === 'Enter' && document.getElementById('modal').classList.contains('active')) {
+                modalSubmit();
+            }
+        });
+
+        // ================= TOASTS =================
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            
+            const icon = type === 'success' ? '✓' : type === 'error' ? '✕' : 'ℹ';
+            
+            toast.innerHTML = `
+                <span style="font-size: 1.2rem;">${icon}</span>
+                <span>${message}</span>
+            `;
+            
+            container.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.animation = 'slideIn 0.3s ease reverse';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
