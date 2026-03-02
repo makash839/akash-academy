@@ -1,867 +1,197 @@
 <!DOCTYPE html>
 <html lang="hi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Daily Goal Tracker - Akash Academy</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
-  <style>
-    body { 
-      font-family: 'Poppins', sans-serif; 
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      min-height: 100vh;
-    }
-    .glass { 
-      backdrop-filter: blur(16px); 
-      background: rgba(255,255,255,0.95); 
-      border: 1px solid rgba(255,255,255,0.2);
-      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-    }
-    .tab-active { 
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
-      color: white; 
-    }
-    .progress-ring { transform: rotate(-90deg); }
-    .celebration { animation: celebrate 0.5s ease-in-out; }
-    @keyframes celebrate {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.1); }
-    }
-    .back-btn {
-      position: fixed;
-      top: 20px;
-      left: 20px;
-      z-index: 100;
-      background: rgba(255,255,255,0.95);
-      padding: 12px 24px;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-      transition: all 0.3s;
-      text-decoration: none;
-      color: #333;
-    }
-    .back-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(0,0,0,0.2);
-    }
-    .settings-btn {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      z-index: 100;
-      background: rgba(255,255,255,0.95);
-      padding: 12px 16px;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-      cursor: pointer;
-      transition: all 0.3s;
-    }
-    .settings-btn:hover {
-      transform: translateY(-2px);
-    }
-    .login-container {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
-    .shake { animation: shake 0.5s ease-in-out; }
-    @keyframes shake {
-      0%, 100% { transform: translateX(0); }
-      25% { transform: translateX(-10px); }
-      75% { transform: translateX(10px); }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Akash Academy - Exam Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .main-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        /* Grid for 4 Cards */
+        .exam-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            max-width: 1300px;
+            width: 100%;
+        }
+
+        .exam-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .exam-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+
+        .exam-header {
+            padding: 25px;
+            text-align: center;
+            color: white;
+        }
+
+        /* Colors for each exam */
+        .roaro { background: linear-gradient(135deg, #003366 0%, #004080 100%); }
+        .nta { background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%); }
+        .vikas { background: linear-gradient(135deg, #059669 0%, #047857 100%); }
+        .ghatna { background: linear-gradient(135deg, #4b6cb7 0%, #182848 100%); }
+        .goals { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+
+        .exam-icon { font-size: 50px; margin-bottom: 10px; }
+        .exam-header h2 { font-size: 1.6rem; font-weight: bold; }
+
+        .exam-body { padding: 25px; flex-grow: 1; }
+        .feature-list { list-style: none; margin-bottom: 20px; }
+        .feature-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+            color: #555;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.95rem;
+        }
+
+        .start-btn {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            font-weight: bold;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: 0.3s;
+        }
+
+        .secure-badge { margin-top: 40px; color: white; opacity: 0.8; }
+    </style>
 </head>
 <body>
 
-<!-- ==================== LOGIN SCREEN ==================== -->
-<div id="loginScreen" class="login-container">
-  <div class="glass rounded-3xl p-8 md:p-12 max-w-md w-full text-center">
-    <div class="text-6xl mb-6">🔐</div>
-    <h1 class="text-3xl font-bold text-gray-800 mb-2">Goal Tracker</h1>
-    <p class="text-gray-600 mb-8">Access your personal dashboard</p>
-    
-    <!-- First Time Setup -->
-    <div id="setupSection" class="hidden">
-      <p class="text-gray-700 mb-4 font-semibold">पहली बार? अपना Password सेट करो:</p>
-      <input type="password" id="newPassword" placeholder="नया Password डालो" 
-             class="w-full border-2 border-purple-300 rounded-xl px-4 py-3 mb-3 focus:outline-none focus:border-purple-600 text-center text-lg">
-      <input type="password" id="confirmPassword" placeholder="Password Confirm करो" 
-             class="w-full border-2 border-purple-300 rounded-xl px-4 py-3 mb-4 focus:outline-none focus:border-purple-600 text-center text-lg">
-      <button onclick="setupPassword()" class="w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white py-4 rounded-xl font-bold text-lg hover:scale-105 transition">
-        <i class="fas fa-check"></i> Password Set करो
-      </button>
-    </div>
-    
-    <!-- Login Form -->
-    <div id="loginSection">
-      <input type="password" id="passwordInput" placeholder="अपना Password डालो" 
-             class="w-full border-2 border-purple-300 rounded-xl px-4 py-4 mb-4 focus:outline-none focus:border-purple-600 text-center text-xl"
-             onkeypress="if(event.key==='Enter')checkPassword()">
-      <button onclick="checkPassword()" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-4 rounded-xl font-bold text-lg hover:scale-105 transition">
-        <i class="fas fa-unlock"></i> Login करो
-      </button>
-      <p id="errorMsg" class="text-red-500 mt-4 hidden font-semibold">❌ गलत Password! फिर से try करो</p>
-    </div>
-    
-    <a href="index.html" class="inline-block mt-6 text-purple-600 hover:text-purple-800 font-semibold">
-      <i class="fas fa-arrow-left"></i> Back to Home
-    </a>
-  </div>
-</div>
-
-<!-- ==================== MAIN APP ==================== -->
-<div id="mainApp" class="hidden">
-
-  <!-- Back Button -->
-  <a href="index.html" class="back-btn flex items-center gap-2 font-semibold hover:text-purple-600">
-    <i class="fas fa-arrow-left"></i> Home
-  </a>
-
-  <!-- Settings Button -->
-  <div class="settings-btn" onclick="openSettings()">
-    <i class="fas fa-cog text-gray-700 text-xl"></i>
-  </div>
-
-  <div class="container mx-auto max-w-7xl p-4 md:p-8 mt-16">
-
-    <!-- Header -->
-    <div class="text-center mb-8">
-      <h1 class="text-4xl md:text-5xl font-bold mb-3 text-white drop-shadow-lg">
-        🎯 Daily Goal Tracker
-      </h1>
-      <p class="text-white text-lg opacity-90" id="currentDate"></p>
-    </div>
-
-    <!-- Main Goal Section -->
-    <div class="glass rounded-3xl p-6 md:p-8 mb-8">
-      <h2 class="text-2xl md:text-3xl font-bold mb-6 text-gray-800 flex items-center gap-3">
-        <i class="fas fa-bullseye text-purple-600"></i> मेरा Main Goal
-      </h2>
-      
-      <div class="grid md:grid-cols-2 gap-4 mb-6">
-        <div>
-          <label class="block text-gray-700 font-semibold mb-2">Goal का नाम</label>
-          <input type="text" id="mainGoalName" placeholder="जैसे: Total Questions Solve" 
-                 class="w-full border-2 border-purple-300 rounded-xl px-4 py-3 focus:outline-none focus:border-purple-600">
+    <div class="main-container">
+        <div class="header">
+            <h1>🎓 Akash Academy</h1>
+            <p>Welcome to the Ultimate Exam Portal</p>
         </div>
-        <div>
-          <label class="block text-gray-700 font-semibold mb-2">Total Target संख्या</label>
-          <input type="number" id="mainGoalTarget" placeholder="जैसे: 10000" 
-                 class="w-full border-2 border-purple-300 rounded-xl px-4 py-3 focus:outline-none focus:border-purple-600">
-        </div>
-      </div>
 
-      <button onclick="setMainGoal()" class="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-8 py-4 rounded-xl font-bold text-lg hover:scale-105 transition shadow-lg">
-        <i class="fas fa-save"></i> Main Goal Set करो
-      </button>
-
-      <!-- Main Goal Display -->
-      <div id="mainGoalDisplay" class="mt-8 hidden">
-        <div class="bg-gradient-to-r from-purple-100 to-pink-100 rounded-2xl p-6">
-          <div class="flex flex-col lg:flex-row justify-between items-center gap-6">
-            <div class="text-center lg:text-left flex-1">
-              <h3 class="text-xl md:text-2xl font-bold text-purple-900 mb-2" id="goalNameDisplay"></h3>
-              <div class="text-4xl md:text-5xl font-bold text-purple-600 mb-2">
-                <span id="currentProgress">0</span> / <span id="targetProgress">0</span>
-              </div>
-              <div class="text-gray-600 text-lg">
-                <span id="remainingProgress">0</span> बाकी है
-              </div>
+        <div class="exam-grid">
+            <div class="exam-card" onclick="window.location.href='roaro-exam.html'">
+                <div class="exam-header roaro">
+                    <div class="exam-icon">📋</div>
+                    <h2>RO/ARO Exam</h2>
+                </div>
+                <div class="exam-body">
+                    <ul class="feature-list">
+                        <li><i class="fas fa-check-circle text-green-500"></i> UPPSC Pattern</li>
+                        <li><i class="fas fa-check-circle text-green-500"></i> Hindi/English Support</li>
+                    </ul>
+                    <div class="start-btn roaro">Start Exam</div>
+                </div>
             </div>
 
-            <div class="relative w-40 h-40 md:w-48 md:h-48">
-              <svg class="w-full h-full">
-                <circle cx="50%" cy="50%" r="45%" stroke="#e5e7eb" stroke-width="12" fill="none"/>
-                <circle id="progressCircle" cx="50%" cy="50%" r="45%" stroke="url(#gradient)" stroke-width="12" fill="none"
-                        class="progress-ring" stroke-dasharray="283" stroke-dashoffset="283"
-                        stroke-linecap="round"/>
-                <defs>
-                  <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" style="stop-color:#667eea"/>
-                    <stop offset="100%" style="stop-color:#764ba2"/>
-                  </linearGradient>
-                </defs>
-              </svg>
-              <div class="absolute inset-0 flex items-center justify-center">
-                <span class="text-3xl md:text-4xl font-bold text-purple-600" id="percentageDisplay">0%</span>
-              </div>
+            <div class="exam-card" onclick="window.location.href='nta-exam.html'">
+                <div class="exam-header nta">
+                    <div class="exam-icon">📝</div>
+                    <h2>NTA Mock Test</h2>
+                </div>
+                <div class="exam-body">
+                    <ul class="feature-list">
+                        <li><i class="fas fa-check-circle text-green-500"></i> Official NTA Pattern</li>
+                        <li><i class="fas fa-check-circle text-green-500"></i> Instant Results</li>
+                    </ul>
+                    <div class="start-btn nta">Start Exam</div>
+                </div>
             </div>
 
-            <div class="text-center bg-white rounded-xl p-4 md:p-6 shadow-lg">
-              <div class="text-gray-600 mb-2">Estimated Completion</div>
-              <div class="text-2xl md:text-3xl font-bold text-purple-600" id="estimatedDays">--</div>
-              <div class="text-gray-500 text-sm mt-1">दिन बाकी</div>
-              <div class="text-lg font-semibold text-green-600 mt-3" id="completionDate">--</div>
+            <div class="exam-card" onclick="window.location.href='vikas-portal.html'">
+                <div class="exam-header vikas">
+                    <div class="exam-icon">🌱</div>
+                    <h2>Vikas Portal</h2>
+                </div>
+                <div class="exam-body">
+                    <ul class="feature-list">
+                        <li><i class="fas fa-check-circle text-green-500"></i> General Competition</li>
+                        <li><i class="fas fa-check-circle text-green-500"></i> Best for Practice</li>
+                    </ul>
+                    <div class="start-btn vikas">Start Exam</div>
+                </div>
             </div>
-          </div>
 
-          <div class="mt-6 bg-white rounded-xl p-4 grid grid-cols-3 gap-4 text-center">
-            <div>
-              <div class="text-gray-600 text-sm">Daily Avg</div>
-              <div class="text-xl font-bold text-purple-600" id="dailyAvg">0</div>
+            <div class="exam-card" onclick="window.location.href='ghatna-chakra.html'">
+                <div class="exam-header ghatna">
+                    <div class="exam-icon">📚</div>
+                    <h2>Ghatna Chakra</h2>
+                </div>
+                <div class="exam-body">
+                    <ul class="feature-list">
+                        <li><i class="fas fa-check-circle text-green-500"></i> Previous Year Series</li>
+                        <li><i class="fas fa-check-circle text-green-500"></i> Topic-wise Analysis</li>
+                    </ul>
+                    <div class="start-btn ghatna">Start Exam</div>
+                </div>
             </div>
-            <div>
-              <div class="text-gray-600 text-sm">Weekly Avg</div>
-              <div class="text-xl font-bold text-blue-600" id="weeklyAvg">0</div>
+
+            <!-- ✅ 5th Card - Daily Goal Tracker (NEW) -->
+            <div class="exam-card" onclick="window.location.href='goal-tracker.html'">
+                <div class="exam-header goals">
+                    <div class="exam-icon">🎯</div>
+                    <h2>Daily Goal Tracker</h2>
+                </div>
+                <div class="exam-body">
+                    <ul class="feature-list">
+                        <li><i class="fas fa-check-circle text-green-500"></i> Daily Progress Track</li>
+                        <li><i class="fas fa-check-circle text-green-500"></i> Weekly/Monthly Reports</li>
+                        <li><i class="fas fa-lock text-purple-500"></i> Password Protected</li>
+                    </ul>
+                    <div class="start-btn goals">Open Tracker 🚀</div>
+                </div>
             </div>
-            <div>
-              <div class="text-gray-600 text-sm">Best Day</div>
-              <div class="text-xl font-bold text-green-600" id="bestDay">0</div>
-            </div>
-          </div>
+
         </div>
-      </div>
+
+        <div class="secure-badge">
+            <i class="fas fa-shield-alt"></i> Secure Exam Portal | 2024-25 Edition
+        </div>
     </div>
-
-    <!-- Tabs Navigation -->
-    <div class="glass rounded-2xl p-2 mb-8 flex gap-2 overflow-x-auto">
-      <button onclick="switchTab('daily')" id="tabDaily" class="tab-active flex-1 px-4 md:px-6 py-3 rounded-xl font-semibold transition whitespace-nowrap text-sm md:text-base">
-        📅 Daily Tasks
-      </button>
-      <button onclick="switchTab('weekly')" id="tabWeekly" class="flex-1 px-4 md:px-6 py-3 rounded-xl font-semibold hover:bg-purple-100 transition whitespace-nowrap text-sm md:text-base">
-        📊 Weekly
-      </button>
-      <button onclick="switchTab('monthly')" id="tabMonthly" class="flex-1 px-4 md:px-6 py-3 rounded-xl font-semibold hover:bg-purple-100 transition whitespace-nowrap text-sm md:text-base">
-        📈 Monthly
-      </button>
-    </div>
-
-    <!-- Daily Tab -->
-    <div id="dailyTab" class="tab-content">
-      <!-- Add Task -->
-      <div class="glass rounded-2xl p-6 mb-6">
-        <h3 class="text-xl md:text-2xl font-bold mb-4 text-gray-800">आज का Task Add करो</h3>
-        <div class="grid md:grid-cols-3 gap-4">
-          <input type="text" id="taskName" placeholder="Task का नाम" 
-                 class="border-2 border-purple-300 rounded-xl px-4 py-3 focus:outline-none focus:border-purple-600">
-          <input type="number" id="taskQuantity" placeholder="कितना करना है" 
-                 class="border-2 border-purple-300 rounded-xl px-4 py-3 focus:outline-none focus:border-purple-600">
-          <button onclick="addDailyTask()" class="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-6 py-3 rounded-xl font-bold hover:scale-105 transition">
-            <i class="fas fa-plus"></i> Add Task
-          </button>
-        </div>
-      </div>
-
-      <!-- Tasks List -->
-      <div class="glass rounded-2xl p-6 mb-6">
-        <div class="flex justify-between items-center mb-6">
-          <h3 class="text-xl md:text-2xl font-bold text-gray-800">आज के Tasks</h3>
-          <div class="text-lg font-semibold text-purple-600">
-            Today: <span id="todayTotal">0</span>
-          </div>
-        </div>
-        <div id="todayTasksList" class="space-y-3"></div>
-      </div>
-
-      <!-- Quick Stats -->
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div class="glass rounded-xl p-4 md:p-6 text-center">
-          <div class="text-3xl md:text-4xl mb-2">🔥</div>
-          <div class="text-2xl md:text-3xl font-bold text-orange-500" id="streakDays">0</div>
-          <div class="text-gray-600 font-semibold text-sm md:text-base">Day Streak</div>
-        </div>
-        <div class="glass rounded-xl p-4 md:p-6 text-center">
-          <div class="text-3xl md:text-4xl mb-2">📅</div>
-          <div class="text-2xl md:text-3xl font-bold text-blue-500" id="thisWeekCount">0</div>
-          <div class="text-gray-600 font-semibold text-sm md:text-base">This Week</div>
-        </div>
-        <div class="glass rounded-xl p-4 md:p-6 text-center">
-          <div class="text-3xl md:text-4xl mb-2">📆</div>
-          <div class="text-2xl md:text-3xl font-bold text-green-500" id="thisMonthCount">0</div>
-          <div class="text-gray-600 font-semibold text-sm md:text-base">This Month</div>
-        </div>
-        <div class="glass rounded-xl p-4 md:p-6 text-center">
-          <div class="text-3xl md:text-4xl mb-2">🏆</div>
-          <div class="text-2xl md:text-3xl font-bold text-purple-500" id="totalAllTime">0</div>
-          <div class="text-gray-600 font-semibold text-sm md:text-base">All Time</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Weekly Tab -->
-    <div id="weeklyTab" class="tab-content hidden">
-      <div class="glass rounded-2xl p-6 md:p-8">
-        <h3 class="text-2xl md:text-3xl font-bold mb-6 text-gray-800">📊 Weekly Performance</h3>
-        <canvas id="weeklyChart" class="mb-6"></canvas>
-        
-        <div class="grid md:grid-cols-2 gap-6 mt-8">
-          <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-6">
-            <h4 class="text-xl font-bold text-blue-900 mb-4">इस हफ्ते का Summary</h4>
-            <div id="weeklySummary" class="space-y-2 text-gray-700"></div>
-          </div>
-          <div class="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-6">
-            <h4 class="text-xl font-bold text-green-900 mb-4">Last 7 Days</h4>
-            <div id="last7Days" class="space-y-2 text-gray-700"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Monthly Tab -->
-    <div id="monthlyTab" class="tab-content hidden">
-      <div class="glass rounded-2xl p-6 md:p-8">
-        <h3 class="text-2xl md:text-3xl font-bold mb-6 text-gray-800">📈 Monthly Analytics</h3>
-        <canvas id="monthlyChart" class="mb-6"></canvas>
-        
-        <div class="grid md:grid-cols-3 gap-6 mt-8">
-          <div class="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-6 text-center">
-            <h4 class="text-lg font-bold text-purple-900 mb-2">इस महीने Total</h4>
-            <div class="text-4xl md:text-5xl font-bold text-purple-600" id="monthlyTotal">0</div>
-          </div>
-          <div class="bg-gradient-to-br from-pink-50 to-pink-100 rounded-xl p-6 text-center">
-            <h4 class="text-lg font-bold text-pink-900 mb-2">Daily Average</h4>
-            <div class="text-4xl md:text-5xl font-bold text-pink-600" id="monthlyAverage">0</div>
-          </div>
-          <div class="bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl p-6 text-center">
-            <h4 class="text-lg font-bold text-orange-900 mb-2">Best Day</h4>
-            <div class="text-4xl md:text-5xl font-bold text-orange-600" id="monthlyBest">0</div>
-          </div>
-        </div>
-
-        <div class="mt-6 bg-white rounded-xl p-6">
-          <h4 class="text-xl font-bold text-gray-800 mb-4">Month Comparison</h4>
-          <div id="monthComparison" class="space-y-3"></div>
-        </div>
-      </div>
-    </div>
-
-  </div>
-</div>
-
-<!-- ==================== SETTINGS MODAL ==================== -->
-<div id="settingsModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
-  <div class="glass rounded-3xl p-8 max-w-md w-full">
-    <div class="flex justify-between items-center mb-6">
-      <h3 class="text-2xl font-bold text-gray-800">⚙️ Settings</h3>
-      <button onclick="closeSettings()" class="text-3xl text-gray-500 hover:text-red-500">&times;</button>
-    </div>
-    
-    <div class="space-y-6">
-      <!-- Change Password -->
-      <div class="bg-purple-50 rounded-xl p-4">
-        <h4 class="font-bold text-purple-900 mb-3">🔑 Password Change करो</h4>
-        <input type="password" id="oldPassword" placeholder="पुराना Password" 
-               class="w-full border-2 border-purple-300 rounded-xl px-4 py-2 mb-2 focus:outline-none focus:border-purple-600">
-        <input type="password" id="newPasswordChange" placeholder="नया Password" 
-               class="w-full border-2 border-purple-300 rounded-xl px-4 py-2 mb-2 focus:outline-none focus:border-purple-600">
-        <button onclick="changePassword()" class="w-full bg-purple-600 text-white py-2 rounded-xl font-bold hover:bg-purple-700 transition">
-          Password Change करो
-        </button>
-      </div>
-      
-      <!-- Reset Goal -->
-      <div class="bg-red-50 rounded-xl p-4">
-        <h4 class="font-bold text-red-900 mb-3">🗑️ Reset Options</h4>
-        <button onclick="resetMainGoal()" class="w-full bg-orange-500 text-white py-2 rounded-xl font-bold mb-2 hover:bg-orange-600 transition">
-          Main Goal Reset करो
-        </button>
-        <button onclick="resetAllData()" class="w-full bg-red-600 text-white py-2 rounded-xl font-bold hover:bg-red-700 transition">
-          सारा Data Delete करो
-        </button>
-      </div>
-      
-      <!-- Logout -->
-      <button onclick="logout()" class="w-full bg-gray-800 text-white py-3 rounded-xl font-bold hover:bg-gray-900 transition">
-        <i class="fas fa-sign-out-alt"></i> Logout
-      </button>
-    </div>
-  </div>
-</div>
-
-<script>
-// ==================== PASSWORD SYSTEM ====================
-const STORAGE_KEY = 'goalTrackerPassword';
-
-function checkFirstTime() {
-  const savedPassword = localStorage.getItem(STORAGE_KEY);
-  if (!savedPassword) {
-    document.getElementById('loginSection').classList.add('hidden');
-    document.getElementById('setupSection').classList.remove('hidden');
-  }
-}
-
-function setupPassword() {
-  const newPass = document.getElementById('newPassword').value;
-  const confirmPass = document.getElementById('confirmPassword').value;
-  
-  if (newPass.length < 4) {
-    alert('❌ Password कम से कम 4 characters का होना चाहिए!');
-    return;
-  }
-  
-  if (newPass !== confirmPass) {
-    alert('❌ दोनों Password match नहीं कर रहे!');
-    return;
-  }
-  
-  localStorage.setItem(STORAGE_KEY, btoa(newPass));
-  alert('✅ Password set हो गया! अब login करो');
-  location.reload();
-}
-
-function checkPassword() {
-  const input = document.getElementById('passwordInput').value;
-  const saved = localStorage.getItem(STORAGE_KEY);
-  
-  if (btoa(input) === saved) {
-    document.getElementById('loginScreen').classList.add('hidden');
-    document.getElementById('mainApp').classList.remove('hidden');
-    initApp();
-  } else {
-    document.getElementById('errorMsg').classList.remove('hidden');
-    document.getElementById('passwordInput').classList.add('shake');
-    setTimeout(() => {
-      document.getElementById('passwordInput').classList.remove('shake');
-    }, 500);
-  }
-}
-
-function changePassword() {
-  const oldPass = document.getElementById('oldPassword').value;
-  const newPass = document.getElementById('newPasswordChange').value;
-  const saved = localStorage.getItem(STORAGE_KEY);
-  
-  if (btoa(oldPass) !== saved) {
-    alert('❌ पुराना Password गलत है!');
-    return;
-  }
-  
-  if (newPass.length < 4) {
-    alert('❌ नया Password कम से कम 4 characters का होना चाहिए!');
-    return;
-  }
-  
-  localStorage.setItem(STORAGE_KEY, btoa(newPass));
-  alert('✅ Password change हो गया!');
-  closeSettings();
-}
-
-function logout() {
-  document.getElementById('mainApp').classList.add('hidden');
-  document.getElementById('loginScreen').classList.remove('hidden');
-  document.getElementById('passwordInput').value = '';
-  document.getElementById('errorMsg').classList.add('hidden');
-  closeSettings();
-}
-
-// ==================== SETTINGS ====================
-function openSettings() {
-  document.getElementById('settingsModal').classList.remove('hidden');
-}
-
-function closeSettings() {
-  document.getElementById('settingsModal').classList.add('hidden');
-  document.getElementById('oldPassword').value = '';
-  document.getElementById('newPasswordChange').value = '';
-}
-
-function resetMainGoal() {
-  if (confirm('⚠️ क्या तुम सच में Main Goal reset करना चाहते हो?')) {
-    mainGoal = null;
-    localStorage.removeItem('mainGoal');
-    document.getElementById('mainGoalName').value = '';
-    document.getElementById('mainGoalTarget').value = '';
-    updateMainGoalDisplay();
-    alert('✅ Main Goal reset हो गया!');
-    closeSettings();
-  }
-}
-
-function resetAllData() {
-  if (confirm('⚠️ सारा Data delete हो जाएगा! Confirm करो?')) {
-    if (confirm('⚠️ Last Warning: सच में सब कुछ delete करना है?')) {
-      localStorage.removeItem('mainGoal');
-      localStorage.removeItem('dailyTasks');
-      localStorage.removeItem('completedHistory');
-      alert('✅ सारा Data delete हो गया!');
-      location.reload();
-    }
-  }
-}
-
-// ==================== MAIN APP ====================
-let mainGoal = null;
-let dailyTasks = [];
-let completedHistory = {};
-
-function initApp() {
-  mainGoal = JSON.parse(localStorage.getItem('mainGoal')) || null;
-  dailyTasks = JSON.parse(localStorage.getItem('dailyTasks')) || [];
-  completedHistory = JSON.parse(localStorage.getItem('completedHistory')) || {};
-  
-  document.getElementById('currentDate').textContent = new Date().toLocaleDateString('hi-IN', { 
-    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' 
-  });
-  
-  if (mainGoal) {
-    document.getElementById('mainGoalName').value = mainGoal.name;
-    document.getElementById('mainGoalTarget').value = mainGoal.target;
-  }
-  
-  updateMainGoalDisplay();
-  renderDailyTasks();
-  updateStats();
-}
-
-function setMainGoal() {
-  const name = document.getElementById('mainGoalName').value.trim();
-  const target = parseInt(document.getElementById('mainGoalTarget').value);
-  
-  if (!name || !target || target <= 0) {
-    alert('❌ कृपया सही Goal Details भरो!');
-    return;
-  }
-
-  mainGoal = {
-    name: name,
-    target: target,
-    startDate: new Date().toISOString(),
-    current: mainGoal?.current || 0
-  };
-
-  localStorage.setItem('mainGoal', JSON.stringify(mainGoal));
-  updateMainGoalDisplay();
-  alert('✅ Main Goal Set हो गया!');
-}
-
-function updateMainGoalDisplay() {
-  if (!mainGoal) {
-    document.getElementById('mainGoalDisplay').classList.add('hidden');
-    return;
-  }
-
-  document.getElementById('mainGoalDisplay').classList.remove('hidden');
-  document.getElementById('goalNameDisplay').textContent = mainGoal.name;
-  document.getElementById('currentProgress').textContent = mainGoal.current.toLocaleString('en-IN');
-  document.getElementById('targetProgress').textContent = mainGoal.target.toLocaleString('en-IN');
-  document.getElementById('remainingProgress').textContent = Math.max(0, mainGoal.target - mainGoal.current).toLocaleString('en-IN');
-
-  const percentage = Math.min(100, (mainGoal.current / mainGoal.target * 100)).toFixed(1);
-  document.getElementById('percentageDisplay').textContent = percentage + '%';
-
-  const circumference = 283;
-  const offset = circumference - (percentage / 100 * circumference);
-  document.getElementById('progressCircle').style.strokeDashoffset = offset;
-
-  const history = Object.values(completedHistory);
-  const totalDays = history.length || 1;
-  const dailyAvg = Math.round(mainGoal.current / totalDays);
-  const last7Days = history.slice(-7);
-  const weeklyAvg = last7Days.length > 0 ? Math.round(last7Days.reduce((a, b) => a + b, 0) / last7Days.length) : 0;
-  const bestDay = history.length > 0 ? Math.max(...history) : 0;
-
-  document.getElementById('dailyAvg').textContent = dailyAvg;
-  document.getElementById('weeklyAvg').textContent = weeklyAvg;
-  document.getElementById('bestDay').textContent = bestDay;
-
-  const remaining = mainGoal.target - mainGoal.current;
-  const avgToUse = weeklyAvg > 0 ? weeklyAvg : (dailyAvg > 0 ? dailyAvg : 1);
-  const daysNeeded = Math.max(0, Math.ceil(remaining / avgToUse));
-  
-  document.getElementById('estimatedDays').textContent = daysNeeded;
-  
-  const completionDate = new Date();
-  completionDate.setDate(completionDate.getDate() + daysNeeded);
-  document.getElementById('completionDate').textContent = completionDate.toLocaleDateString('hi-IN', { 
-    day: 'numeric', month: 'short', year: 'numeric' 
-  });
-}
-
-function addDailyTask() {
-  const name = document.getElementById('taskName').value.trim();
-  const quantity = parseInt(document.getElementById('taskQuantity').value);
-
-  if (!name || !quantity || quantity <= 0) {
-    alert('❌ कृपया सही Task Details भरो!');
-    return;
-  }
-
-  const today = new Date().toDateString();
-  const task = {
-    id: Date.now(),
-    name: name,
-    quantity: quantity,
-    completed: false,
-    date: today
-  };
-
-  dailyTasks.push(task);
-  localStorage.setItem('dailyTasks', JSON.stringify(dailyTasks));
-
-  document.getElementById('taskName').value = '';
-  document.getElementById('taskQuantity').value = '';
-
-  renderDailyTasks();
-  updateStats();
-}
-
-function toggleTask(id) {
-  const task = dailyTasks.find(t => t.id === id);
-  if (!task) return;
-
-  task.completed = !task.completed;
-  const today = new Date().toDateString();
-  
-  if (task.completed) {
-    completedHistory[today] = (completedHistory[today] || 0) + task.quantity;
-    if (mainGoal) {
-      mainGoal.current += task.quantity;
-      localStorage.setItem('mainGoal', JSON.stringify(mainGoal));
-    }
-  } else {
-    completedHistory[today] = (completedHistory[today] || 0) - task.quantity;
-    if (completedHistory[today] <= 0) delete completedHistory[today];
-    if (mainGoal) {
-      mainGoal.current -= task.quantity;
-      localStorage.setItem('mainGoal', JSON.stringify(mainGoal));
-    }
-  }
-
-  localStorage.setItem('completedHistory', JSON.stringify(completedHistory));
-  localStorage.setItem('dailyTasks', JSON.stringify(dailyTasks));
-
-  renderDailyTasks();
-  updateStats();
-  updateMainGoalDisplay();
-}
-
-function deleteTask(id) {
-  const task = dailyTasks.find(t => t.id === id);
-  if (task && task.completed) {
-    const today = new Date().toDateString();
-    completedHistory[today] = (completedHistory[today] || 0) - task.quantity;
-    if (completedHistory[today] <= 0) delete completedHistory[today];
-    if (mainGoal) {
-      mainGoal.current -= task.quantity;
-      localStorage.setItem('mainGoal', JSON.stringify(mainGoal));
-    }
-  }
-
-  dailyTasks = dailyTasks.filter(t => t.id !== id);
-  localStorage.setItem('dailyTasks', JSON.stringify(dailyTasks));
-  localStorage.setItem('completedHistory', JSON.stringify(completedHistory));
-
-  renderDailyTasks();
-  updateStats();
-  updateMainGoalDisplay();
-}
-
-function renderDailyTasks() {
-  const today = new Date().toDateString();
-  const todayTasks = dailyTasks.filter(t => t.date === today);
-  const todayTotal = todayTasks.reduce((sum, t) => sum + (t.completed ? t.quantity : 0), 0);
-
-  document.getElementById('todayTotal').textContent = todayTotal;
-
-  const container = document.getElementById('todayTasksList');
-  
-  if (todayTasks.length === 0) {
-    container.innerHTML = `
-      <div class="text-center py-12">
-        <div class="text-6xl mb-4">📝</div>
-        <p class="text-xl text-gray-600">कोई task नहीं है! ऊपर से add करो</p>
-      </div>
-    `;
-    return;
-  }
-
-  container.innerHTML = todayTasks.map(task => `
-    <div class="flex items-center gap-4 bg-white rounded-xl p-4 border-2 ${task.completed ? 'border-green-300 bg-green-50' : 'border-gray-200'} hover:shadow-lg transition">
-      <button onclick="toggleTask(${task.id})" class="text-3xl ${task.completed ? 'celebration' : ''}">
-        ${task.completed ? '✅' : '⭕'}
-      </button>
-      <div class="flex-1">
-        <div class="font-semibold text-lg ${task.completed ? 'line-through text-gray-500' : 'text-gray-800'}">
-          ${task.name}
-        </div>
-        <div class="text-sm text-gray-600">Quantity: ${task.quantity}</div>
-      </div>
-      <button onclick="deleteTask(${task.id})" class="text-red-500 hover:text-red-700 text-2xl p-2">
-        <i class="fas fa-trash"></i>
-      </button>
-    </div>
-  `).join('');
-}
-
-function updateStats() {
-  const today = new Date().toDateString();
-  const history = Object.entries(completedHistory);
-
-  let streak = 0;
-  let checkDate = new Date();
-  while (true) {
-    const dateStr = checkDate.toDateString();
-    if (completedHistory[dateStr]) {
-      streak++;
-      checkDate.setDate(checkDate.getDate() - 1);
-    } else if (dateStr === today) {
-      checkDate.setDate(checkDate.getDate() - 1);
-    } else {
-      break;
-    }
-  }
-  document.getElementById('streakDays').textContent = streak;
-
-  const weekAgo = new Date();
-  weekAgo.setDate(weekAgo.getDate() - 7);
-  const thisWeek = history.filter(([date]) => new Date(date) >= weekAgo).reduce((sum, [, val]) => sum + val, 0);
-  document.getElementById('thisWeekCount').textContent = thisWeek;
-
-  const monthAgo = new Date();
-  monthAgo.setDate(monthAgo.getDate() - 30);
-  const thisMonth = history.filter(([date]) => new Date(date) >= monthAgo).reduce((sum, [, val]) => sum + val, 0);
-  document.getElementById('thisMonthCount').textContent = thisMonth;
-
-  const allTime = history.reduce((sum, [, val]) => sum + val, 0);
-  document.getElementById('totalAllTime').textContent = allTime;
-}
-
-// ==================== TABS ====================
-function switchTab(tab) {
-  document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-  document.querySelectorAll('[id^="tab"]').forEach(el => el.classList.remove('tab-active'));
-
-  document.getElementById(tab + 'Tab').classList.remove('hidden');
-  document.getElementById('tab' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.add('tab-active');
-
-  if (tab === 'weekly') renderWeeklyReport();
-  if (tab === 'monthly') renderMonthlyReport();
-}
-
-// ==================== CHARTS ====================
-let weeklyChart = null;
-function renderWeeklyReport() {
-  const last7Days = [];
-  const labels = [];
-  const data = [];
-
-  for (let i = 6; i >= 0; i--) {
-    const date = new Date();
-    date.setDate(date.getDate() - i);
-    const dateStr = date.toDateString();
-    labels.push(date.toLocaleDateString('hi-IN', { weekday: 'short' }));
-    data.push(completedHistory[dateStr] || 0);
-    last7Days.push({ date: date.toLocaleDateString('hi-IN', { day: 'numeric', month: 'short' }), count: completedHistory[dateStr] || 0 });
-  }
-
-  const ctx = document.getElementById('weeklyChart').getContext('2d');
-  if (weeklyChart) weeklyChart.destroy();
-  
-  weeklyChart = new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels: labels,
-      datasets: [{
-        label: 'Daily Progress',
-        data: data,
-        backgroundColor: 'rgba(102, 126, 234, 0.8)',
-        borderColor: 'rgba(102, 126, 234, 1)',
-        borderWidth: 2,
-        borderRadius: 8
-      }]
-    },
-    options: {
-      responsive: true,
-      plugins: { legend: { display: false } },
-      scales: { y: { beginAtZero: true } }
-    }
-  });
-
-  const total = data.reduce((a, b) => a + b, 0);
-  const avg = (total / 7).toFixed(1);
-  const best = Math.max(...data);
-
-  document.getElementById('weeklySummary').innerHTML = `
-    <div class="flex justify-between"><span>Total:</span><strong>${total}</strong></div>
-    <div class="flex justify-between"><span>Daily Avg:</span><strong>${avg}</strong></div>
-    <div class="flex justify-between"><span>Best Day:</span><strong>${best}</strong></div>
-  `;
-
-  document.getElementById('last7Days').innerHTML = last7Days.map(day => `
-    <div class="flex justify-between">
-      <span>${day.date}</span>
-      <strong class="text-purple-600">${day.count}</strong>
-    </div>
-  `).join('');
-}
-
-let monthlyChart = null;
-function renderMonthlyReport() {
-  const today = new Date();
-  const currentMonth = today.getMonth();
-  const currentYear = today.getFullYear();
-  const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-  const labels = [];
-  const data = [];
-
-  for (let i = 1; i <= daysInMonth; i++) {
-    const date = new Date(currentYear, currentMonth, i);
-    labels.push(i);
-    data.push(completedHistory[date.toDateString()] || 0);
-  }
-
-  const ctx = document.getElementById('monthlyChart').getContext('2d');
-  if (monthlyChart) monthlyChart.destroy();
-  
-  monthlyChart = new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: labels,
-      datasets: [{
-        label: 'Daily Progress',
-        data: data,
-        borderColor: 'rgba(118, 75, 162, 1)',
-        backgroundColor: 'rgba(118, 75, 162, 0.1)',
-        fill: true,
-        tension: 0.4,
-        borderWidth: 3
-      }]
-    },
-    options: {
-      responsive: true,
-      plugins: { legend: { display: false } },
-      scales: { y: { beginAtZero: true } }
-    }
-  });
-
-  const total = data.reduce((a, b) => a + b, 0);
-  const avg = (total / daysInMonth).toFixed(1);
-  const best = Math.max(...data);
-
-  document.getElementById('monthlyTotal').textContent = total;
-  document.getElementById('monthlyAverage').textContent = avg;
-  document.getElementById('monthlyBest').textContent = best;
-
-  const months = [];
-  for (let i = 2; i >= 0; i--) {
-    const d = new Date();
-    d.setMonth(d.getMonth() - i);
-    const monthData = Object.entries(completedHistory)
-      .filter(([date]) => new Date(date).getMonth() === d.getMonth() && new Date(date).getFullYear() === d.getFullYear())
-      .reduce((sum, [, val]) => sum + val, 0);
-    months.push({
-      name: d.toLocaleDateString('hi-IN', { month: 'long', year: 'numeric' }),
-      total: monthData
-    });
-  }
-
-  document.getElementById('monthComparison').innerHTML = months.map(m => `
-    <div class="flex justify-between items-center bg-gray-50 rounded-lg p-3">
-      <span class="font-semibold">${m.name}</span>
-      <strong class="text-2xl text-purple-600">${m.total}</strong>
-    </div>
-  `).join('');
-}
-
-// ==================== INIT ====================
-checkFirstTime();
-</script>
 
 </body>
 </html>
