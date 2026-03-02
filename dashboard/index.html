@@ -56,6 +56,35 @@ input{padding:10px;border-radius:8px;border:1px solid var(--border);background:#
 <div class="card">
 <h3>🔥 Today Revisions</h3>
 <div id="revisions">No revisions yet</div>
+<button class="btn" style="margin-top:10px" onclick="markStudiedToday()">✅ I Studied Today</button>
+</div>
+
+<div class="card">
+<h3>📚 Subjects</h3>
+<button class="btn" onclick="addSubject()">➕ Add Subject</button>
+<div id="subjects" style="margin-top:10px"></div>
+</div>
+
+<div class="card">
+<h3>🧠 Burnout Detector</h3>
+<div id="burnoutStatus">Checking...</div>
+</div>
+
+<div class="card">
+<h3>🎙 Voice Assistant</h3>
+<button class="btn" onclick="startVoice()">Start Voice</button>
+<p style="color:var(--muted);margin-top:8px">Say: "I studied" or "Add subject"</p>
+</div>
+
+<div class="card">
+<h3>🤖 Study Mentor</h3>
+<div id="mentorLog" style="height:120px;overflow:auto;background:#020617;border-radius:8px;padding:8px"></div>
+<div style="display:flex;gap:8px;margin-top:8px">
+<input id="mentorInput" placeholder="Ask mentor..." />
+<button class="btn" onclick="askMentor()">Send</button>
+</div>
+</div>
+
 </div>
 
 </div>
@@ -148,6 +177,75 @@ function renderHeatmap(){
 }
 
 // =====================
+// AI PHASE-2 MODULES
+// =====================
+function markStudiedToday(){
+ const t=today();
+ if(!data.studyDates.includes(t)) data.studyDates.push(t);
+ save();
+ renderAll();
+}
+
+function addSubject(){
+ const name=prompt('Subject name?');
+ if(!name) return;
+ data.subjects.push({id:Date.now().toString(),name,topics:[]});
+ save();renderAll();
+}
+
+function addTopic(sid){
+ const s=data.subjects.find(x=>x.id===sid);
+ if(!s) return;
+ const title=prompt('Topic name?');
+ if(!title) return;
+ s.topics.push({title,finished:false});
+ save();renderAll();
+}
+
+function finishTopic(sid,idx){
+ const s=data.subjects.find(x=>x.id===sid);
+ if(!s) return;
+ s.topics[idx].finished=true;
+ markStudiedToday();
+ save();renderAll();
+}
+
+function renderSubjects(){
+ const el=document.getElementById('subjects');
+ if(!el) return;
+ el.innerHTML=(data.subjects||[]).map(s=>`<div style="margin:10px 0"><b>${s.name}</b> <button onclick=\"addTopic('${s.id}')\">+Topic</button>
+ <ul>${(s.topics||[]).map((t,i)=>`<li>${t.title} ${t.finished?'✅':`<button onclick=\"finishTopic('${s.id}',${i})\">Finish</button>`}</li>`).join('')}</ul>
+ </div>`).join('') || 'No subjects yet';
+}
+
+function burnoutAI(){
+ const last7=(data.studyDates||[]).filter(d=>((new Date()-new Date(d))/86400000)<=7).length;
+ return last7>=6? '⚠ Possible burnout: take a light day' : '✅ Energy good';
+}
+
+let recog;
+function startVoice(){
+ if(!('webkitSpeechRecognition' in window)){
+  alert('Voice not supported');return;
+ }
+ recog=new webkitSpeechRecognition();
+ recog.onresult=e=>{
+  const text=e.results[0][0].transcript.toLowerCase();
+  if(text.includes('studied')) markStudiedToday();
+  if(text.includes('add subject')) addSubject();
+ };
+ recog.start();
+}
+
+function askMentor(){
+ const q=document.getElementById('mentorInput').value.trim();
+ if(!q) return;
+ const log=document.getElementById('mentorLog');
+ log.innerHTML+=`<div><b>You:</b> ${q}</div><div><b>Mentor:</b> Do revisions first, then 1-2 new topics.</div>`;
+ document.getElementById('mentorInput').value='';
+}
+
+// =====================
 // PWA SERVICE WORKER
 // =====================
 if('serviceWorker' in navigator){
@@ -160,6 +258,9 @@ if('serviceWorker' in navigator){
 function renderAll(){
  renderPlanner();
  renderHeatmap();
+ renderSubjects();
+ const b=document.getElementById('burnoutStatus');
+ if(b) b.textContent=burnoutAI();
 }
 
 window.onload=()=>{
