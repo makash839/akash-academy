@@ -36,7 +36,6 @@
             text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
         }
 
-        /* Grid for 4 Cards */
         .exam-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -67,12 +66,12 @@
             color: white;
         }
 
-        /* Colors for each exam */
         .roaro { background: linear-gradient(135deg, #003366 0%, #004080 100%); }
         .nta { background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%); }
         .vikas { background: linear-gradient(135deg, #059669 0%, #047857 100%); }
         .ghatna { background: linear-gradient(135deg, #4b6cb7 0%, #182848 100%); }
         .goals { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+        .dashboard { background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); }
 
         .exam-icon { font-size: 50px; margin-bottom: 10px; }
         .exam-header h2 { font-size: 1.6rem; font-weight: bold; }
@@ -170,7 +169,6 @@
                 </div>
             </div>
 
-            <!-- ✅ 5th Card - Daily Goal Tracker (NEW) -->
             <div class="exam-card" onclick="window.location.href='goal-tracker.html'">
                 <div class="exam-header goals">
                     <div class="exam-icon">🎯</div>
@@ -183,6 +181,22 @@
                         <li><i class="fas fa-lock text-purple-500"></i> Password Protected</li>
                     </ul>
                     <div class="start-btn goals">Open Tracker 🚀</div>
+                </div>
+            </div>
+
+            <!-- ⭐ NEW: AI STUDY DASHBOARD -->
+            <div class="exam-card" onclick="window.location.href='/dashboard'">
+                <div class="exam-header dashboard">
+                    <div class="exam-icon">🤖</div>
+                    <h2>AI Study Dashboard</h2>
+                </div>
+                <div class="exam-body">
+                    <ul class="feature-list">
+                        <li><i class="fas fa-check-circle text-green-500"></i> AI Auto Timetable</li>
+                        <li><i class="fas fa-check-circle text-green-500"></i> Smart Revision System</li>
+                        <li><i class="fas fa-check-circle text-green-500"></i> Productivity & Heatmap</li>
+                    </ul>
+                    <div class="start-btn dashboard">Open Dashboard 🚀</div>
                 </div>
             </div>
 
