@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Akash Academy AI Dashboard</title>
     
-    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
@@ -19,18 +18,11 @@
 
         :root {
             --primary: #6366f1;
-            --primary-dark: #4f46e5;
-            --secondary: #8b5cf6;
             --success: #10b981;
             --warning: #f59e0b;
             --danger: #ef4444;
             --info: #3b82f6;
-            --morning: #f59e0b;
-            --afternoon: #3b82f6;
-            --evening: #8b5cf6;
-            --night: #6366f1;
             --dark: #0f172a;
-            --darker: #020617;
             --card: #1e293b;
             --text: #f8fafc;
             --text-muted: #94a3b8;
@@ -39,23 +31,20 @@
 
         body {
             font-family: 'Segoe UI', system-ui, sans-serif;
-            background: linear-gradient(135deg, var(--darker) 0%, var(--dark) 100%);
+            background: linear-gradient(135deg, #020617 0%, #0f172a 100%);
             color: var(--text);
             min-height: 100vh;
-            line-height: 1.6;
         }
 
-        /* Loading Screen */
         #loader {
             position: fixed;
             inset: 0;
-            background: var(--darker);
+            background: var(--dark);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             z-index: 9999;
-            transition: opacity 0.3s;
         }
 
         .spinner {
@@ -71,7 +60,6 @@
             to { transform: rotate(360deg); }
         }
 
-        /* Header */
         header {
             background: rgba(30, 41, 59, 0.9);
             backdrop-filter: blur(20px);
@@ -96,7 +84,7 @@
             gap: 12px;
             font-size: 1.5rem;
             font-weight: 700;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            background: linear-gradient(135deg, var(--primary), #8b5cf6);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
@@ -104,7 +92,7 @@
         .logo-icon {
             width: 40px;
             height: 40px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            background: linear-gradient(135deg, var(--primary), #8b5cf6);
             border-radius: 12px;
             display: flex;
             align-items: center;
@@ -113,29 +101,14 @@
             -webkit-text-fill-color: white;
         }
 
-        .user-section {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
         .login-btn {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            background: linear-gradient(135deg, var(--primary), #8b5cf6);
             color: white;
             border: none;
             padding: 10px 20px;
             border-radius: 10px;
             font-weight: 600;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.3s;
-        }
-
-        .login-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
         }
 
         .user-profile {
@@ -155,20 +128,6 @@
             border: 2px solid var(--primary);
         }
 
-        .user-info {
-            line-height: 1.2;
-        }
-
-        .user-name {
-            font-weight: 600;
-            font-size: 0.85rem;
-        }
-
-        .user-email {
-            font-size: 0.7rem;
-            color: var(--text-muted);
-        }
-
         .logout-btn {
             background: transparent;
             color: var(--danger);
@@ -177,12 +136,6 @@
             border-radius: 20px;
             font-size: 0.75rem;
             cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .logout-btn:hover {
-            background: var(--danger);
-            color: white;
         }
 
         .container {
@@ -202,381 +155,287 @@
 
         .welcome p {
             color: var(--text-muted);
-            font-size: 0.95rem;
         }
 
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 1rem;
+        /* Main Prediction Box */
+        .prediction-hero {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(139, 92, 246, 0.2));
+            border: 2px solid var(--primary);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .prediction-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
             margin-bottom: 1.5rem;
         }
 
-        .stat-card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 16px;
+        .status-safe {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success);
+            border: 1px solid var(--success);
+        }
+
+        .status-danger {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--danger);
+            border: 1px solid var(--danger);
+        }
+
+        .status-warning {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--warning);
+            border: 1px solid var(--warning);
+        }
+
+        .prediction-big {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .prediction-big.success { color: var(--success); }
+        .prediction-big.danger { color: var(--danger); }
+        .prediction-big.warning { color: var(--warning); }
+
+        .prediction-label {
+            color: var(--text-muted);
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .prediction-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .prediction-card {
+            background: var(--dark);
             padding: 1.25rem;
-            position: relative;
-            overflow: hidden;
+            border-radius: 12px;
+            border: 1px solid var(--border);
         }
 
-        .stat-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
+        .prediction-card h4 {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
         }
 
-        .stat-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.25rem;
-            margin-bottom: 0.75rem;
-        }
-
-        .stat-icon.purple { background: rgba(99, 102, 241, 0.2); }
-        .stat-icon.green { background: rgba(16, 185, 129, 0.2); }
-        .stat-icon.orange { background: rgba(245, 158, 11, 0.2); }
-        .stat-icon.red { background: rgba(239, 68, 68, 0.2); }
-        .stat-icon.blue { background: rgba(59, 130, 246, 0.2); }
-
-        .stat-value {
+        .prediction-card .value {
             font-size: 1.75rem;
             font-weight: 700;
-            margin-bottom: 0.25rem;
         }
 
-        .stat-label {
-            color: var(--text-muted);
+        .prediction-card .sub {
             font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
         }
 
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1.5rem;
-        }
-
-        @media (max-width: 1024px) {
-            .dashboard-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .card {
+        /* Speed Adjustment Box */
+        .speed-box {
             background: var(--card);
             border: 1px solid var(--border);
             border-radius: 16px;
-            padding: 1.25rem;
-            margin-bottom: 1rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
         }
 
-        .card-header {
+        .speed-box h3 {
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .speed-slider {
+            width: 100%;
+            margin: 1rem 0;
+        }
+
+        .speed-compare {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .speed-current {
+            background: rgba(99, 102, 241, 0.1);
+            padding: 1rem;
+            border-radius: 10px;
+            border: 1px solid var(--primary);
+        }
+
+        .speed-required {
+            background: rgba(245, 158, 11, 0.1);
+            padding: 1rem;
+            border-radius: 10px;
+            border: 1px solid var(--warning);
+        }
+
+        .speed-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+
+        .speed-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        /* ARS Section */
+        .ars-box {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(239, 68, 68, 0.1));
+            border: 2px solid var(--warning);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .ars-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 1rem;
         }
 
-        .card-title {
-            font-size: 1rem;
+        .ars-title {
+            font-size: 1.1rem;
             font-weight: 600;
+            color: var(--warning);
             display: flex;
             align-items: center;
             gap: 8px;
         }
 
-        .card-action {
-            background: rgba(99, 102, 241, 0.1);
-            color: var(--primary);
-            border: 1px solid var(--primary);
-            padding: 6px 14px;
-            border-radius: 8px;
-            font-size: 0.8rem;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .card-action:hover {
-            background: var(--primary);
+        .ars-count {
+            background: var(--danger);
             color: white;
-        }
-
-        .card-action:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        /* Daily Schedule */
-        .schedule-container {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-
-        .time-slot {
-            background: var(--dark);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            overflow: hidden;
-            transition: all 0.3s;
-        }
-
-        .time-slot:hover {
-            transform: translateX(5px);
-        }
-
-        .time-slot.active {
-            border-color: var(--primary);
-            box-shadow: 0 0 20px rgba(99, 102, 241, 0.2);
-        }
-
-        .time-header {
-            display: flex;
-            align-items: center;
-            padding: 0.75rem 1rem;
-            background: rgba(255,255,255,0.03);
-            border-bottom: 1px solid var(--border);
-        }
-
-        .time-icon {
-            width: 36px;
-            height: 36px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 12px;
-            font-size: 1.25rem;
-        }
-
-        .time-slot.morning .time-icon { background: rgba(245, 158, 11, 0.2); }
-        .time-slot.afternoon .time-icon { background: rgba(59, 130, 246, 0.2); }
-        .time-slot.evening .time-icon { background: rgba(139, 92, 246, 0.2); }
-        .time-slot.night .time-icon { background: rgba(99, 102, 241, 0.2); }
-
-        .time-info h4 {
-            font-size: 0.95rem;
-            margin-bottom: 2px;
-        }
-
-        .time-info p {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-        }
-
-        .time-badge {
-            margin-left: auto;
             padding: 4px 12px;
             border-radius: 20px;
-            font-size: 0.75rem;
+            font-size: 0.85rem;
             font-weight: 600;
         }
 
-        .time-slot.morning .time-badge { background: rgba(245, 158, 11, 0.2); color: var(--morning); }
-        .time-slot.afternoon .time-badge { background: rgba(59, 130, 246, 0.2); color: var(--afternoon); }
-        .time-slot.evening .time-badge { background: rgba(139, 92, 246, 0.2); color: var(--evening); }
-        .time-slot.night .time-badge { background: rgba(99, 102, 241, 0.2); color: var(--night); }
-
-        .time-content {
-            padding: 1rem;
-        }
-
-        .task-list {
+        .ars-list {
             display: flex;
             flex-direction: column;
             gap: 0.5rem;
         }
 
-        .task-item {
+        .ars-item {
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            gap: 10px;
-            padding: 0.6rem 0.75rem;
-            background: var(--card);
-            border-radius: 8px;
-            font-size: 0.9rem;
-            border-left: 3px solid transparent;
-            transition: all 0.3s;
-        }
-
-        .task-item:hover {
-            background: rgba(99, 102, 241, 0.1);
-            border-left-color: var(--primary);
-        }
-
-        .task-item.completed {
-            opacity: 0.6;
-        }
-
-        .task-item.completed .task-text {
-            text-decoration: line-through;
-            color: var(--success);
-        }
-
-        .task-check {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            border: 2px solid var(--border);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.7rem;
-            flex-shrink: 0;
-            transition: all 0.3s;
-        }
-
-        .task-check:hover {
-            border-color: var(--success);
-        }
-
-        .task-check.done {
-            background: var(--success);
-            border-color: var(--success);
-            color: white;
-        }
-
-        .task-priority {
-            margin-left: auto;
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 0.7rem;
-            font-weight: 600;
-        }
-
-        .priority-high { background: rgba(239, 68, 68, 0.2); color: var(--danger); }
-        .priority-medium { background: rgba(245, 158, 11, 0.2); color: var(--warning); }
-        .priority-low { background: rgba(16, 185, 129, 0.2); color: var(--success); }
-
-        .empty-tasks {
-            text-align: center;
-            padding: 1.5rem;
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            font-style: italic;
-        }
-
-        .heatmap {
-            display: grid;
-            grid-template-columns: repeat(14, 1fr);
-            gap: 3px;
-            margin-top: 0.75rem;
-        }
-
-        .heat-cell {
-            aspect-ratio: 1;
-            background: var(--border);
-            border-radius: 3px;
-            min-height: 12px;
-        }
-
-        .heat-cell.active {
-            background: var(--success);
-            box-shadow: 0 0 6px rgba(16, 185, 129, 0.4);
-        }
-
-        .exam-input {
-            width: 100%;
-            background: var(--dark);
-            border: 1px solid var(--border);
-            color: white;
-            padding: 10px 14px;
-            border-radius: 10px;
-            font-size: 0.95rem;
-            margin-bottom: 0.75rem;
-        }
-
-        .exam-input:focus {
-            outline: none;
-            border-color: var(--primary);
-        }
-
-        .countdown {
-            text-align: center;
-            padding: 1.5rem;
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
-            border-radius: 12px;
-            border: 1px solid rgba(99, 102, 241, 0.3);
-        }
-
-        .countdown-number {
-            font-size: 3rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .countdown-label {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-        }
-
-        .ai-box {
-            background: rgba(99, 102, 241, 0.1);
-            border: 1px solid rgba(99, 102, 241, 0.3);
-            border-radius: 12px;
             padding: 1rem;
-            margin-top: 0.75rem;
-            font-size: 0.9rem;
-            line-height: 1.5;
-        }
-
-        .subject-list {
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
-            margin-top: 0.75rem;
-        }
-
-        .subject-item {
             background: var(--dark);
+            border-radius: 10px;
+            border-left: 4px solid var(--warning);
+        }
+
+        .ars-info h4 {
+            font-size: 0.95rem;
+            margin-bottom: 2px;
+        }
+
+        .ars-info p {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .ars-btn {
+            background: var(--warning);
+            color: var(--dark);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .ars-btn:hover {
+            background: var(--success);
+            color: white;
+        }
+
+        /* Subject Cards */
+        .subject-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .subject-card {
+            background: var(--card);
             border: 1px solid var(--border);
-            border-radius: 12px;
-            overflow: hidden;
+            border-radius: 16px;
+            padding: 1.25rem;
         }
 
         .subject-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 1rem;
-            cursor: pointer;
+            margin-bottom: 1rem;
         }
 
-        .subject-title {
+        .subject-name {
+            font-size: 1.1rem;
             font-weight: 600;
-            font-size: 1rem;
+        }
+
+        .subject-prediction {
+            font-size: 0.8rem;
+            padding: 4px 12px;
+            border-radius: 20px;
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--primary);
+        }
+
+        .subject-prediction.danger {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
         }
 
         .progress-bar {
-            width: 80px;
-            height: 5px;
+            height: 8px;
             background: var(--border);
-            border-radius: 3px;
+            border-radius: 4px;
             overflow: hidden;
-            margin-right: 8px;
+            margin-bottom: 1rem;
         }
 
         .progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-            border-radius: 3px;
-            transition: width 0.3s;
+            background: linear-gradient(90deg, var(--primary), #8b5cf6);
+            border-radius: 4px;
+            transition: width 0.5s;
+        }
+
+        .subject-stats {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
         }
 
         .topic-list {
-            padding: 0 1rem 1rem;
             display: flex;
             flex-direction: column;
             gap: 0.5rem;
@@ -585,56 +444,145 @@
         .topic-item {
             display: flex;
             align-items: center;
-            gap: 8px;
-            padding: 0.6rem 0.75rem;
-            background: var(--card);
+            gap: 10px;
+            padding: 0.75rem;
+            background: var(--dark);
             border-radius: 8px;
-            font-size: 0.9rem;
+            border: 1px solid var(--border);
         }
 
-        .topic-check {
-            width: 18px;
-            height: 18px;
+        .topic-status {
+            width: 24px;
+            height: 24px;
             border-radius: 50%;
             border: 2px solid var(--border);
-            cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.7rem;
-            flex-shrink: 0;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.3s;
         }
 
-        .topic-check:hover {
-            border-color: var(--success);
+        .topic-status:hover {
+            transform: scale(1.1);
         }
 
-        .topic-check.done {
+        .topic-status.not-started { border-color: var(--border); }
+        .topic-status.in-progress { 
+            border-color: var(--warning); 
+            background: rgba(245, 158, 11, 0.2);
+        }
+        .topic-status.done { 
+            border-color: var(--success); 
             background: var(--success);
-            border-color: var(--success);
             color: white;
+        }
+
+        .topic-name {
+            flex: 1;
+            font-size: 0.9rem;
         }
 
         .topic-name.done {
             text-decoration: line-through;
             opacity: 0.6;
-            color: var(--success);
         }
 
-        .ars-badge {
+        .topic-action {
+            font-size: 0.75rem;
+            padding: 4px 10px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .btn-start {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-finish {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-ars {
             background: linear-gradient(135deg, var(--warning), var(--danger));
             color: white;
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 0.7rem;
-            margin-left: 8px;
+        }
+
+        /* Exam Input */
+        .exam-box {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .exam-input {
+            width: 100%;
+            background: var(--dark);
+            border: 1px solid var(--border);
+            color: white;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        .exam-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        /* Heatmap */
+        .heatmap-box {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.5rem;
+        }
+
+        .heatmap {
+            display: grid;
+            grid-template-columns: repeat(14, 1fr);
+            gap: 4px;
+            margin-top: 1rem;
+        }
+
+        .heat-cell {
+            aspect-ratio: 1;
+            background: var(--border);
+            border-radius: 4px;
+            min-height: 14px;
+        }
+
+        .heat-cell.active {
+            background: var(--success);
+        }
+
+        .card-action {
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--primary);
+            border: 1px solid var(--primary);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+
+        .card-action:hover {
+            background: var(--primary);
+            color: white;
         }
 
         .empty-state {
             text-align: center;
-            padding: 2rem;
+            padding: 3rem;
             color: var(--text-muted);
-            font-size: 0.9rem;
         }
 
         .modal-overlay {
@@ -676,13 +624,14 @@
             color: white;
             padding: 0.75rem;
             border-radius: 8px;
-            margin-bottom: 1rem;
+            margin-bottom: 0.75rem;
         }
 
         .modal-actions {
             display: flex;
             gap: 0.75rem;
             justify-content: flex-end;
+            margin-top: 1rem;
         }
 
         .btn {
@@ -722,42 +671,18 @@
         }
 
         .hidden { display: none !important; }
-
-        .current-time-indicator {
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-            color: white;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            margin-bottom: 1rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .pulse {
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
-        }
     </style>
+<base target="_blank">
 </head>
 <body>
 
-    <!-- Loading Screen -->
     <div id="loader">
         <div class="spinner"></div>
         <p style="margin-top: 1rem; color: var(--text-muted);">Loading...</p>
     </div>
 
-    <!-- Toast -->
     <div id="toastContainer"></div>
 
-    <!-- Modal -->
     <div class="modal-overlay" id="modal">
         <div class="modal">
             <h3 class="modal-title" id="modalTitle">Add</h3>
@@ -769,7 +694,6 @@
         </div>
     </div>
 
-    <!-- Header -->
     <header>
         <div class="header-content">
             <div class="logo">
@@ -777,16 +701,14 @@
                 Akash Academy AI
             </div>
             
-            <div class="user-section">
-                <button class="login-btn" id="loginBtn" onclick="login()">
-                    ☁️ Login
-                </button>
+            <div>
+                <button class="login-btn" id="loginBtn" onclick="login()">☁️ Login</button>
                 
                 <div class="user-profile hidden" id="userProfile">
                     <img src="" class="user-avatar" id="userAvatar">
-                    <div class="user-info">
-                        <div class="user-name" id="userName">User</div>
-                        <div class="user-email" id="userEmail">email</div>
+                    <div>
+                        <div style="font-weight: 600; font-size: 0.85rem;" id="userName">User</div>
+                        <div style="font-size: 0.7rem; color: var(--text-muted);" id="userEmail">email</div>
                     </div>
                     <button class="logout-btn" onclick="logout()">Logout</button>
                 </div>
@@ -794,112 +716,106 @@
         </div>
     </header>
 
-    <!-- Main Content -->
     <div class="container" id="mainContent" style="display: none;">
         
         <div class="welcome">
             <h1 id="welcomeText">Welcome! 👋</h1>
-            <p>Your AI-powered daily study schedule with ARS Method.</p>
+            <p>Track your pace, predict completion, master with ARS.</p>
         </div>
 
-        <!-- Stats -->
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-icon purple">📚</div>
-                <div class="stat-value" id="statSubjects">0</div>
-                <div class="stat-label">Subjects</div>
+        <!-- MAIN PREDICTION HERO -->
+        <div class="prediction-hero" id="predictionHero">
+            <div class="prediction-status status-safe" id="predStatus">
+                ✅ On Track
             </div>
-            <div class="stat-card">
-                <div class="stat-icon green">✅</div>
-                <div class="stat-value" id="statCompleted">0</div>
-                <div class="stat-label">Done</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon orange">🔥</div>
-                <div class="stat-value" id="statStreak">0</div>
-                <div class="stat-label">Streak</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon blue">🔄</div>
-                <div class="stat-value" id="statRevisions">0</div>
-                <div class="stat-label">Revisions</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon red">📅</div>
-                <div class="stat-value" id="statDays">0</div>
-                <div class="stat-label">Exam</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon purple">⏰</div>
-                <div class="stat-value" id="statPending">0</div>
-                <div class="stat-label">Pending</div>
-            </div>
-        </div>
-
-        <div class="dashboard-grid">
+            <div class="prediction-big success" id="predDays">45</div>
+            <div class="prediction-label" id="predLabel">days to complete course</div>
             
-            <!-- Left Column - Daily Schedule -->
-            <div>
-                <!-- Daily Schedule -->
-                <div class="card">
-                    <div class="card-header">
-                        <div class="card-title">📅 Today's Schedule</div>
-                        <div class="current-time-indicator pulse" id="currentTime">
-                            🕐 Loading...
-                        </div>
-                    </div>
-                    
-                    <div class="schedule-container" id="dailySchedule">
-                        <!-- Generated by JS -->
-                    </div>
+            <div class="prediction-grid">
+                <div class="prediction-card">
+                    <h4>Exam Date</h4>
+                    <div class="value" id="predExamDate">--</div>
+                    <div class="sub" id="predExamDays">Set exam date</div>
                 </div>
-
-                <!-- Subjects -->
-                <div class="card" style="margin-top: 1rem;">
-                    <div class="card-header">
-                        <div class="card-title">📚 Subjects & Topics</div>
-                        <button class="card-action" id="addSubjectBtn" onclick="addSubject()" disabled>
-                            + Add
-                        </button>
-                    </div>
-                    <div class="subject-list" id="subjectList">
-                        <div class="empty-state">Login to add subjects</div>
-                    </div>
+                <div class="prediction-card">
+                    <h4>Course Finish</h4>
+                    <div class="value" id="predFinishDate">--</div>
+                    <div class="sub" id="predBuffer">Buffer: -- days</div>
                 </div>
-            </div>
-
-            <!-- Right Column -->
-            <div>
-                <!-- Exam -->
-                <div class="card">
-                    <div class="card-title" style="margin-bottom: 0.75rem;">📅 Exam Date</div>
-                    <input type="date" class="exam-input" id="examDate" onchange="setExam(this.value)">
-                    <div class="countdown">
-                        <div class="countdown-number" id="countNum">--</div>
-                        <div class="countdown-label" id="countText">Set exam date</div>
-                    </div>
+                <div class="prediction-card">
+                    <h4>Current Speed</h4>
+                    <div class="value" id="predSpeed">0</div>
+                    <div class="sub">topics/day</div>
                 </div>
-
-                <!-- Heatmap -->
-                <div class="card" style="margin-top: 1rem;">
-                    <div class="card-header">
-                        <div class="card-title">📊 Study Heatmap</div>
-                        <button class="card-action" id="studyBtn" onclick="markStudied()" disabled>
-                            ✓ Studied
-                        </button>
-                    </div>
-                    <div class="heatmap" id="heatmap"></div>
-                </div>
-
-                <!-- AI -->
-                <div class="card" style="margin-top: 1rem;">
-                    <div class="card-title" style="margin-bottom: 0.75rem;">💡 Smart Tip</div>
-                    <div class="ai-box" id="aiTip">
-                        Login for personalized tips
-                    </div>
+                <div class="prediction-card">
+                    <h4>Required Speed</h4>
+                    <div class="value" id="predRequired">0</div>
+                    <div class="sub">topics/day minimum</div>
                 </div>
             </div>
         </div>
+
+        <!-- SPEED ADJUSTMENT -->
+        <div class="speed-box" id="speedBox" style="display: none;">
+            <h3>⚡ Speed Simulator</h3>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1rem;">
+                Adjust your daily study pace to see when you'll finish
+            </p>
+            
+            <input type="range" class="speed-slider" id="speedSlider" min="0.1" max="5" step="0.1" value="1">
+            
+            <div class="speed-compare">
+                <div class="speed-current">
+                    <div class="speed-label">Current Speed</div>
+                    <div class="speed-value" id="simCurrent">0.5</div>
+                    <div style="font-size: 0.8rem; color: var(--text-muted);">topics/day</div>
+                </div>
+                <div class="speed-required">
+                    <div class="speed-label">At This Speed</div>
+                    <div class="speed-value" id="simResult">80</div>
+                    <div style="font-size: 0.8rem; color: var(--text-muted);">days to finish</div>
+                </div>
+            </div>
+            
+            <div style="margin-top: 1rem; padding: 1rem; background: var(--dark); border-radius: 10px; font-size: 0.9rem;" id="simAdvice">
+                Increase speed to finish before exam!
+            </div>
+        </div>
+
+        <!-- EXAM DATE INPUT -->
+        <div class="exam-box">
+            <label style="font-weight: 600;">📅 Set Your Exam Date</label>
+            <input type="date" class="exam-input" id="examDate" onchange="setExam(this.value)">
+        </div>
+
+        <!-- ARS REVISIONS -->
+        <div class="ars-box" id="arsBox" style="display: none;">
+            <div class="ars-header">
+                <div class="ars-title">🔥 Today's ARS Revisions</div>
+                <span class="ars-count" id="arsCount">0</span>
+            </div>
+            <div class="ars-list" id="arsList"></div>
+        </div>
+
+        <!-- SUBJECTS -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+            <h2>📚 Your Subjects</h2>
+            <button class="card-action" id="addSubjectBtn" onclick="addSubject()" disabled>+ Add Subject</button>
+        </div>
+
+        <div class="subject-grid" id="subjectGrid">
+            <div class="empty-state">Login to add subjects and start tracking!</div>
+        </div>
+
+        <!-- HEATMAP -->
+        <div class="heatmap-box">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h3>📊 Study Streak</h3>
+                <button class="card-action" id="studyBtn" onclick="markStudied()" disabled>✓ Mark Studied</button>
+            </div>
+            <div class="heatmap" id="heatmap"></div>
+        </div>
+
     </div>
 
     <script>
@@ -919,21 +835,13 @@
             subjects: [], 
             studyDates: [], 
             exam: null,
-            revisions: [],
-            dailyTasks: {} // Date -> tasks
+            revisions: []
         };
         let modalCb = null;
+        let activeTopic = null;
 
         // ARS Intervals
         const ARS_INTERVALS = [1, 3, 7, 14, 30];
-
-        // Time slots configuration
-        const TIME_SLOTS = [
-            { id: 'morning', name: 'Morning Session', time: '6:00 AM - 12:00 PM', icon: '🌅', color: 'morning', type: 'new' },
-            { id: 'afternoon', name: 'Afternoon Session', time: '12:00 PM - 5:00 PM', icon: '☀️', color: 'afternoon', type: 'practice' },
-            { id: 'evening', name: 'Evening Revision (ARS)', time: '5:00 PM - 9:00 PM', icon: '🌆', color: 'evening', type: 'revision' },
-            { id: 'night', name: 'Night Review', time: '9:00 PM - 11:00 PM', icon: '🌙', color: 'night', type: 'review' }
-        ];
 
         // Init
         document.addEventListener('DOMContentLoaded', () => {
@@ -941,11 +849,10 @@
             
             document.getElementById('loader').style.display = 'none';
             document.getElementById('mainContent').style.display = 'block';
-            
-            updateCurrentTime();
-            setInterval(updateCurrentTime, 60000); // Update every minute
-            
             updateUI();
+
+            // Speed slider
+            document.getElementById('speedSlider').addEventListener('input', updateSpeedSimulation);
 
             try {
                 firebase.initializeApp(firebaseConfig);
@@ -961,10 +868,8 @@
                         document.getElementById('userEmail').textContent = u.email;
                         document.getElementById('userAvatar').src = u.photoURL || '';
                         document.getElementById('welcomeText').textContent = `Hi ${u.displayName || 'there'}! 👋`;
-                        
                         document.getElementById('studyBtn').disabled = false;
                         document.getElementById('addSubjectBtn').disabled = false;
-                        
                         loadCloud(u.uid);
                     } else {
                         document.getElementById('loginBtn').classList.remove('hidden');
@@ -975,61 +880,29 @@
                     }
                     updateUI();
                 });
-                
             } catch(e) {
-                console.log('Firebase init error:', e);
+                console.log('Firebase error:', e);
             }
         });
-
-        // Time functions
-        function updateCurrentTime() {
-            const now = new Date();
-            const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-            document.getElementById('currentTime').innerHTML = `🕐 ${timeStr}`;
-            
-            // Highlight current time slot
-            const hour = now.getHours();
-            let currentSlot = '';
-            if (hour >= 6 && hour < 12) currentSlot = 'morning';
-            else if (hour >= 12 && hour < 17) currentSlot = 'afternoon';
-            else if (hour >= 17 && hour < 21) currentSlot = 'evening';
-            else currentSlot = 'night';
-            
-            // Remove active class from all
-            document.querySelectorAll('.time-slot').forEach(el => el.classList.remove('active'));
-            // Add to current
-            const currentEl = document.getElementById(`slot-${currentSlot}`);
-            if (currentEl) currentEl.classList.add('active');
-        }
-
-        function getCurrentTimeSlot() {
-            const hour = new Date().getHours();
-            if (hour >= 6 && hour < 12) return 'morning';
-            if (hour >= 12 && hour < 17) return 'afternoon';
-            if (hour >= 17 && hour < 21) return 'evening';
-            return 'night';
-        }
 
         // Auth
         function login() {
             const provider = new firebase.auth.GoogleAuthProvider();
-            auth.signInWithPopup(provider).catch(e => {
-                showToast('Login failed: ' + e.message, 'error');
-            });
+            auth.signInWithPopup(provider).catch(e => showToast('Login failed!', 'error'));
         }
 
         function logout() {
             auth.signOut();
         }
 
-        // Data functions
+        // Data
         function loadLocal() {
-            const saved = localStorage.getItem('aa_data_v3');
+            const saved = localStorage.getItem('aa_data_final');
             if (saved) data = JSON.parse(saved);
         }
 
         function saveLocal() {
-            localStorage.setItem('aa_data_v3', JSON.stringify(data));
+            localStorage.setItem('aa_data_final', JSON.stringify(data));
         }
 
         async function loadCloud(uid) {
@@ -1037,7 +910,7 @@
                 const doc = await db.collection('users').doc(uid).get();
                 if (doc.exists && doc.data().data) {
                     const cloud = doc.data().data;
-                    if (!data.lastUpdate || (cloud.lastUpdate && cloud.lastUpdate > data.lastUpdate)) {
+                    if (!data.lastUpdate || (cloud.lastUpdate > data.lastUpdate)) {
                         data = cloud;
                         saveLocal();
                         updateUI();
@@ -1058,22 +931,94 @@
             saveLocal();
         }
 
-        // ARS Functions
-        function scheduleRevisions(subjectName, topicName, completedDate) {
-            const baseDate = new Date(completedDate);
-            
-            ARS_INTERVALS.forEach((interval, index) => {
-                const revisionDate = new Date(baseDate);
-                revisionDate.setDate(revisionDate.getDate() + interval);
+        // CALCULATIONS
+        function calculatePredictions() {
+            const totalTopics = data.subjects.reduce((a, s) => a + s.topics.length, 0);
+            const completed = data.subjects.reduce((a, s) => a + s.topics.filter(t => t.done).length, 0);
+            const inProgress = data.subjects.reduce((a, s) => a + s.topics.filter(t => t.status === 'in-progress').length, 0);
+            const pending = totalTopics - completed;
+
+            if (totalTopics === 0) return null;
+
+            // Calculate speed (only completed topics count for speed)
+            const studyDays = data.studyDates.length || 1;
+            const speed = completed / studyDays;
+
+            // Days needed at current speed
+            const daysNeeded = speed > 0 ? Math.ceil(pending / speed) : Infinity;
+
+            // Completion date
+            const finishDate = speed > 0 ? new Date(Date.now() + daysNeeded * 86400000) : null;
+
+            // Exam analysis
+            let examAnalysis = null;
+            if (data.exam) {
+                const examDate = new Date(data.exam);
+                const daysToExam = Math.ceil((examDate - new Date()) / 86400000);
+                const requiredSpeed = daysToExam > 0 ? pending / daysToExam : Infinity;
                 
+                examAnalysis = {
+                    daysToExam,
+                    requiredSpeed,
+                    onTrack: speed >= requiredSpeed,
+                    bufferDays: daysToExam - daysNeeded,
+                    shortfall: speed < requiredSpeed ? Math.ceil((requiredSpeed - speed) * daysToExam) : 0
+                };
+            }
+
+            return {
+                totalTopics,
+                completed,
+                inProgress,
+                pending,
+                speed: speed.toFixed(2),
+                daysNeeded: daysNeeded === Infinity ? null : daysNeeded,
+                finishDate,
+                examAnalysis
+            };
+        }
+
+        // Speed Simulator
+        function updateSpeedSimulation() {
+            const slider = document.getElementById('speedSlider');
+            const simulatedSpeed = parseFloat(slider.value);
+            const pred = calculatePredictions();
+            
+            if (!pred) return;
+
+            const daysAtSimSpeed = Math.ceil(pred.pending / simulatedSpeed);
+            const finishAtSimSpeed = new Date(Date.now() + daysAtSimSpeed * 86400000);
+
+            document.getElementById('simCurrent').textContent = pred.speed;
+            document.getElementById('simResult').textContent = daysAtSimSpeed;
+
+            let advice = '';
+            if (pred.examAnalysis) {
+                if (daysAtSimSpeed <= pred.examAnalysis.daysToExam) {
+                    const buffer = pred.examAnalysis.daysToExam - daysAtSimSpeed;
+                    advice = `✅ At ${simulatedSpeed} topics/day, you'll finish ${buffer} days BEFORE exam!`;
+                } else {
+                    const late = daysAtSimSpeed - pred.examAnalysis.daysToExam;
+                    advice = `❌ At ${simulatedSpeed} topics/day, you'll be ${late} days LATE for exam!`;
+                }
+            } else {
+                advice = `At ${simulatedSpeed} topics/day, you'll finish in ${daysAtSimSpeed} days (${finishAtSimSpeed.toLocaleDateString('en-IN')})`;
+            }
+            document.getElementById('simAdvice').textContent = advice;
+        }
+
+        // ARS Functions
+        function scheduleRevisions(subject, topic, date) {
+            ARS_INTERVALS.forEach((days, i) => {
+                const revDate = new Date(date);
+                revDate.setDate(revDate.getDate() + days);
                 data.revisions.push({
                     id: Date.now() + Math.random(),
-                    subject: subjectName,
-                    topic: topicName,
-                    revisionNumber: index + 1,
-                    scheduledDate: revisionDate.toISOString().slice(0, 10),
-                    completed: false,
-                    createdAt: completedDate
+                    subject,
+                    topic,
+                    revisionNumber: i + 1,
+                    scheduledDate: revDate.toISOString().slice(0, 10),
+                    completed: false
                 });
             });
         }
@@ -1083,136 +1028,70 @@
             return data.revisions.filter(r => r.scheduledDate === today && !r.completed);
         }
 
-        function getPendingRevisions() {
-            const today = new Date().toISOString().slice(0, 10);
-            return data.revisions.filter(r => r.scheduledDate < today && !r.completed);
-        }
-
         function completeRevision(revId) {
             const rev = data.revisions.find(r => r.id === revId);
             if (rev) {
                 rev.completed = true;
-                rev.completedAt = new Date().toISOString();
-                
                 const today = new Date().toISOString().slice(0, 10);
-                if (!data.studyDates.includes(today)) {
-                    data.studyDates.push(today);
-                }
-                
+                if (!data.studyDates.includes(today)) data.studyDates.push(today);
                 saveCloud();
                 updateUI();
-                showToast(`ARS Revision ${rev.revisionNumber} done! 🎯`, 'success');
+                showToast(`ARS #${rev.revisionNumber} done! 🎉`, 'success');
             }
         }
 
-        // Generate daily tasks
-        function generateDailyTasks() {
+        // Topic Actions
+        function startTopic(sid, tid) {
+            const s = data.subjects.find(x => x.id === sid);
+            if (!s) return;
+            
+            const t = s.topics.find(x => x.id === tid);
+            if (!t) return;
+
+            // Mark previous in-progress as not started
+            data.subjects.forEach(sub => {
+                sub.topics.forEach(top => {
+                    if (top.status === 'in-progress') top.status = 'not-started';
+                });
+            });
+
+            t.status = 'in-progress';
+            t.startedAt = new Date().toISOString();
+            saveCloud();
+            updateUI();
+            showToast(`Started: ${t.title}`, 'success');
+        }
+
+        function finishTopic(sid, tid) {
+            const s = data.subjects.find(x => x.id === sid);
+            if (!s) return;
+            
+            const t = s.topics.find(x => x.id === tid);
+            if (!t) return;
+
+            t.done = true;
+            t.status = 'done';
+            t.finishedAt = new Date().toISOString();
+
+            // Schedule ARS
             const today = new Date().toISOString().slice(0, 10);
-            const todaysRevs = getTodaysRevisions();
-            const pendingRevs = getPendingRevisions();
+            scheduleRevisions(s.name, t.title, today);
             
-            // Get incomplete topics
-            const incompleteTopics = [];
-            data.subjects.forEach(s => {
-                s.topics.forEach(t => {
-                    if (!t.done) {
-                        incompleteTopics.push({ subject: s.name, topic: t.title });
-                    }
-                });
-            });
+            if (!data.studyDates.includes(today)) data.studyDates.push(today);
             
-            const tasks = {
-                morning: [],
-                afternoon: [],
-                evening: [],
-                night: []
-            };
-            
-            // Morning: New topics (priority based)
-            const highPriority = incompleteTopics.slice(0, 3);
-            highPriority.forEach((t, i) => {
-                tasks.morning.push({
-                    id: `new-${i}`,
-                    text: `${t.subject}: ${t.topic}`,
-                    type: 'new',
-                    priority: i === 0 ? 'high' : 'medium'
-                });
-            });
-            
-            // Afternoon: Practice
-            tasks.afternoon.push({
-                id: 'practice-1',
-                text: 'Solve previous year questions',
-                type: 'practice',
-                priority: 'high'
-            });
-            tasks.afternoon.push({
-                id: 'practice-2',
-                text: 'Take a mock test (30 min)',
-                type: 'practice',
-                priority: 'medium'
-            });
-            
-            // Evening: ARS Revisions (MOST IMPORTANT)
-            const allRevs = [...pendingRevs, ...todaysRevs].slice(0, 5);
-            allRevs.forEach((r, i) => {
-                tasks.evening.push({
-                    id: `rev-${r.id}`,
-                    text: `${r.subject}: ${r.topic} (Rev ${r.revisionNumber})`,
-                    type: 'revision',
-                    priority: 'high',
-                    isRevision: true,
-                    revId: r.id
-                });
-            });
-            
-            // Night: Light review
-            tasks.night.push({
-                id: 'review-1',
-                text: 'Quick review of today\'s learning',
-                type: 'review',
-                priority: 'low'
-            });
-            tasks.night.push({
-                id: 'review-2',
-                text: 'Plan tomorrow\'s schedule',
-                type: 'review',
-                priority: 'low'
-            });
-            
-            return tasks;
+            saveCloud();
+            updateUI();
+            showToast(`${t.title} completed! 5 ARS revisions scheduled! 🎯`, 'success');
         }
 
-        function toggleTask(slotId, taskId, isRevision, revId) {
-            if (isRevision && revId) {
-                completeRevision(revId);
-                return;
-            }
-            
-            // For non-revision tasks, just mark as done visually
-            const taskEl = document.getElementById(`task-${taskId}`);
-            if (taskEl) {
-                taskEl.classList.toggle('completed');
-                const check = taskEl.querySelector('.task-check');
-                check.classList.toggle('done');
-                check.textContent = check.classList.contains('done') ? '✓' : '';
-                
-                if (check.classList.contains('done')) {
-                    showToast('Task completed! ✅', 'success');
-                }
-            }
-        }
-
-        // Actions
+        // Other Actions
         function markStudied() {
             const today = new Date().toISOString().slice(0,10);
             if (!data.studyDates.includes(today)) {
                 data.studyDates.push(today);
                 saveCloud();
                 updateUI();
-                showToast('Great job! ✅', 'success');
-            } else {
-                showToast('Already marked!', 'info');
+                showToast('Study streak updated! 🔥', 'success');
             }
         }
 
@@ -1242,9 +1121,10 @@
                 const s = data.subjects.find(x => x.id === sid);
                 if (s) {
                     s.topics.push({ 
+                        id: Date.now(),
                         title, 
                         done: false,
-                        createdAt: new Date().toISOString()
+                        status: 'not-started'
                     });
                     saveCloud();
                     updateUI();
@@ -1254,115 +1134,119 @@
             openModal('Add Topic', 'Topic name...');
         }
 
-        function toggleTopic(sid, idx) {
-            const s = data.subjects.find(x => x.id === sid);
-            if (s && s.topics[idx]) {
-                const topic = s.topics[idx];
-                const wasDone = topic.done;
-                topic.done = !topic.done;
-                
-                if (topic.done && !wasDone) {
-                    const today = new Date().toISOString().slice(0, 10);
-                    scheduleRevisions(s.name, topic.title, today);
-                    
-                    if (!data.studyDates.includes(today)) {
-                        data.studyDates.push(today);
-                    }
-                    
-                    showToast('Topic done! ARS scheduled! 🎯', 'success');
-                }
-                
-                saveCloud();
-                updateUI();
-            }
-        }
-
         function delSubject(sid) {
-            if (!confirm('Delete?')) return;
+            if (!confirm('Delete this subject?')) return;
+            const subject = data.subjects.find(s => s.id === sid);
             data.subjects = data.subjects.filter(x => x.id !== sid);
-            data.revisions = data.revisions.filter(r => {
-                const subject = data.subjects.find(s => s.name === r.subject);
-                return subject !== undefined;
-            });
+            if (subject) {
+                data.revisions = data.revisions.filter(r => r.subject !== subject.name);
+            }
             saveCloud();
             updateUI();
         }
 
         // UI Update
         function updateUI() {
-            const total = data.subjects.reduce((a,s) => a + s.topics.length, 0);
-            const done = data.subjects.reduce((a,s) => a + s.topics.filter(t => t.done).length, 0);
-            
-            let streak = 0;
-            for (let i = 0; i < 365; i++) {
-                const d = new Date();
-                d.setDate(d.getDate() - i);
-                if (data.studyDates.includes(d.toISOString().slice(0,10))) streak++;
-                else if (i > 0) break;
-            }
-            
-            let days = 0;
-            if (data.exam) {
-                days = Math.ceil((new Date(data.exam) - new Date()) / 86400000);
-                if (days < 0) days = 0;
-            }
-            
+            const pred = calculatePredictions();
             const todaysRevs = getTodaysRevisions();
-            const pendingRevs = getPendingRevisions();
-            
-            document.getElementById('statSubjects').textContent = data.subjects.length;
-            document.getElementById('statCompleted').textContent = done;
-            document.getElementById('statStreak').textContent = streak;
-            document.getElementById('statRevisions').textContent = todaysRevs.length;
-            document.getElementById('statDays').textContent = days;
-            document.getElementById('statPending').textContent = pendingRevs.length;
-            
-            if (data.exam) document.getElementById('examDate').value = data.exam;
-            
-            if (!data.exam) {
-                document.getElementById('countNum').textContent = '--';
-                document.getElementById('countText').textContent = 'Set exam date';
-            } else {
-                document.getElementById('countNum').textContent = days;
-                document.getElementById('countText').textContent = days === 1 ? 'day left' : 'days left';
-            }
-            
-            // Generate and render daily schedule
-            const tasks = generateDailyTasks();
-            const scheduleContainer = document.getElementById('dailySchedule');
-            
-            scheduleContainer.innerHTML = TIME_SLOTS.map(slot => {
-                const slotTasks = tasks[slot.id] || [];
-                const isCurrent = getCurrentTimeSlot() === slot.id;
+
+            // HERO PREDICTION
+            if (pred && pred.totalTopics > 0) {
+                document.getElementById('predictionHero').style.display = 'block';
                 
-                return `
-                    <div class="time-slot ${slot.color} ${isCurrent ? 'active' : ''}" id="slot-${slot.id}">
-                        <div class="time-header">
-                            <div class="time-icon">${slot.icon}</div>
-                            <div class="time-info">
-                                <h4>${slot.name}</h4>
-                                <p>${slot.time}</p>
-                            </div>
-                            <span class="time-badge">${slotTasks.length} Tasks</span>
+                const heroDays = document.getElementById('predDays');
+                const heroStatus = document.getElementById('predStatus');
+                const heroLabel = document.getElementById('predLabel');
+
+                if (pred.pending === 0) {
+                    heroDays.textContent = '✅';
+                    heroDays.className = 'prediction-big success';
+                    heroStatus.className = 'prediction-status status-safe';
+                    heroStatus.innerHTML = '🎉 Course Complete!';
+                    heroLabel.textContent = 'Just do ARS revisions now';
+                } else if (pred.examAnalysis) {
+                    heroDays.textContent = pred.daysNeeded;
+                    
+                    if (pred.examAnalysis.onTrack) {
+                        heroDays.className = 'prediction-big success';
+                        heroStatus.className = 'prediction-status status-safe';
+                        heroStatus.innerHTML = `✅ ${Math.floor(pred.examAnalysis.bufferDays)} days buffer`;
+                        heroLabel.textContent = `days to finish (exam in ${pred.examAnalysis.daysToExam} days)`;
+                    } else {
+                        heroDays.className = 'prediction-big danger';
+                        heroStatus.className = 'prediction-status status-danger';
+                        heroStatus.innerHTML = `❌ ${pred.examAnalysis.shortfall} topics short`;
+                        heroLabel.textContent = `Need ${pred.examAnalysis.requiredSpeed.toFixed(2)} topics/day, doing ${pred.speed}`;
+                    }
+
+                    // Exam date
+                    document.getElementById('predExamDate').textContent = new Date(data.exam).toLocaleDateString('en-IN', {day:'numeric', month:'short'});
+                    document.getElementById('predExamDays').textContent = `${pred.examAnalysis.daysToExam} days left`;
+
+                    // Buffer
+                    const bufferEl = document.getElementById('predBuffer');
+                    if (pred.examAnalysis.onTrack) {
+                        bufferEl.textContent = `${Math.floor(pred.examAnalysis.bufferDays)} days early`;
+                        bufferEl.style.color = 'var(--success)';
+                    } else {
+                        bufferEl.textContent = `${Math.abs(Math.floor(pred.examAnalysis.bufferDays))} days late`;
+                        bufferEl.style.color = 'var(--danger)';
+                    }
+
+                    // Speed box
+                    document.getElementById('speedBox').style.display = 'block';
+                    document.getElementById('speedSlider').value = parseFloat(pred.speed);
+                    updateSpeedSimulation();
+                } else {
+                    heroDays.textContent = pred.daysNeeded;
+                    heroDays.className = 'prediction-big success';
+                    heroStatus.className = 'prediction-status status-warning';
+                    heroStatus.innerHTML = '⚠️ Set exam date';
+                    heroLabel.textContent = `days to finish (no exam set)`;
+                    
+                    document.getElementById('predExamDate').textContent = '--';
+                    document.getElementById('predExamDays').textContent = 'Not set';
+                    document.getElementById('predBuffer').textContent = '--';
+                    document.getElementById('speedBox').style.display = 'none';
+                }
+
+                // Finish date
+                if (pred.finishDate) {
+                    document.getElementById('predFinishDate').textContent = pred.finishDate.toLocaleDateString('en-IN', {day:'numeric', month:'short'});
+                }
+
+                // Speeds
+                document.getElementById('predSpeed').textContent = pred.speed;
+                document.getElementById('predRequired').textContent = pred.examAnalysis ? pred.examAnalysis.requiredSpeed.toFixed(2) : '--';
+
+            } else {
+                document.getElementById('predictionHero').style.display = 'none';
+                document.getElementById('speedBox').style.display = 'none';
+            }
+
+            // Exam input
+            if (data.exam) {
+                document.getElementById('examDate').value = data.exam;
+            }
+
+            // ARS Box
+            const arsBox = document.getElementById('arsBox');
+            if (todaysRevs.length > 0) {
+                arsBox.style.display = 'block';
+                document.getElementById('arsCount').textContent = todaysRevs.length;
+                document.getElementById('arsList').innerHTML = todaysRevs.map(r => `
+                    <div class="ars-item">
+                        <div class="ars-info">
+                            <h4>${r.topic}</h4>
+                            <p>${r.subject} • Revision #${r.revisionNumber}</p>
                         </div>
-                        <div class="time-content">
-                            <div class="task-list">
-                                ${slotTasks.length === 0 ? 
-                                    '<div class="empty-tasks">No tasks scheduled</div>' :
-                                    slotTasks.map(task => `
-                                        <div class="task-item" id="task-${task.id}" onclick="toggleTask('${slot.id}', '${task.id}', ${task.isRevision || false}, ${task.revId || 'null'})">
-                                            <div class="task-check ${task.isRevision ? 'done' : ''}">${task.isRevision ? '✓' : ''}</div>
-                                            <span class="task-text">${task.text}</span>
-                                            <span class="task-priority priority-${task.priority}">${task.priority}</span>
-                                        </div>
-                                    `).join('')
-                                }
-                            </div>
-                        </div>
+                        <button class="ars-btn" onclick="completeRevision(${r.id})">Done</button>
                     </div>
-                `;
-            }).join('');
-            
+                `).join('');
+            } else {
+                arsBox.style.display = 'none';
+            }
+
             // Heatmap
             const hm = document.getElementById('heatmap');
             hm.innerHTML = '';
@@ -1376,70 +1260,69 @@
                 }
                 hm.appendChild(cell);
             }
-            
+
             // Subjects
-            const sl = document.getElementById('subjectList');
+            const sg = document.getElementById('subjectGrid');
             if (data.subjects.length === 0) {
-                sl.innerHTML = '<div class="empty-state">' + (user ? 'No subjects. Click Add!' : 'Login to add subjects') + '</div>';
+                sg.innerHTML = '<div class="empty-state" style="grid-column: 1/-1;">Login to add subjects!</div>';
             } else {
-                sl.innerHTML = data.subjects.map(s => {
+                sg.innerHTML = data.subjects.map(s => {
                     const totalT = s.topics.length;
                     const doneT = s.topics.filter(t => t.done).length;
+                    const inProgressT = s.topics.filter(t => t.status === 'in-progress').length;
                     const pct = totalT ? Math.round(doneT/totalT*100) : 0;
-                    
+
+                    // Subject prediction
+                    let subPred = '';
+                    let subPredClass = '';
+                    if (pred && pred.examAnalysis && totalT > 0) {
+                        const subPending = totalT - doneT;
+                        const subDays = Math.ceil(subPending / parseFloat(pred.speed));
+                        subPred = `${subDays}d left`;
+                        subPredClass = subDays <= pred.examAnalysis.daysToExam / data.subjects.length ? '' : 'danger';
+                    }
+
                     return `
-                        <div class="subject-item">
-                            <div class="subject-header" onclick="toggleSub(${s.id})">
-                                <div>
-                                    <div class="subject-title">${s.name}</div>
-                                    <div style="font-size: 0.8rem; color: var(--text-muted);">${doneT}/${totalT} done</div>
-                                </div>
-                                <div style="display: flex; align-items: center;">
-                                    <div class="progress-bar">
-                                        <div class="progress-fill" style="width: ${pct}%"></div>
-                                    </div>
-                                    <span style="font-size: 0.8rem; margin: 0 8px;">${pct}%</span>
-                                    ${user ? `
-                                        <button class="btn btn-primary" style="padding: 4px 10px; font-size: 0.75rem;" onclick="event.stopPropagation(); addTopic(${s.id})">+</button>
-                                        <button class="btn btn-secondary" style="padding: 4px 10px; font-size: 0.75rem; margin-left: 4px;" onclick="event.stopPropagation(); delSubject(${s.id})">🗑</button>
-                                    ` : ''}
-                                </div>
+                        <div class="subject-card">
+                            <div class="subject-header">
+                                <div class="subject-name">${s.name}</div>
+                                ${subPred ? `<div class="subject-prediction ${subPredClass}">${subPred}</div>` : ''}
                             </div>
-                            <div class="topic-list" id="sub-${s.id}" style="display: none;">
-                                ${s.topics.map((t,i) => `
-                                    <div class="topic-item">
-                                        <div class="topic-check ${t.done ? 'done' : ''}" onclick="toggleTopic(${s.id}, ${i})">${t.done ? '✓' : ''}</div>
-                                        <span class="topic-name ${t.done ? 'done' : ''}">${t.title}</span>
-                                        ${t.done ? '<span class="ars-badge">ARS Active</span>' : ''}
-                                    </div>
-                                `).join('')}
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: ${pct}%"></div>
+                            </div>
+                            <div class="subject-stats">
+                                <span>${doneT}/${totalT} done</span>
+                                <span>${inProgressT} in progress</span>
+                                <span>${pct}%</span>
+                            </div>
+                            <div class="topic-list">
+                                ${s.topics.map(t => {
+                                    let btn = '';
+                                    if (t.done) {
+                                        btn = '<span class="topic-action btn-ars">✓ ARS</span>';
+                                    } else if (t.status === 'in-progress') {
+                                        btn = `<button class="topic-action btn-finish" onclick="finishTopic(${s.id}, ${t.id})">Finish</button>`;
+                                    } else {
+                                        btn = `<button class="topic-action btn-start" onclick="startTopic(${s.id}, ${t.id})">Start</button>`;
+                                    }
+                                    
+                                    return `
+                                        <div class="topic-item">
+                                            <div class="topic-status ${t.done ? 'done' : t.status === 'in-progress' ? 'in-progress' : 'not-started'}">
+                                                ${t.done ? '✓' : t.status === 'in-progress' ? '▶' : ''}
+                                            </div>
+                                            <span class="topic-name ${t.done ? 'done' : ''}">${t.title}</span>
+                                            ${user ? btn : ''}
+                                        </div>
+                                    `;
+                                }).join('')}
+                                ${user ? `<button class="card-action" style="margin-top: 0.5rem; width: 100%;" onclick="addTopic(${s.id})">+ Add Topic</button>` : ''}
                             </div>
                         </div>
                     `;
                 }).join('');
             }
-            
-            // AI Tip
-            const remaining = total - done;
-            const currentSlot = getCurrentTimeSlot();
-            let tip = '';
-            
-            if (!user) tip = 'Login for personalized tips!';
-            else if (remaining === 0) tip = '🎉 All done! Great job!';
-            else if (currentSlot === 'evening' && todaysRevs.length > 0) {
-                tip = `🔥 <b>Evening Revision Time!</b><br>You have ${todaysRevs.length} ARS revisions due. This is the most important session!`;
-            } else if (!data.exam) {
-                tip = `📚 ${remaining} topics left. Set exam date!`;
-            } else {
-                const perDay = Math.ceil(remaining / (days || 1));
-                tip = `📅 ${days} days left.<br>Target: <b>${perDay}</b> topics/day.<br>Current: ${todaysRevs.length} revisions due.`;
-            }
-            document.getElementById('aiTip').innerHTML = tip;
-        }
-
-        function toggleSub(id) {
-            const el = document.getElementById('sub-' + id);
-            el.style.display = el.style.display === 'none' ? 'flex' : 'none';
         }
 
         // Modal
@@ -1448,7 +1331,6 @@
             document.getElementById('modalInput').placeholder = ph;
             document.getElementById('modalInput').value = '';
             document.getElementById('modal').classList.add('active');
-            document.getElementById('modalInput').focus();
         }
 
         function closeModal() {
