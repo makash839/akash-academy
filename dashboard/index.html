@@ -112,32 +112,42 @@ function save(){
 }
 
 // =====================
-// FIREBASE LOGIN
+// FIREBASE LOGIN (CONFIGURED)
 // =====================
 let auth,db;
-try{
- const firebaseConfig={
-  apiKey:"ADD_KEY",
-  authDomain:"ADD_DOMAIN",
-  projectId:"ADD_PROJECT"
- };
- firebase.initializeApp(firebaseConfig);
- auth=firebase.auth();
- db=firebase.firestore();
 
- auth.onAuthStateChanged(async user=>{
+const firebaseConfig = {
+  apiKey: "AIzaSyAm1EZtdULG_Qay6T0sO0k8D8dBfXpVMW4",
+  authDomain: "akashacademy-33513.firebaseapp.com",
+  projectId: "akashacademy-33513",
+  storageBucket: "akashacademy-33513.firebasestorage.app",
+  messagingSenderId: "169097190637",
+  appId: "1:169097190637:web:a843f1cf160808c055c0e4",
+  measurementId: "G-8WDC999WEQ"
+};
+
+firebase.initializeApp(firebaseConfig);
+auth = firebase.auth();
+db = firebase.firestore();
+
+// AUTO CLOUD SYNC
+auth.onAuthStateChanged(async user=>{
   if(!user) return;
   const ref=db.collection('users').doc(user.uid);
   const snap=await ref.get();
-  if(snap.exists){data=snap.data().data;save();renderAll();}
-  else await ref.set({data});
- });
-}catch(e){console.log('Firebase not configured yet');}
+  if(snap.exists){
+    data=snap.data().data;
+    save();
+    renderAll();
+  }else{
+    await ref.set({data});
+  }
+});
 
+// GOOGLE LOGIN
 async function login(){
- if(!auth) return alert('Add Firebase config first');
- const provider=new firebase.auth.GoogleAuthProvider();
- await auth.signInWithPopup(provider);
+  const provider=new firebase.auth.GoogleAuthProvider();
+  await auth.signInWithPopup(provider);
 }
 
 // =====================
