@@ -6,7 +6,8 @@
 <title>Akash Academy – AI Study Dashboard</title>
 
 <!-- PWA -->
-<link rel="manifest" href="manifest.json">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#6366f1">
 <meta name="theme-color" content="#6366f1">
 
 <!-- Firebase (optional – fill config later) -->
@@ -259,7 +260,7 @@ function askMentor(){
 // PWA SERVICE WORKER
 // =====================
 if('serviceWorker' in navigator){
- navigator.serviceWorker.register('/sw.js').catch(()=>{});
+ navigator.serviceWorker.register("/sw.js").catch(()=>{});
 }
 
 // =====================
