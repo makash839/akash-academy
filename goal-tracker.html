@@ -2,101 +2,198 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Monk Mode System</title>
+<title>Monk Mode Ultra Pro</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
 body{
-    font-family: Arial;
-    background:#0f172a;
-    color:white;
-    text-align:center;
-    padding:20px;
+background:#0f172a;
+color:white;
+font-family:Arial;
+text-align:center;
 }
+.container{max-width:650px;margin:auto;}
 .card{
-    background:#1e293b;
-    padding:20px;
-    border-radius:15px;
-    margin:15px auto;
-    max-width:400px;
+background:#1e293b;
+padding:15px;
+margin:15px 0;
+border-radius:15px;
 }
 button{
-    padding:10px 20px;
-    margin:5px;
-    border:none;
-    border-radius:8px;
-    font-weight:bold;
-    cursor:pointer;
+padding:10px 15px;
+margin:5px;
+border:none;
+border-radius:8px;
+font-weight:bold;
+cursor:pointer;
 }
-.primary{background:#6366f1;color:white;}
-.danger{background:#ef4444;color:white;}
-.success{background:#10b981;color:white;}
-.progress{
-    height:20px;
-    background:#334155;
-    border-radius:10px;
-    overflow:hidden;
+.green{background:#10b981;}
+.gray{background:#334155;color:white;}
+.red{background:#ef4444;}
+.lock-screen{
+position:fixed;
+inset:0;
+background:#020617;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
 }
-.progress-fill{
-    height:100%;
-    background:linear-gradient(90deg,#6366f1,#8b5cf6);
+input{
+padding:10px;
+border-radius:8px;
+border:none;
+margin:10px;
+font-size:16px;
+text-align:center;
 }
 </style>
 </head>
 <body>
 
-<h1>🧘 Monk Mode System</h1>
+<div id="lockScreen" class="lock-screen">
+<h2>🔐 Enter PIN</h2>
+<input type="password" id="pinInput" maxlength="4">
+<button onclick="unlock()">Unlock</button>
+<button onclick="setPin()">Set New PIN</button>
+</div>
+
+<h1>🧘 Monk Mode Ultra Pro</h1>
+<h2 id="streakText"></h2>
+
+<div class="container" id="mainApp" style="display:none;">
 
 <div class="card">
-    <h2 id="streak">Streak: 0 Days</h2>
-    <h3 id="level">Level: Beginner</h3>
-
-    <div class="progress">
-        <div class="progress-fill" id="progressBar"></div>
-    </div>
+<h3>Today's Discipline</h3>
+<button class="green" onclick="markNoFap()">NoFap ✔</button>
+<button class="green" onclick="markMeditation()">Meditation ✔</button>
+<button class="gray" onclick="finishDay()">Finish Day</button>
+<button class="red" onclick="lock()">Lock</button>
 </div>
 
 <div class="card">
-    <h3>Daily Meditation (1 Hour)</h3>
-    <button class="success" onclick="completeMeditation()">✔ Completed</button>
+<h3>🧠 Dopamine Recovery Graph</h3>
+<canvas id="dopamineChart"></canvas>
 </div>
 
-<div class="card">
-    <button class="danger" onclick="relapse()">❌ Relapse</button>
 </div>
 
 <script>
-let data = JSON.parse(localStorage.getItem("monkData")) || {
-    streak:0,
-    lastDate:null,
-    meditationDates:[]
+let data = JSON.parse(localStorage.getItem("monkUltraPro")) || {
+streak:0,
+days:{}
 };
 
-const levels = [
-    {days:30,name:"Recover Man"},
-    {days:60,name:"Return to Self"},
-    {days:90,name:"Super Discipline"},
-    {days:120,name:"Gamma Focus"},
-    {days:180,name:"Deep Control"},
-    {days:270,name:"Warrior Monk"},
-    {days:365,name:"Monk"},
-    {days:730,name:"Super Monk"}
-];
+let today=new Date().toLocaleDateString('en-CA');
 
-function updateUI(){
-    document.getElementById("streak").innerText="Streak: "+data.streak+" Days";
+if(!data.days[today]){
+data.days[today]={nofap:false,med:false,status:"default"};
+}
 
-    let currentLevel="Beginner";
-    levels.forEach(l=>{
-        if(data.streak>=l.days){
-            currentLevel=l.name;
-        }
-    });
-    document.getElementById("level").innerText="Level: "+currentLevel;
+function save(){
+localStorage.setItem("monkUltraPro",JSON.stringify(data));
+}
 
-    let nextLevel = levels.find(l=>data.streak<l.days);
-    let percent=0;
-    if(nextLevel){
-        percent=(data.streak/nextLevel.days)*100;
-    }else{
+function markNoFap(){data.days[today].nofap=true;}
+function markMeditation(){data.days[today].med=true;}
+
+function finishDay(){
+let d=data.days[today];
+
+if(d.nofap && d.med){
+d.status="green";
+data.streak++;
+}else{
+data.streak=0;
+}
+
+save();
+render();
+}
+
+function render(){
+document.getElementById("streakText").innerText="Complete Days: "+data.streak;
+updateGraph();
+}
+
+function dopamineLevel(days){
+if(days<=7) return 20+days*3;
+if(days<=30) return 40+((days-7)*1);
+if(days<=90) return 65+((days-30)*0.33);
+if(days<=180) return 85+((days-90)*0.11);
+return 95+((days-180)*0.02);
+}
+
+let chart;
+
+function updateGraph(){
+let labels=[];
+let values=[];
+for(let i=0;i<=data.streak;i++){
+labels.push(i);
+values.push(dopamineLevel(i));
+}
+
+if(chart) chart.destroy();
+
+let ctx=document.getElementById("dopamineChart").getContext("2d");
+chart=new Chart(ctx,{
+type:"line",
+data:{
+labels:labels,
+datasets:[{
+label:"Recovery %",
+data:values,
+borderColor:"#10b981",
+backgroundColor:"rgba(16,185,129,0.2)",
+fill:true,
+tension:0.3
+}]
+},
+options:{
+scales:{
+y:{min:0,max:100}
+}
+}
+});
+}
+
+// 🔐 LOCK SYSTEM
+function unlock(){
+let pin=document.getElementById("pinInput").value;
+let savedPin=localStorage.getItem("monkPIN");
+if(savedPin===pin){
+document.getElementById("lockScreen").style.display="none";
+document.getElementById("mainApp").style.display="block";
+render();
+}else{
+alert("Wrong PIN!");
+}
+}
+
+function setPin(){
+let newPin=prompt("Enter new 4 digit PIN:");
+if(newPin && newPin.length===4){
+localStorage.setItem("monkPIN",newPin);
+alert("PIN Set!");
+}
+}
+
+function lock(){
+document.getElementById("mainApp").style.display="none";
+document.getElementById("lockScreen").style.display="flex";
+}
+
+window.onload=function(){
+if(localStorage.getItem("monkPIN")){
+document.getElementById("lockScreen").style.display="flex";
+}else{
+setPin();
+}
+}
+</script>
+
+</body>
+</html>    }else{
         percent=100;
     }
     document.getElementById("progressBar").style.width=percent+"%";
