@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Akash Academy - Exam Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .main-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        /* Grid for 4 Cards */
+        .exam-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            max-width: 1300px;
+            width: 100%;
+        }
+
+        .exam-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .exam-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+
+        .exam-header {
+            padding: 25px;
+            text-align: center;
+            color: white;
+        }
+
+        /* Colors for each exam */
+        .roaro { background: linear-gradient(135deg, #003366 0%, #004080 100%); }
+        .nta { background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%); }
+        .vikas { background: linear-gradient(135deg, #059669 0%, #047857 100%); }
+        .ghatna { background: linear-gradient(135deg, #4b6cb7 0%, #182848 100%); }
+
+        .exam-icon { font-size: 50px; margin-bottom: 10px; }
+        .exam-header h2 { font-size: 1.6rem; font-weight: bold; }
+
+        .exam-body { padding: 25px; flex-grow: 1; }
+        .feature-list { list-style: none; margin-bottom: 20px; }
+        .feature-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+            color: #555;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.95rem;
+        }
+
+        .start-btn {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            font-weight: bold;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: 0.3s;
+        }
+
+        .secure-badge { margin-top: 40px; color: white; opacity: 0.8; }
+    </style>
+</head>
+<body>
+
+    <div class="main-container">
+        <div class="header">
+            <h1>🎓 Akash Academy</h1>
+            <p>Welcome to the Ultimate Exam Portal</p>
+        </div>
+
+        <div class="exam-grid">
+            <div class="exam-card" onclick="window.location.href='roaro-exam.html'">
+                <div class="exam-header roaro">
+                    <div class="exam-icon">📋</div>
+                    <h2>RO/ARO Exam</h2>
+                </div>
+                <div class="exam-body">
+                    <ul class="feature-list">
+                        <li><i class="fas fa-check-circle text-green-500"></i> UPPSC Pattern</li>
+                        <li><i class="fas fa-check-circle text-green-500"></i> Hindi/English Support</li>
+                    </ul>
+                    <div class="start-btn roaro">Start Exam</div>
+                </div>
+            </div>
+
+            <div class="exam-card" onclick="window.location.href='nta-exam.html'">
+                <div class="exam-header nta">
+                    <div class="exam-icon">📝</div>
+                    <h2>NTA Mock Test</h2>
+                </div>
+                <div class="exam-body">
+                    <ul class="feature-list">
+                        <li><i class="fas fa-check-circle text-green-500"></i> Official NTA Pattern</li>
+                        <li><i class="fas fa-check-circle text-green-500"></i> Instant Results</li>
+                    </ul>
+                    <div class="start-btn nta">Start Exam</div>
+                </div>
+            </div>
+
+            <div class="exam-card" onclick="window.location.href='vikas-portal.html'">
+                <div class="exam-header vikas">
+                    <div class="exam-icon">🌱</div>
+                    <h2>Vikas Portal</h2>
+                </div>
+                <div class="exam-body">
+                    <ul class="feature-list">
+                        <li><i class="fas fa-check-circle text-green-500"></i> General Competition</li>
+                        <li><i class="fas fa-check-circle text-green-500"></i> Best for Practice</li>
+                    </ul>
+                    <div class="start-btn vikas">Start Exam</div>
+                </div>
+            </div>
+
+            <div class="exam-card" onclick="window.location.href='ghatna-chakra.html'">
+                <div class="exam-header ghatna">
+                    <div class="exam-icon">📚</div>
+                    <h2>Ghatna Chakra</h2>
+                </div>
+                <div class="exam-body">
+                    <ul class="feature-list">
+                        <li><i class="fas fa-check-circle text-green-500"></i> Previous Year Series</li>
+                        <li><i class="fas fa-check-circle text-green-500"></i> Topic-wise Analysis</li>
+                    </ul>
+                    <div class="start-btn ghatna">Start Exam</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="secure-badge">
+            <i class="fas fa-shield-alt"></i> Secure Exam Portal | 2024-25 Edition
+        </div>
+    </div>
+
+</body>
+</html>
