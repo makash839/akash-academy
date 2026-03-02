@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Akash Academy AI Dashboard</title>
 
+<!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
@@ -12,36 +13,65 @@
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { 
-    font-family: 'Segoe UI', Arial, sans-serif; 
+    font-family: 'Segoe UI', system-ui, sans-serif; 
     background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); 
     color: white; 
     min-height: 100vh;
     padding: 20px; 
 }
 .container { max-width: 1400px; margin: 0 auto; }
+
+/* Header */
 header { 
     display: flex; 
     justify-content: space-between; 
     align-items: center; 
     margin-bottom: 30px;
-    padding: 20px;
+    padding: 20px 24px;
     background: rgba(255,255,255,0.05);
     border-radius: 16px;
-    backdrop-filter: blur(10px);
-}
-h1 { font-size: 28px; background: linear-gradient(90deg, #6366f1, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
-.card {
-    background: rgba(30, 41, 59, 0.8);
-    padding: 24px;
-    border-radius: 16px;
     border: 1px solid rgba(255,255,255,0.1);
-    backdrop-filter: blur(10px);
-    transition: transform 0.3s;
 }
-.card:hover { transform: translateY(-5px); }
-.card h3 { margin-bottom: 16px; color: #94a3b8; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; }
-button {
+h1 { 
+    font-size: 28px; 
+    background: linear-gradient(90deg, #6366f1, #8b5cf6); 
+    -webkit-background-clip: text; 
+    -webkit-text-fill-color: transparent; 
+}
+
+/* User Profile Section */
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(99, 102, 241, 0.1);
+    padding: 8px 16px;
+    border-radius: 50px;
+    border: 1px solid rgba(99, 102, 241, 0.3);
+}
+.user-avatar { 
+    width: 40px; 
+    height: 40px; 
+    border-radius: 50%; 
+    border: 2px solid #6366f1;
+    object-fit: cover;
+}
+.user-info { line-height: 1.3; }
+.user-name { font-weight: 600; font-size: 14px; }
+.user-email { font-size: 11px; color: #94a3b8; }
+.logout-btn { 
+    background: #ef4444; 
+    border: none;
+    color: white;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    cursor: pointer;
+    margin-left: 8px;
+}
+
+/* Buttons */
+.btn {
     background: linear-gradient(135deg, #6366f1, #8b5cf6);
     border: none;
     padding: 12px 24px;
@@ -49,138 +79,272 @@ button {
     border-radius: 12px;
     cursor: pointer;
     font-weight: 600;
+    font-size: 14px;
     transition: all 0.3s;
     display: inline-flex;
     align-items: center;
     gap: 8px;
 }
-button:hover { transform: scale(1.05); box-shadow: 0 10px 30px rgba(99, 102, 241, 0.4); }
-button:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-.user-info { display: flex; align-items: center; gap: 12px; }
-.user-avatar { width: 40px; height: 40px; border-radius: 50%; border: 2px solid #6366f1; }
-.user-details { line-height: 1.4; }
-.user-name { font-weight: 600; color: white; }
-.user-email { font-size: 12px; color: #94a3b8; }
-.logout-btn { background: #ef4444; padding: 8px 16px; font-size: 12px; }
-.logout-btn:hover { background: #dc2626; box-shadow: 0 5px 20px rgba(239, 68, 68, 0.4); }
-#heatmap { display: grid; grid-template-columns: repeat(14, 1fr); gap: 4px; margin-top: 12px; }
-.box { height: 12px; background: #334155; border-radius: 3px; transition: all 0.3s; }
-.box.active { background: linear-gradient(135deg, #10b981, #34d399); box-shadow: 0 0 10px rgba(16, 185, 129, 0.5); }
-.subject-item { 
+.btn:hover { 
+    transform: translateY(-2px); 
+    box-shadow: 0 10px 30px rgba(99, 102, 241, 0.4); 
+}
+.btn:disabled { 
+    opacity: 0.5; 
+    cursor: not-allowed; 
+    transform: none; 
+}
+.btn-success { background: linear-gradient(135deg, #10b981, #34d399); }
+.btn-small { padding: 6px 12px; font-size: 12px; }
+
+/* Grid Layout */
+.grid { 
+    display: grid; 
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); 
+    gap: 20px; 
+}
+
+/* Cards */
+.card {
+    background: rgba(30, 41, 59, 0.6);
+    padding: 24px;
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.1);
+    backdrop-filter: blur(10px);
+}
+.card h3 { 
+    margin-bottom: 16px; 
+    color: #94a3b8; 
+    font-size: 12px; 
+    text-transform: uppercase; 
+    letter-spacing: 1px; 
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Heatmap */
+#heatmap { 
+    display: grid; 
+    grid-template-columns: repeat(14, 1fr); 
+    gap: 4px; 
+    margin-top: 12px; 
+}
+.heat-box { 
+    height: 14px; 
+    background: #334155; 
+    border-radius: 3px; 
+    transition: all 0.3s; 
+}
+.heat-box.active { 
+    background: linear-gradient(135deg, #10b981, #34d399); 
+    box-shadow: 0 0 8px rgba(16, 185, 129, 0.4); 
+}
+
+/* Stats */
+.stats-grid { 
+    display: grid; 
+    grid-template-columns: 1fr 1fr; 
+    gap: 12px; 
+    margin-bottom: 16px; 
+}
+.stat-card { 
     background: rgba(51, 65, 85, 0.5); 
-    padding: 16px; 
-    border-radius: 12px; 
-    margin-bottom: 12px;
+    padding: 20px; 
+    border-radius: 16px; 
+    text-align: center; 
     border: 1px solid rgba(255,255,255,0.05);
 }
-.subject-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.stat-value { 
+    font-size: 36px; 
+    font-weight: bold; 
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.stat-label { 
+    font-size: 11px; 
+    color: #94a3b8; 
+    margin-top: 4px; 
+    text-transform: uppercase;
+}
+
+/* AI Suggestion */
+.ai-box { 
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(139, 92, 246, 0.15)); 
+    padding: 20px; 
+    border-radius: 16px; 
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    text-align: center;
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+/* Subjects */
+.subject-card { 
+    background: rgba(51, 65, 85, 0.4); 
+    padding: 20px; 
+    border-radius: 16px; 
+    margin-bottom: 16px;
+    border: 1px solid rgba(255,255,255,0.05);
+}
+.subject-header { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    margin-bottom: 16px; 
+}
+.subject-title { font-size: 18px; font-weight: 600; }
+.topic-list { display: flex; flex-direction: column; gap: 8px; }
 .topic-item { 
     display: flex; 
     justify-content: space-between; 
     align-items: center; 
-    padding: 8px 12px; 
-    background: rgba(15, 23, 42, 0.5); 
-    border-radius: 8px; 
-    margin-bottom: 8px;
+    padding: 12px 16px; 
+    background: rgba(15, 23, 42, 0.4); 
+    border-radius: 12px; 
+    font-size: 14px;
+    border: 1px solid rgba(255,255,255,0.05);
+}
+.topic-done { 
+    text-decoration: line-through; 
+    opacity: 0.6; 
+    color: #10b981;
+}
+.empty-state {
+    text-align: center;
+    padding: 40px;
+    opacity: 0.6;
     font-size: 14px;
 }
-.topic-done { text-decoration: line-through; opacity: 0.6; }
-.add-btn { background: rgba(99, 102, 241, 0.2); border: 1px solid #6366f1; padding: 6px 12px; font-size: 12px; }
-.add-btn:hover { background: #6366f1; }
-.finish-btn { background: #10b981; padding: 4px 12px; font-size: 11px; }
-.stats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
-.stat-box { background: rgba(51, 65, 85, 0.5); padding: 16px; border-radius: 12px; text-align: center; }
-.stat-value { font-size: 32px; font-weight: bold; color: #6366f1; }
-.stat-label { font-size: 12px; color: #94a3b8; margin-top: 4px; }
-.ai-suggestion { 
-    background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(139, 92, 246, 0.2)); 
-    padding: 16px; 
-    border-radius: 12px; 
-    border: 1px solid rgba(99, 102, 241, 0.3);
-    text-align: center;
-    font-size: 16px;
-}
-input[type="date"] {
+
+/* Form Elements */
+input[type="date"], input[type="text"] {
     background: rgba(51, 65, 85, 0.5);
     border: 1px solid rgba(255,255,255,0.1);
     color: white;
-    padding: 10px;
-    border-radius: 8px;
+    padding: 12px;
+    border-radius: 12px;
     width: 100%;
+    font-size: 14px;
     margin-bottom: 12px;
 }
-.days-left { font-size: 24px; font-weight: bold; color: #f59e0b; }
+input::placeholder { color: #64748b; }
+
+/* Utility */
 .hidden { display: none !important; }
+.days-count { 
+    font-size: 32px; 
+    font-weight: bold; 
+    color: #f59e0b; 
+    margin-top: 8px;
+}
 </style>
 </head>
 
 <body>
 
 <div class="container">
+    <!-- Header -->
     <header>
         <h1>🎓 Akash Academy AI Dashboard</h1>
-        <div id="authSection">
-            <button id="loginBtn" onclick="login()">☁️ Login with Google</button>
-            <div id="userSection" class="hidden">
-                <div class="user-info">
-                    <img id="userAvatar" src="" class="user-avatar" alt="User">
-                    <div class="user-details">
-                        <div id="userName" class="user-name"></div>
-                        <div id="userEmail" class="user-email"></div>
-                    </div>
-                    <button class="logout-btn" onclick="logout()">Logout</button>
-                </div>
+        
+        <!-- Login Button (Shown when logged out) -->
+        <button id="loginBtn" class="btn" onclick="handleLogin()">
+            ☁️ Login with Google
+        </button>
+        
+        <!-- User Profile (Shown when logged in) -->
+        <div id="userProfile" class="user-profile hidden">
+            <img id="userAvatar" src="" class="user-avatar" alt="User" onerror="this.src='https://ui-avatars.com/api/?name=User&background=6366f1&color=fff'">
+            <div class="user-info">
+                <div id="userName" class="user-name">Loading...</div>
+                <div id="userEmail" class="user-email">Loading...</div>
             </div>
+            <button class="logout-btn" onclick="handleLogout()">Logout</button>
         </div>
     </header>
 
+    <!-- Main Grid -->
     <div class="grid">
         <!-- Exam Planner -->
         <div class="card">
             <h3>📅 Exam Planner</h3>
-            <input type="date" id="examDate" onchange="setExam(this.value)">
-            <div id="daysLeft" class="days-left"></div>
+            <input type="date" id="examDate" onchange="updateExamDate(this.value)">
+            <div id="examCountdown" class="days-count">Set exam date</div>
         </div>
 
         <!-- Study Heatmap -->
         <div class="card">
             <h3>📊 Study Heatmap</h3>
             <div id="heatmap"></div>
-            <button onclick="studied()" id="studyBtn" style="margin-top: 16px; width: 100%;" disabled>✅ I Studied Today</button>
+            <button id="studyBtn" class="btn btn-success" style="margin-top: 16px; width: 100%;" onclick="markStudied()" disabled>
+                ✅ I Studied Today
+            </button>
         </div>
 
-        <!-- AI Stats -->
+        <!-- Today Revisions -->
         <div class="card">
-            <h3>🌌 OMNISCIENT AI</h3>
-            <div class="stats">
-                <div class="stat-box">
-                    <div id="speedValue" class="stat-value">0</div>
+            <h3>🔥 Today's Progress</h3>
+            <div id="todayStats" class="stats-grid">
+                <div class="stat-card">
+                    <div id="todayStudy" class="stat-value">0</div>
+                    <div class="stat-label">Hours</div>
+                </div>
+                <div class="stat-card">
+                    <div id="todayTopics" class="stat-value">0</div>
+                    <div class="stat-label">Topics</div>
+                </div>
+            </div>
+            <div id="revisionList" style="max-height: 150px; overflow-y: auto;">
+                <p class="empty-state">No revisions yet today</p>
+            </div>
+        </div>
+
+        <!-- AI Insights -->
+        <div class="card">
+            <h3>🌌 AI Insights</h3>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div id="speedStat" class="stat-value">0</div>
                     <div class="stat-label">Speed</div>
                 </div>
-                <div class="stat-box">
-                    <div id="intelValue" class="stat-value">0</div>
+                <div class="stat-card">
+                    <div id="intelStat" class="stat-value">0</div>
                     <div class="stat-label">Intelligence</div>
                 </div>
             </div>
-            <div id="aiSuggestion" class="ai-suggestion">Login to get AI suggestions</div>
+            <div id="aiMessage" class="ai-box">
+                Login to unlock AI-powered study insights
+            </div>
         </div>
 
-        <!-- Subjects -->
-        <div class="card" style="grid-column: span 2;">
-            <h3>📚 Subjects</h3>
-            <button onclick="addSubject()" id="addSubBtn" disabled style="margin-bottom: 16px;">+ Add Subject</button>
-            <div id="subjects"></div>
+        <!-- Subjects (Full Width) -->
+        <div class="card" style="grid-column: 1 / -1;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h3 style="margin: 0;">📚 Subjects & Topics</h3>
+                <button id="addSubjectBtn" class="btn btn-small" onclick="addNewSubject()" disabled>
+                    + Add Subject
+                </button>
+            </div>
+            <div id="subjectsList">
+                <div class="empty-state">No subjects added yet. Login to start adding subjects!</div>
+            </div>
         </div>
     </div>
 </div>
 
 <script>
-// ================= DATA =================
-const STORAGE = "akash_ai";
-let data = { subjects: [], studyDates: [], exam: null, ai: { speed: 1, intelligence: 1 } };
-let auth, db;
+// ================= GLOBAL VARIABLES =================
+let currentUser = null;
+let appData = {
+    subjects: [],
+    studyDates: [],
+    exam: null,
+    ai: { speed: 0, intelligence: 0 }
+};
 
-// ================= FIREBASE INIT =================
+// ================= FIREBASE CONFIG =================
 const firebaseConfig = {
     apiKey: "AIzaSyAm1EZtdULG_Qay6T0sO0k8D8dBfXpVMW4",
     authDomain: "akashacademy-33513.firebaseapp.com",
@@ -190,91 +354,82 @@ const firebaseConfig = {
     appId: "1:169097190637:web:e8523bc099374a6955c0e4"
 };
 
-// Initialize Firebase when DOM is ready
+// Initialize Firebase
+let auth, db;
+
 document.addEventListener('DOMContentLoaded', function() {
-    console.log("Initializing Firebase...");
-    
     try {
+        // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         auth = firebase.auth();
         db = firebase.firestore();
         
-        console.log("Firebase initialized successfully");
-        console.log("Current domain:", window.location.hostname);
+        console.log("✅ Firebase initialized successfully");
         
         // Setup auth state listener
-        setupAuthListener();
+        setupAuthStateListener();
         
-        // Load local data
-        load();
-        render();
+        // Load local data first
+        loadLocalData();
+        
+        // Initial render
+        renderAll();
         
     } catch (error) {
-        console.error("Firebase init error:", error);
-        alert("Error initializing app. Please refresh.");
+        console.error("❌ Firebase initialization error:", error);
+        showNotification("Error initializing app. Please refresh.", "error");
     }
 });
 
-// ================= AUTH LISTENER =================
-function setupAuthListener() {
+// ================= AUTHENTICATION =================
+function setupAuthStateListener() {
     auth.onAuthStateChanged(async (user) => {
-        console.log("Auth state changed:", user ? "LOGGED IN" : "LOGGED OUT");
+        console.log("Auth state changed:", user ? "LOGGED IN - " + user.displayName : "LOGGED OUT");
         
-        const loginBtn = document.getElementById('loginBtn');
-        const userSection = document.getElementById('userSection');
-        const studyBtn = document.getElementById('studyBtn');
-        const addSubBtn = document.getElementById('addSubBtn');
+        currentUser = user;
         
         if (user) {
             // USER IS LOGGED IN
-            console.log("User details:", user.displayName, user.email);
+            showUserProfile(user);
+            enableFeatures(true);
             
-            // Hide login button, show user info
-            loginBtn.classList.add('hidden');
-            userSection.classList.remove('hidden');
-            
-            // Update user info
-            document.getElementById('userName').textContent = user.displayName || 'User';
-            document.getElementById('userEmail').textContent = user.email;
-            document.getElementById('userAvatar').src = user.photoURL || 'https://via.placeholder.com/40';
-            
-            // Enable buttons
-            studyBtn.disabled = false;
-            addSubBtn.disabled = false;
-            
-            // Load data from Firestore
-            try {
-                const docRef = db.collection("users").doc(user.uid);
-                const docSnap = await docRef.get();
-                
-                if (docSnap.exists && docSnap.data().data) {
-                    data = docSnap.data().data;
-                    console.log("Data loaded from Firestore");
-                } else {
-                    // First time user - save current data
-                    await docRef.set({ data: data });
-                    console.log("New user data created in Firestore");
-                }
-                render();
-                
-            } catch (error) {
-                console.error("Firestore error:", error);
-            }
+            // Load user data from Firestore
+            await loadUserData(user.uid);
             
         } else {
             // USER IS LOGGED OUT
-            loginBtn.classList.remove('hidden');
-            userSection.classList.add('hidden');
-            studyBtn.disabled = true;
-            addSubBtn.disabled = true;
-            
-            document.getElementById('aiSuggestion').textContent = "Login to get AI suggestions";
+            showLoginButton();
+            enableFeatures(false);
+            updateAIMessage("Login to unlock AI-powered study insights");
         }
+        
+        renderAll();
     });
 }
 
-// ================= LOGIN / LOGOUT =================
-function login() {
+function showUserProfile(user) {
+    document.getElementById('loginBtn').classList.add('hidden');
+    document.getElementById('userProfile').classList.remove('hidden');
+    
+    document.getElementById('userName').textContent = user.displayName || 'Anonymous User';
+    document.getElementById('userEmail').textContent = user.email;
+    
+    // Set avatar with fallback
+    const avatar = user.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.displayName || 'User')}&background=6366f1&color=fff`;
+    document.getElementById('userAvatar').src = avatar;
+}
+
+function showLoginButton() {
+    document.getElementById('loginBtn').classList.remove('hidden');
+    document.getElementById('userProfile').classList.add('hidden');
+}
+
+function enableFeatures(enabled) {
+    document.getElementById('studyBtn').disabled = !enabled;
+    document.getElementById('addSubjectBtn').disabled = !enabled;
+}
+
+function handleLogin() {
     if (!auth) {
         alert("App not ready. Please wait...");
         return;
@@ -286,206 +441,399 @@ function login() {
     
     auth.signInWithPopup(provider)
         .then((result) => {
-            console.log("Login successful:", result.user.displayName);
+            console.log("✅ Login successful:", result.user.displayName);
+            showNotification("Welcome back, " + result.user.displayName + "!", "success");
         })
         .catch((error) => {
-            console.error("Login error:", error);
-            let msg = error.message;
-            if (error.code === 'auth/popup-blocked') {
-                msg = "Popup blocked! Please allow popups.";
-            } else if (error.code === 'auth/unauthorized-domain') {
-                msg = "Domain not authorized in Firebase!";
+            console.error("❌ Login error:", error);
+            let message = "Login failed: ";
+            
+            switch(error.code) {
+                case 'auth/popup-blocked':
+                    message += "Popup blocked! Please allow popups for this site.";
+                    break;
+                case 'auth/unauthorized-domain':
+                    message += "This domain is not authorized. Please contact support.";
+                    break;
+                case 'auth/cancelled-popup-request':
+                    message = "Login cancelled. Please try again.";
+                    break;
+                default:
+                    message += error.message;
             }
-            alert("Login failed: " + msg);
+            
+            showNotification(message, "error");
         });
 }
 
-function logout() {
+function handleLogout() {
     auth.signOut().then(() => {
-        console.log("Logged out");
-        // Clear local data or keep it - your choice
+        console.log("✅ Logged out");
+        showNotification("Logged out successfully", "success");
+        // Clear sensitive data
+        currentUser = null;
     });
 }
 
-// ================= DATA FUNCTIONS =================
-function save() {
-    localStorage.setItem(STORAGE, JSON.stringify(data));
-    if (auth && auth.currentUser) {
-        db.collection("users").doc(auth.currentUser.uid).set({ data: data })
-        .catch(e => console.error("Save error:", e));
+// ================= DATA MANAGEMENT =================
+async function loadUserData(uid) {
+    try {
+        const docRef = db.collection("users").doc(uid);
+        const docSnap = await docRef.get();
+        
+        if (docSnap.exists && docSnap.data().data) {
+            appData = docSnap.data().data;
+            console.log("✅ Data loaded from Firestore");
+            saveLocalData(); // Backup to localStorage
+        } else {
+            // New user - save current data
+            await docRef.set({ data: appData });
+            console.log("✅ New user data created");
+        }
+        
+        renderAll();
+        
+    } catch (error) {
+        console.error("❌ Error loading data:", error);
+        // Fallback to local data
+        loadLocalData();
     }
 }
 
-function load() {
-    const saved = localStorage.getItem(STORAGE);
-    if (saved) {
-        data = JSON.parse(saved);
+function saveData() {
+    // Save to localStorage
+    saveLocalData();
+    
+    // Save to Firestore if logged in
+    if (currentUser && db) {
+        db.collection("users").doc(currentUser.uid).set({ data: appData })
+        .then(() => console.log("✅ Data saved to cloud"))
+        .catch(err => console.error("❌ Save error:", err));
     }
+}
+
+function loadLocalData() {
+    const saved = localStorage.getItem('akash_academy_data');
+    if (saved) {
+        appData = JSON.parse(saved);
+        console.log("✅ Local data loaded");
+    }
+}
+
+function saveLocalData() {
+    localStorage.setItem('akash_academy_data', JSON.stringify(appData));
 }
 
 // ================= STUDY FUNCTIONS =================
-function today() {
+function getToday() {
     return new Date().toISOString().slice(0, 10);
 }
 
-function studied() {
-    if (!auth.currentUser) {
-        alert("Please login first!");
+function markStudied() {
+    if (!currentUser) {
+        showNotification("Please login first!", "error");
         return;
     }
     
-    const t = today();
-    if (!data.studyDates.includes(t)) {
-        data.studyDates.push(t);
-        learnAI();
-        save();
-        render();
+    const today = getToday();
+    
+    if (!appData.studyDates.includes(today)) {
+        appData.studyDates.push(today);
+        calculateAI();
+        saveData();
+        renderAll();
         
         // Visual feedback
         const btn = document.getElementById('studyBtn');
-        btn.innerHTML = "✅ Recorded!";
-        setTimeout(() => btn.innerHTML = "✅ I Studied Today", 2000);
+        const originalText = btn.innerHTML;
+        btn.innerHTML = "✅ Recorded! Great job!";
+        btn.classList.add('btn-success');
+        
+        setTimeout(() => {
+            btn.innerHTML = originalText;
+        }, 2000);
+        
+        showNotification("Study session recorded!", "success");
     } else {
-        alert("Already recorded for today!");
+        showNotification("Already recorded for today!", "info");
     }
+}
+
+function updateExamDate(date) {
+    appData.exam = date;
+    saveData();
+    renderExamCountdown();
 }
 
 // ================= SUBJECT FUNCTIONS =================
-function addSubject() {
-    if (!auth.currentUser) {
-        alert("Please login first!");
+function addNewSubject() {
+    if (!currentUser) {
+        showNotification("Please login first!", "error");
         return;
     }
     
-    const name = prompt("Subject name?");
-    if (!name) return;
+    const name = prompt("Enter subject name:");
+    if (!name || name.trim() === "") return;
     
-    data.subjects.push({
+    appData.subjects.push({
         id: Date.now(),
-        name: name,
+        name: name.trim(),
         topics: []
     });
-    save();
-    render();
+    
+    saveData();
+    renderSubjects();
+    showNotification("Subject added!", "success");
 }
 
 function addTopic(subjectId) {
-    const subject = data.subjects.find(s => s.id === subjectId);
-    const topicName = prompt("Topic name?");
-    if (!topicName) return;
+    const subject = appData.subjects.find(s => s.id === subjectId);
+    if (!subject) return;
     
-    subject.topics.push({ title: topicName, done: false });
-    save();
-    render();
+    const title = prompt(`Enter topic for ${subject.name}:`);
+    if (!title || title.trim() === "") return;
+    
+    subject.topics.push({
+        title: title.trim(),
+        done: false,
+        createdAt: new Date().toISOString()
+    });
+    
+    saveData();
+    renderSubjects();
 }
 
-function finishTopic(subjectId, topicIndex) {
-    const subject = data.subjects.find(s => s.id === subjectId);
+function completeTopic(subjectId, topicIndex) {
+    const subject = appData.subjects.find(s => s.id === subjectId);
+    if (!subject || !subject.topics[topicIndex]) return;
+    
     subject.topics[topicIndex].done = true;
-    studied();
+    markStudied(); // This also calls saveData and renderAll
 }
 
-// ================= AI FUNCTIONS =================
-function learnAI() {
-    let total = 0, done = 0;
-    data.subjects.forEach(s => {
-        s.topics.forEach(t => {
-            total++;
-            if (t.done) done++;
+function deleteSubject(subjectId) {
+    if (!confirm("Delete this subject and all its topics?")) return;
+    
+    appData.subjects = appData.subjects.filter(s => s.id !== subjectId);
+    saveData();
+    renderSubjects();
+}
+
+// ================= AI CALCULATIONS =================
+function calculateAI() {
+    let totalTopics = 0;
+    let completedTopics = 0;
+    
+    appData.subjects.forEach(subject => {
+        subject.topics.forEach(topic => {
+            totalTopics++;
+            if (topic.done) completedTopics++;
         });
     });
     
-    data.ai.speed = (done / (data.studyDates.length || 1)).toFixed(2);
-    data.ai.intelligence = (done / (total || 1) * 10).toFixed(2);
+    // Speed: topics completed per study day
+    appData.ai.speed = totalTopics > 0 ? 
+        (completedTopics / (appData.studyDates.length || 1)).toFixed(1) : 0;
+    
+    // Intelligence: percentage of completion * 10
+    appData.ai.intelligence = totalTopics > 0 ? 
+        ((completedTopics / totalTopics) * 10).toFixed(1) : 0;
 }
 
-function getSuggestion() {
+function getStudySuggestion() {
     let remaining = 0;
-    data.subjects.forEach(s => {
+    appData.subjects.forEach(s => {
         remaining += s.topics.filter(t => !t.done).length;
     });
     
-    const days = data.exam ? 
-        Math.ceil((new Date(data.exam) - new Date()) / 86400000) : 1;
+    if (remaining === 0) {
+        return "🎉 All topics completed! You're a champion!";
+    }
     
-    if (days < 0) return "⚠️ Exam date has passed!";
-    if (remaining === 0) return "🎉 All topics completed!";
+    if (!appData.exam) {
+        return `📚 You have ${remaining} topics remaining. Set an exam date to get a study plan!`;
+    }
     
-    const perDay = Math.ceil(remaining / (days || 1));
-    return `📚 Study <b>${perDay}</b> topics/day to finish on time`;
+    const daysLeft = Math.ceil((new Date(appData.exam) - new Date()) / 86400000);
+    
+    if (daysLeft < 0) {
+        return "⚠️ Exam date has passed! Update your exam date.";
+    }
+    
+    if (daysLeft === 0) {
+        return "🔥 Exam is today! Good luck!";
+    }
+    
+    const perDay = Math.ceil(remaining / daysLeft);
+    return `📅 ${daysLeft} days left. Study <b>${perDay}</b> topics/day to stay on track!`;
 }
 
-// ================= UI FUNCTIONS =================
-function setExam(date) {
-    data.exam = date;
-    save();
-    render();
+// ================= RENDERING =================
+function renderAll() {
+    renderHeatmap();
+    renderSubjects();
+    renderExamCountdown();
+    renderAIStats();
+    renderTodayStats();
 }
 
 function renderHeatmap() {
-    const el = document.getElementById('heatmap');
-    el.innerHTML = '';
+    const container = document.getElementById('heatmap');
+    container.innerHTML = '';
     
-    for (let i = 180; i >= 0; i--) {
+    // Show last 180 days
+    for (let i = 179; i >= 0; i--) {
         const d = new Date();
         d.setDate(d.getDate() - i);
-        const ds = d.toISOString().slice(0, 10);
+        const dateStr = d.toISOString().slice(0, 10);
         
         const box = document.createElement('div');
-        box.className = 'box';
-        if (data.studyDates.includes(ds)) {
+        box.className = 'heat-box';
+        
+        if (appData.studyDates.includes(dateStr)) {
             box.classList.add('active');
         }
-        box.title = ds;
-        el.appendChild(box);
+        
+        box.title = dateStr;
+        container.appendChild(box);
     }
 }
 
 function renderSubjects() {
-    const el = document.getElementById('subjects');
+    const container = document.getElementById('subjectsList');
     
-    if (data.subjects.length === 0) {
-        el.innerHTML = '<p style="opacity: 0.6; text-align: center; padding: 40px;">No subjects yet. Click "Add Subject" to start!</p>';
+    if (appData.subjects.length === 0) {
+        container.innerHTML = '<div class="empty-state">No subjects yet. Click "Add Subject" to start your journey!</div>';
         return;
     }
     
-    el.innerHTML = data.subjects.map(s => `
-        <div class="subject-item">
-            <div class="subject-header">
-                <h4>${s.name}</h4>
-                <button class="add-btn" onclick="addTopic(${s.id})" ${!auth.currentUser ? 'disabled' : ''}>+ Topic</button>
-            </div>
-            ${s.topics.length === 0 ? 
-                '<p style="opacity: 0.5; font-size: 12px;">No topics added</p>' :
-                s.topics.map((t, i) => `
-                    <div class="topic-item">
-                        <span class="${t.done ? 'topic-done' : ''}">${t.done ? '✅' : '⭕'} ${t.title}</span>
-                        ${!t.done && auth.currentUser ? 
-                            `<button class="finish-btn" onclick="finishTopic(${s.id}, ${i})">Finish</button>` : ''}
+    container.innerHTML = appData.subjects.map(subject => {
+        const completedCount = subject.topics.filter(t => t.done).length;
+        const totalCount = subject.topics.length;
+        
+        return `
+            <div class="subject-card">
+                <div class="subject-header">
+                    <div>
+                        <div class="subject-title">${subject.name}</div>
+                        <div style="font-size: 12px; color: #94a3b8; margin-top: 4px;">
+                            ${completedCount}/${totalCount} topics completed
+                        </div>
                     </div>
-                `).join('')
-            }
-        </div>
-    `).join('');
+                    <div>
+                        <button class="btn btn-small" onclick="addTopic(${subject.id})" ${!currentUser ? 'disabled' : ''}>
+                            + Topic
+                        </button>
+                        <button class="btn btn-small" style="background: #ef4444; margin-left: 8px;" onclick="deleteSubject(${subject.id})">
+                            🗑️
+                        </button>
+                    </div>
+                </div>
+                <div class="topic-list">
+                    ${subject.topics.length === 0 ? 
+                        '<div style="opacity: 0.5; font-size: 13px;">No topics added yet</div>' :
+                        subject.topics.map((topic, index) => `
+                            <div class="topic-item">
+                                <span class="${topic.done ? 'topic-done' : ''}">
+                                    ${topic.done ? '✅' : '⭕'} ${topic.title}
+                                </span>
+                                ${!topic.done && currentUser ? 
+                                    `<button class="btn btn-small" onclick="completeTopic(${subject.id}, ${index})">Complete</button>` : 
+                                    ''}
+                            </div>
+                        `).join('')
+                    }
+                </div>
+            </div>
+        `;
+    }).join('');
 }
 
-function render() {
-    renderHeatmap();
-    renderSubjects();
+function renderExamCountdown() {
+    const countdownEl = document.getElementById('examCountdown');
     
-    // Update stats
-    document.getElementById('speedValue').textContent = data.ai.speed;
-    document.getElementById('intelValue').textContent = data.ai.intelligence;
-    document.getElementById('aiSuggestion').innerHTML = getSuggestion();
+    if (!appData.exam) {
+        countdownEl.textContent = "Set exam date";
+        countdownEl.style.color = "#94a3b8";
+        return;
+    }
     
-    // Update exam date
-    if (data.exam) {
-        document.getElementById('examDate').value = data.exam;
-        const days = Math.ceil((new Date(data.exam) - new Date()) / 86400000);
-        document.getElementById('daysLeft').textContent = days >= 0 ? 
-            `${days} days left` : `${Math.abs(days)} days overdue!`;
+    const daysLeft = Math.ceil((new Date(appData.exam) - new Date()) / 86400000);
+    
+    if (daysLeft < 0) {
+        countdownEl.textContent = `${Math.abs(daysLeft)} days overdue!`;
+        countdownEl.style.color = "#ef4444";
+    } else if (daysLeft === 0) {
+        countdownEl.textContent = "Exam is today!";
+        countdownEl.style.color = "#f59e0b";
+    } else {
+        countdownEl.textContent = `${daysLeft} days left`;
+        countdownEl.style.color = "#10b981";
     }
 }
+
+function renderAIStats() {
+    calculateAI();
+    document.getElementById('speedStat').textContent = appData.ai.speed;
+    document.getElementById('intelStat').textContent = appData.ai.intelligence;
+    updateAIMessage(getStudySuggestion());
+}
+
+function updateAIMessage(message) {
+    document.getElementById('aiMessage').innerHTML = message;
+}
+
+function renderTodayStats() {
+    const today = getToday();
+    const studiedToday = appData.studyDates.includes(today);
+    
+    document.getElementById('todayStudy').textContent = studiedToday ? "1" : "0";
+    
+    // Count topics completed today
+    let topicsToday = 0;
+    appData.subjects.forEach(s => {
+        // In real app, you'd track completion dates. For now, show total pending
+    });
+    
+    document.getElementById('todayTopics').textContent = topicsToday;
+}
+
+// ================= NOTIFICATIONS =================
+function showNotification(message, type = 'info') {
+    // Simple alert for now - you can replace with a nice toast notification
+    console.log(`[${type.toUpperCase()}] ${message}`);
+    
+    // Optional: Create a toast notification
+    const toast = document.createElement('div');
+    toast.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 16px 24px;
+        border-radius: 12px;
+        color: white;
+        font-weight: 500;
+        z-index: 1000;
+        animation: slideIn 0.3s ease;
+        background: ${type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#3b82f6'};
+    `;
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    
+    setTimeout(() => {
+        toast.remove();
+    }, 3000);
+}
+
+// Add animation keyframes
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes slideIn {
+        from { transform: translateX(400px); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+    }
+`;
+document.head.appendChild(style);
 
 </script>
 </body>
