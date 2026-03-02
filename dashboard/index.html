@@ -1,257 +1,288 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Akash Academy – OMNISCIENT AI Study OS</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Akash Academy AI Dashboard</title>
 
-<link rel="manifest" href="/manifest.json">
-<meta name="theme-color" content="#6366f1">
-
+<!-- Firebase COMPAT SDK -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
 <style>
-:root{--primary:#6366f1;--bg:#0f172a;--card:#111827;--text:#e5e7eb;--muted:#94a3b8;--border:#1f2937;}
-*{box-sizing:border-box}
-body{margin:0;font-family:Segoe UI,system-ui,Arial;background:linear-gradient(135deg,#0f172a,#020617);color:var(--text)}
-.container{max-width:1300px;margin:auto;padding:24px}
-.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px}
-.title{font-size:28px;font-weight:800}
-.btn{background:var(--primary);border:none;color:#fff;padding:10px 16px;border-radius:10px;cursor:pointer}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
-.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px}
-.card h3{margin:0 0 12px 0}
-input{padding:10px;border-radius:8px;border:1px solid var(--border);background:#020617;color:#fff;width:100%}
-#heatmap{display:grid;grid-template-columns:repeat(14,1fr);gap:6px}
-.box{height:14px;border-radius:3px;background:#1f2937}
-.small{color:var(--muted);font-size:13px}
+body{
+font-family:Arial;
+background:#0f172a;
+color:white;
+margin:0;
+padding:20px;
+}
+.card{
+background:#111827;
+padding:18px;
+margin:10px;
+border-radius:12px;
+}
+button{
+background:#6366f1;
+border:none;
+padding:10px;
+color:white;
+border-radius:8px;
+cursor:pointer;
+}
+#heatmap{
+display:grid;
+grid-template-columns:repeat(14,1fr);
+gap:5px;
+}
+.box{
+height:14px;
+background:#1f2937;
+border-radius:3px;
+}
 </style>
 </head>
+
 <body>
-<div class="container">
 
-<div class="header">
-<div class="title">🧠 Akash Academy OMNISCIENT AI</div>
-<button class="btn" onclick="login()">☁️ Google Login</button>
-</div>
+<h2>🧠 Akash Academy OMNISCIENT AI</h2>
 
-<div class="grid">
+<button onclick="login()">☁️ Google Login</button>
 
 <div class="card">
 <h3>📅 Exam Planner</h3>
-<input type="date" id="examDate" onchange="setExamDate(this.value)">
-<div id="planner"></div>
+<input type="date" onchange="setExam(this.value)">
+<div id="days"></div>
 </div>
 
 <div class="card">
 <h3>📊 Study Heatmap</h3>
 <div id="heatmap"></div>
-<button class="btn" style="margin-top:10px" onclick="markStudiedToday()">✅ I Studied Today</button>
+<button onclick="studied()">✅ I Studied Today</button>
 </div>
 
 <div class="card">
 <h3>📚 Subjects</h3>
-<button class="btn" onclick="addSubject()">➕ Add Subject</button>
-<div id="subjects" style="margin-top:10px"></div>
-</div>
-
-<div class="card">
-<h3>🧠 Neural Revision</h3>
-<div id="revisionAI"></div>
-</div>
-
-<div class="card">
-<h3>☢️ Singularity Core</h3>
-<div id="singularity"></div>
+<button onclick="addSubject()">Add Subject</button>
+<div id="subjects"></div>
 </div>
 
 <div class="card">
 <h3>🌌 OMNISCIENT AI</h3>
-<div id="omniscient"></div>
-</div>
-
-</div>
+<div id="ai"></div>
 </div>
 
 <script>
-const STORAGE_KEY='akash_ai_dashboard_final';
+
+/* ================= DATA ================= */
+
+const STORAGE="akash_ai";
 
 let data={
- subjects:[],
- studyDates:[],
- examDate:null,
- ai:{
-  speed:1,
-  consistency:1,
-  intelligence:1,
-  evolution:0,
-  risk:0,
-  nextAction:"",
-  rankProbability:0
- }
+subjects:[],
+studyDates:[],
+exam:null,
+ai:{speed:1,intelligence:1}
 };
-
-function today(){return new Date().toISOString().slice(0,10)}
-
-function load(){
- const s=localStorage.getItem(STORAGE_KEY);
- if(s) data={...data,...JSON.parse(s)};
-}
 
 function save(){
- localStorage.setItem(STORAGE_KEY,JSON.stringify(data));
- if(window.auth && auth.currentUser){
-  db.collection('users').doc(auth.currentUser.uid).set({data});
- }
+localStorage.setItem(STORAGE,JSON.stringify(data));
+
+if(auth.currentUser){
+db.collection("users")
+.doc(auth.currentUser.uid)
+.set({data});
+}
 }
 
-// FIREBASE
-let auth,db;
+function load(){
+let s=localStorage.getItem(STORAGE);
+if(s)data=JSON.parse(s);
+}
+
+/* ================= FIREBASE ================= */
+
 const firebaseConfig={
- apiKey:"AIzaSyAm1EZtdULG_Qay6T0sO0k8D8dBfXpVMW4",
- authDomain:"akashacademy-33513.firebaseapp.com",
- projectId:"akashacademy-33513"
+apiKey:"AIzaSyAm1EZtdULG_Qay6T0sO0k8D8dBfXpVMW4",
+authDomain:"akashacademy-33513.firebaseapp.com",
+projectId:"akashacademy-33513",
+storageBucket:"akashacademy-33513.appspot.com",
+messagingSenderId:"169097190637",
+appId:"1:169097190637:web:e8523bc099374a6955c0e4"
 };
+
 firebase.initializeApp(firebaseConfig);
-auth=firebase.auth();
-db=firebase.firestore();
+
+const auth=firebase.auth();
+const db=firebase.firestore();
 
 auth.onAuthStateChanged(async user=>{
- if(!user) return;
- const ref=db.collection('users').doc(user.uid);
- const snap=await ref.get();
- if(snap.exists){data=snap.data().data;save();renderAll();}
- else await ref.set({data});
+if(!user)return;
+
+let ref=db.collection("users").doc(user.uid);
+let snap=await ref.get();
+
+if(snap.exists){
+data=snap.data().data;
+render();
+}else{
+ref.set({data});
+}
 });
 
+/* ================= LOGIN ================= */
+
 async function login(){
- const provider=new firebase.auth.GoogleAuthProvider();
- await auth.signInWithPopup(provider);
+const provider=
+new firebase.auth.GoogleAuthProvider();
+
+await auth.signInWithPopup(provider);
 }
 
-// STUDY ACTIONS
-function markStudiedToday(){
- const t=today();
- if(!data.studyDates.includes(t)) data.studyDates.push(t);
- learnAI();
- save();
- renderAll();
+/* ================= STUDY ================= */
+
+function today(){
+return new Date().toISOString().slice(0,10);
 }
+
+function studied(){
+let t=today();
+if(!data.studyDates.includes(t))
+data.studyDates.push(t);
+
+learnAI();
+save();
+render();
+}
+
+/* ================= SUBJECT ================= */
 
 function addSubject(){
- const name=prompt('Subject name?');
- if(!name) return;
- data.subjects.push({id:Date.now().toString(),name,topics:[]});
- save();renderAll();
+let name=prompt("Subject?");
+if(!name)return;
+
+data.subjects.push({
+id:Date.now(),
+name,
+topics:[]
+});
+
+save();
+render();
 }
 
 function addTopic(id){
- const s=data.subjects.find(x=>x.id===id);
- const title=prompt('Topic?');
- if(!title) return;
- s.topics.push({title,done:false});
- save();renderAll();
+let s=data.subjects.find(x=>x.id==id);
+let t=prompt("Topic?");
+if(!t)return;
+
+s.topics.push({title:t,done:false});
+save();
+render();
 }
 
-function finishTopic(id,i){
- const s=data.subjects.find(x=>x.id===id);
- s.topics[i].done=true;
- markStudiedToday();
- learnAI();
- save();renderAll();
+function finish(id,i){
+let s=data.subjects.find(x=>x.id==id);
+s.topics[i].done=true;
+
+studied();
+}
+
+/* ================= AI ================= */
+
+function learnAI(){
+
+let total=0,done=0;
+
+data.subjects.forEach(s=>{
+s.topics.forEach(t=>{
+total++;
+if(t.done)done++;
+});
+});
+
+data.ai.speed=(done/(data.studyDates.length||1)).toFixed(2);
+data.ai.intelligence=(done/(total||1)*10).toFixed(2);
+}
+
+function omniscient(){
+
+let remaining=0;
+
+data.subjects.forEach(s=>{
+remaining+=s.topics.filter(t=>!t.done).length;
+});
+
+let days=data.exam?
+Math.ceil((new Date(data.exam)-new Date())/86400000):1;
+
+return `Study ${Math.ceil(remaining/(days||1))} topics today`;
+}
+
+/* ================= UI ================= */
+
+function setExam(v){
+data.exam=v;
+save();
+render();
+}
+
+function heatmap(){
+let el=document.getElementById("heatmap");
+el.innerHTML="";
+
+for(let i=180;i>=0;i--){
+let d=new Date();
+d.setDate(d.getDate()-i);
+let ds=d.toISOString().slice(0,10);
+
+let b=document.createElement("div");
+b.className="box";
+
+if(data.studyDates.includes(ds))
+b.style.background="#10b981";
+
+el.appendChild(b);
+}
 }
 
 function renderSubjects(){
- const el=document.getElementById('subjects');
- el.innerHTML=data.subjects.map(s=>`<div><b>${s.name}</b> <button onclick=\"addTopic('${s.id}')\">+Topic</button>
- <ul>${s.topics.map((t,i)=>`<li>${t.title} ${t.done?'✅':`<button onclick=\"finishTopic('${s.id}',${i})\">Finish</button>`}</li>`).join('')}</ul></div>`).join('')||'No subjects';
+
+let el=document.getElementById("subjects");
+
+el.innerHTML=data.subjects.map(s=>`
+<div>
+<b>${s.name}</b>
+<button onclick="addTopic(${s.id})">+Topic</button>
+<ul>
+${s.topics.map((t,i)=>`
+<li>
+${t.title}
+${t.done?"✅":
+`<button onclick="finish(${s.id},${i})">Finish</button>`}
+</li>`).join("")}
+</ul>
+</div>
+`).join("");
 }
 
-// AI LEARNING
-function learnAI(){
- let total=0,done=0;
- data.subjects.forEach(s=>s.topics.forEach(t=>{total++;if(t.done)done++;}));
- const days=data.studyDates.length||1;
- data.ai.speed=(done/days)||1;
- data.ai.consistency=days;
- singularityAI();
- omniscientAI();
+function render(){
+
+heatmap();
+renderSubjects();
+
+document.getElementById("ai")
+.innerHTML=
+`Speed: ${data.ai.speed}<br>
+Intelligence: ${data.ai.intelligence}<br>
+${omniscient()}`;
 }
 
-function singularityAI(){
- let total=0,done=0;
- data.subjects.forEach(s=>s.topics.forEach(t=>{total++;if(t.done)done++;}));
- const rate=done/(total||1);
- data.ai.intelligence=(rate*10).toFixed(2);
- data.ai.evolution=(rate*data.studyDates.length).toFixed(2);
- data.ai.risk=(100-(rate*80+data.studyDates.length)).toFixed(1);
-}
+load();
+render();
 
-function omniscientAI(){
- const remaining=data.subjects.reduce((a,s)=>a+s.topics.filter(t=>!t.done).length,0);
- const daysLeft=data.examDate?
- Math.max(1,Math.ceil((new Date(data.examDate)-new Date())/86400000)):1;
-
- const perDay=Math.ceil(remaining/daysLeft);
- data.ai.nextAction=`Study ${perDay} topics today`;
-
- data.ai.rankProbability=Math.min(
- 99,
- Math.round((data.ai.consistency+data.ai.speed*10))
- );
-}
-
-// PLANNER
-function setExamDate(v){data.examDate=v;save();renderAll();}
-
-function renderPlanner(){
- const el=document.getElementById('planner');
- if(!data.examDate){el.innerHTML='Set exam date';return}
- const days=Math.ceil((new Date(data.examDate)-new Date())/86400000);
- el.innerHTML=`Days Left: <b>${days}</b>`;
-}
-
-// HEATMAP
-function renderHeatmap(){
- const el=document.getElementById('heatmap');
- el.innerHTML='';
- const now=new Date();
- for(let i=180;i>=0;i--){
-  const d=new Date(now);
-  d.setDate(d.getDate()-i);
-  const ds=d.toISOString().slice(0,10);
-  const box=document.createElement('div');
-  box.className='box';
-  if(data.studyDates.includes(ds)) box.style.background='#10b981';
-  el.appendChild(box);
- }
-}
-
-function renderAI(){
- document.getElementById('revisionAI').innerHTML=
- `Speed: ${data.ai.speed.toFixed(2)} topics/day`;
-
- document.getElementById('singularity').innerHTML=
- `Evolution: ${data.ai.evolution}<br>Intelligence: ${data.ai.intelligence}<br>Risk: ${data.ai.risk}%`;
-
- document.getElementById('omniscient').innerHTML=
- `${data.ai.nextAction}<br>Selection Probability: ${data.ai.rankProbability}%`;
-}
-
-if('serviceWorker' in navigator){
- navigator.serviceWorker.register('/sw.js').catch(()=>{});
-}
-
-function renderAll(){
- renderPlanner();
- renderHeatmap();
- renderSubjects();
- renderAI();
-}
-
-window.onload=()=>{load();renderAll();};
 </script>
 </body>
 </html>
