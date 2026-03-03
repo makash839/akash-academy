@@ -1,555 +1,1792 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Monk Mode Ultra Pro</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Monk Mode Ultra Pro - 6 Strict Rules</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
-body{
-background:#0f172a;
-color:white;
-font-family:Arial;
-text-align:center;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
-.container{max-width:650px;margin:auto;}
-.card{
-background:#1e293b;
-padding:15px;
-margin:15px 0;
-border-radius:15px;
+
+body {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    color: #e2e8f0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-height: 100vh;
+    padding: 15px;
 }
-button{
-padding:10px 15px;
-margin:5px;
-border:none;
-border-radius:8px;
-font-weight:bold;
-cursor:pointer;
+
+.container {
+    max-width: 900px;
+    margin: auto;
 }
-.green{background:#10b981;}
-.gray{background:#334155;color:white;}
-.red{background:#ef4444;}
-.lock-screen{
-position:fixed;
-inset:0;
-background:#020617;
-display:flex;
-flex-direction:column;
-justify-content:center;
-align-items:center;
+
+.header {
+    text-align: center;
+    margin-bottom: 25px;
 }
-input{
-padding:10px;
-border-radius:8px;
-border:none;
-margin:10px;
-font-size:16px;
-text-align:center;
+
+.header h1 {
+    font-size: 2rem;
+    background: linear-gradient(135deg, #ef4444, #f59e0b, #10b981);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 8px;
+}
+
+.header p {
+    color: #ef4444;
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+/* Strict Rules Card */
+.rules-card {
+    background: linear-gradient(135deg, #1e293b, #0f172a);
+    border: 3px solid #ef4444;
+    padding: 20px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+}
+
+.rules-card h3 {
+    text-align: center;
+    margin-bottom: 15px;
+    color: #ef4444;
+    font-size: 1.4rem;
+}
+
+.rule-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 15px;
+    margin: 8px 0;
+    border-radius: 12px;
+    font-size: 0.95rem;
+}
+
+.rule-green {
+    background: rgba(16, 185, 129, 0.2);
+    border-left: 4px solid #10b981;
+}
+
+.rule-orange {
+    background: rgba(245, 158, 11, 0.2);
+    border-left: 4px solid #f59e0b;
+}
+
+.rule-red {
+    background: rgba(239, 68, 68, 0.2);
+    border-left: 4px solid #ef4444;
+}
+
+.rule-icon {
+    font-size: 1.4rem;
+}
+
+.required-tasks {
+    background: rgba(239, 68, 68, 0.1);
+    border: 2px dashed #ef4444;
+    border-radius: 12px;
+    padding: 15px;
+    margin-top: 15px;
+}
+
+.required-tasks h4 {
+    color: #ef4444;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.required-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+}
+
+.required-item {
+    background: rgba(239, 68, 68, 0.2);
+    padding: 8px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: bold;
+}
+
+/* Today Status */
+.today-status {
+    padding: 25px;
+    border-radius: 20px;
+    margin: 20px 0;
+    text-align: center;
+    border: 4px solid;
+    position: relative;
+    overflow: hidden;
+}
+
+.today-status.pending {
+    background: rgba(100, 116, 139, 0.2);
+    border-color: #64748b;
+}
+
+.today-status.green {
+    background: rgba(16, 185, 129, 0.2);
+    border-color: #10b981;
+    animation: glow-green 2s infinite;
+}
+
+.today-status.orange {
+    background: rgba(245, 158, 11, 0.2);
+    border-color: #f59e0b;
+    animation: glow-orange 2s infinite;
+}
+
+.today-status.red {
+    background: rgba(239, 68, 68, 0.2);
+    border-color: #ef4444;
+    animation: glow-red 2s infinite;
+}
+
+@keyframes glow-green {
+    0%, 100% { box-shadow: 0 0 20px rgba(16, 185, 129, 0.4); }
+    50% { box-shadow: 0 0 40px rgba(16, 185, 129, 0.7); }
+}
+
+@keyframes glow-orange {
+    0%, 100% { box-shadow: 0 0 20px rgba(245, 158, 11, 0.4); }
+    50% { box-shadow: 0 0 40px rgba(245, 158, 11, 0.7); }
+}
+
+@keyframes glow-red {
+    0%, 100% { box-shadow: 0 0 20px rgba(239, 68, 68, 0.4); }
+    50% { box-shadow: 0 0 40px rgba(239, 68, 68, 0.7); }
+}
+
+.status-icon {
+    font-size: 4rem;
+    margin-bottom: 10px;
+}
+
+.status-text {
+    font-size: 1.6rem;
+    font-weight: bold;
+}
+
+.status-subtext {
+    color: #94a3b8;
+    margin-top: 8px;
+}
+
+.tasks-counter {
+    background: rgba(0,0,0,0.3);
+    padding: 10px 20px;
+    border-radius: 30px;
+    display: inline-block;
+    margin-top: 15px;
+    font-size: 1.1rem;
+}
+
+.tasks-counter span {
+    color: #10b981;
+    font-weight: bold;
+    font-size: 1.3rem;
+}
+
+/* Streak Display */
+.streak-display {
+    background: linear-gradient(135deg, #7c3aed, #2563eb);
+    padding: 25px;
+    border-radius: 20px;
+    margin: 20px 0;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    text-align: center;
+}
+
+.streak-number {
+    font-size: 4.5rem;
+    font-weight: bold;
+    color: #fbbf24;
+    text-shadow: 0 0 30px rgba(251, 191, 36, 0.6);
+}
+
+.streak-label {
+    font-size: 1.2rem;
+    color: #e2e8f0;
+}
+
+/* Rank Card */
+.rank-card {
+    background: linear-gradient(135deg, #1e293b, #334155);
+    padding: 25px;
+    margin: 20px 0;
+    border-radius: 20px;
+    border: 3px solid;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.rank-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%);
+    animation: rotate 10s linear infinite;
+}
+
+@keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.rank-icon {
+    font-size: 5rem;
+    animation: float 3s ease-in-out infinite;
+    position: relative;
+    z-index: 1;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-15px); }
+}
+
+.rank-title {
+    font-size: 2rem;
+    font-weight: bold;
+    margin: 10px 0 5px;
+    position: relative;
+    z-index: 1;
+}
+
+.rank-subtitle {
+    color: #94a3b8;
+    position: relative;
+    z-index: 1;
+}
+
+.rank-progress {
+    background: rgba(15, 23, 42, 0.8);
+    border-radius: 15px;
+    padding: 15px;
+    margin-top: 20px;
+    position: relative;
+    z-index: 1;
+}
+
+.progress-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    margin-bottom: 10px;
+}
+
+.progress-bar-container {
+    background: #1e293b;
+    border-radius: 10px;
+    height: 20px;
+    overflow: hidden;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    border-radius: 10px;
+    transition: width 0.5s ease;
+    position: relative;
+}
+
+.progress-bar-fill::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    animation: shine 2s infinite;
+}
+
+@keyframes shine {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+.days-remaining {
+    margin-top: 12px;
+    color: #fbbf24;
+    font-size: 1rem;
+}
+
+/* Card */
+.card {
+    background: rgba(30, 41, 59, 0.9);
+    backdrop-filter: blur(10px);
+    padding: 25px;
+    margin: 20px 0;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.card h3 {
+    color: #10b981;
+    margin-bottom: 20px;
+    font-size: 1.3rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* 6 Mandatory Tasks Grid */
+.mandatory-tasks {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 15px;
+}
+
+.mandatory-task {
+    background: rgba(15, 23, 42, 0.8);
+    padding: 20px 15px;
+    border-radius: 15px;
+    text-align: center;
+    border: 3px solid #334155;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.mandatory-task:hover {
+    transform: translateY(-5px);
+    border-color: #64748b;
+}
+
+.mandatory-task.completed {
+    border-color: #10b981;
+    background: rgba(16, 185, 129, 0.15);
+}
+
+.mandatory-task.completed::after {
+    content: '✓';
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #10b981;
+    color: white;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.task-icon {
+    font-size: 2.8rem;
+    margin-bottom: 10px;
+}
+
+.task-name {
+    font-size: 1rem;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.task-status {
+    font-size: 0.8rem;
+    color: #64748b;
+    padding: 5px 10px;
+    background: rgba(0,0,0,0.3);
+    border-radius: 15px;
+    display: inline-block;
+}
+
+.mandatory-task.completed .task-status {
+    color: #10b981;
+    background: rgba(16, 185, 129, 0.2);
+}
+
+/* Meditation Timer */
+.meditation-section {
+    background: linear-gradient(135deg, #1e1b4b, #312e81);
+    padding: 25px;
+    border-radius: 20px;
+    text-align: center;
+    margin: 20px 0;
+    border: 2px solid #6366f1;
+}
+
+.meditation-section h3 {
+    color: #a5b4fc;
+    margin-bottom: 15px;
+}
+
+.timer-display {
+    font-size: 4rem;
+    font-weight: bold;
+    font-family: 'Courier New', monospace;
+    color: #a5b4fc;
+    margin: 15px 0;
+    text-shadow: 0 0 20px rgba(165, 180, 252, 0.5);
+}
+
+.timer-progress {
+    background: #1e293b;
+    border-radius: 10px;
+    height: 15px;
+    margin: 15px 0;
+    overflow: hidden;
+}
+
+.timer-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #6366f1, #10b981);
+    border-radius: 10px;
+    transition: width 1s linear;
+}
+
+.timer-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin: 15px 0;
+}
+
+.timer-info {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-top: 15px;
+    font-size: 0.95rem;
+}
+
+.timer-info span {
+    color: #94a3b8;
+}
+
+.timer-info strong {
+    color: #10b981;
+}
+
+/* Buttons */
+.btn-group {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+button {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 12px;
+    font-weight: bold;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+button:hover {
+    transform: translateY(-2px);
+}
+
+button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.btn-green { background: linear-gradient(135deg, #10b981, #059669); color: white; }
+.btn-blue { background: linear-gradient(135deg, #3b82f6, #2563eb); color: white; }
+.btn-red { background: linear-gradient(135deg, #ef4444, #dc2626); color: white; }
+.btn-orange { background: linear-gradient(135deg, #f59e0b, #d97706); color: white; }
+.btn-purple { background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white; }
+.btn-gray { background: linear-gradient(135deg, #64748b, #475569); color: white; }
+
+.btn-large {
+    padding: 15px 30px;
+    font-size: 1.1rem;
+}
+
+/* Finish Day Section */
+.finish-section {
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+    border: 2px solid #3b82f6;
+    padding: 25px;
+    border-radius: 20px;
+    margin: 20px 0;
+}
+
+.finish-section h3 {
+    text-align: center;
+    color: #3b82f6;
+    margin-bottom: 15px;
+}
+
+.finish-warning {
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid #ef4444;
+    padding: 15px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.finish-warning p {
+    color: #ef4444;
+    font-weight: bold;
+}
+
+/* Calendar */
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+}
+
+.calendar-header {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+    margin-bottom: 8px;
+}
+
+.calendar-header span {
+    text-align: center;
+    font-size: 0.75rem;
+    color: #64748b;
+    font-weight: bold;
+}
+
+.calendar-day {
+    aspect-ratio: 1;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+.calendar-day.green { background: #10b981; color: white; }
+.calendar-day.orange { background: #f59e0b; color: white; }
+.calendar-day.red { background: #ef4444; color: white; }
+.calendar-day.empty { background: rgba(100, 116, 139, 0.2); color: #64748b; }
+.calendar-day.today { border: 3px solid #fbbf24; }
+
+.calendar-legend {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin-top: 15px;
+    font-size: 0.85rem;
+    flex-wrap: wrap;
+}
+
+/* Stats */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 12px;
+}
+
+.stat-box {
+    background: rgba(15, 23, 42, 0.6);
+    padding: 15px 10px;
+    border-radius: 12px;
+    text-align: center;
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
+.stat-value {
+    font-size: 1.6rem;
+    font-weight: bold;
+    color: #3b82f6;
+}
+
+.stat-label {
+    font-size: 0.75rem;
+    color: #94a3b8;
+    margin-top: 5px;
+}
+
+.stat-box.green .stat-value { color: #10b981; }
+.stat-box.orange .stat-value { color: #f59e0b; }
+.stat-box.red .stat-value { color: #ef4444; }
+
+/* Ranks Grid */
+.ranks-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+    gap: 10px;
+}
+
+.rank-item {
+    background: rgba(15, 23, 42, 0.6);
+    padding: 12px 8px;
+    border-radius: 12px;
+    text-align: center;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.rank-item.achieved {
+    border-color: #10b981;
+    background: rgba(16, 185, 129, 0.1);
+}
+
+.rank-item.current {
+    border-color: #fbbf24;
+    background: rgba(251, 191, 36, 0.15);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+.rank-item.locked {
+    opacity: 0.4;
+    filter: grayscale(0.8);
+}
+
+.rank-item-icon { font-size: 1.8rem; }
+.rank-item-name { font-size: 0.7rem; font-weight: bold; margin-top: 5px; }
+.rank-item-days { font-size: 0.65rem; color: #64748b; }
+
+/* Chart */
+.chart-container {
+    height: 250px;
+    margin-top: 15px;
+}
+
+/* Quote */
+.quote-box {
+    background: rgba(59, 130, 246, 0.1);
+    border-left: 4px solid #3b82f6;
+    padding: 20px;
+    border-radius: 12px;
+    font-style: italic;
+    text-align: center;
+}
+
+/* Lock Screen */
+.lock-screen {
+    position: fixed;
+    inset: 0;
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.lock-content {
+    background: rgba(30, 41, 59, 0.95);
+    padding: 40px;
+    border-radius: 25px;
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+    border: 2px solid rgba(255,255,255,0.1);
+}
+
+.lock-icon {
+    font-size: 5rem;
+    margin-bottom: 20px;
+    animation: pulse 2s infinite;
+}
+
+.lock-content h2 {
+    color: #10b981;
+    margin-bottom: 10px;
+    font-size: 1.8rem;
+}
+
+.lock-content p {
+    color: #64748b;
+    margin-bottom: 20px;
+}
+
+input {
+    width: 100%;
+    padding: 15px;
+    border-radius: 12px;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    margin: 10px 0 20px;
+    font-size: 1.5rem;
+    text-align: center;
+    background: rgba(15, 23, 42, 0.8);
+    color: white;
+    letter-spacing: 10px;
+}
+
+input:focus {
+    outline: none;
+    border-color: #10b981;
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+}
+
+/* Rank Up Overlay */
+.rank-up-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.95);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
+
+.rank-up-icon {
+    font-size: 8rem;
+    animation: bounce 1s infinite;
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-40px) scale(1.1); }
+}
+
+.rank-up-title {
+    font-size: 2rem;
+    color: #fbbf24;
+    margin: 20px 0 10px;
+}
+
+.rank-up-name {
+    font-size: 3rem;
+    font-weight: bold;
+    margin-bottom: 30px;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .header h1 { font-size: 1.5rem; }
+    .streak-number { font-size: 3.5rem; }
+    .timer-display { font-size: 3rem; }
+    .rank-icon { font-size: 4rem; }
+    .mandatory-tasks { grid-template-columns: repeat(2, 1fr); }
+    .task-icon { font-size: 2.2rem; }
+    .ranks-grid { grid-template-columns: repeat(4, 1fr); }
+}
+
+/* Notification Animation */
+@keyframes slideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slideOut {
+    from { transform: translateX(0); opacity: 1; }
+    to { transform: translateX(100%); opacity: 0; }
+}
+
+/* Confetti */
+@keyframes fall {
+    to { transform: translateY(100vh) rotate(720deg); }
 }
 </style>
 </head>
 <body>
 
+<!-- Lock Screen -->
 <div id="lockScreen" class="lock-screen">
-<h2>🔐 Enter PIN</h2>
-<input type="password" id="pinInput" maxlength="4">
-<button onclick="unlock()">Unlock</button>
-<button onclick="setPin()">Set New PIN</button>
+    <div class="lock-content">
+        <div class="lock-icon">🔐</div>
+        <h2>Monk Mode</h2>
+        <p>Enter your 4-digit PIN</p>
+        <input type="password" id="pinInput" maxlength="4" placeholder="••••" inputmode="numeric">
+        <div class="btn-group">
+            <button class="btn-green btn-large" onclick="unlock()">🔓 Unlock</button>
+            <button class="btn-blue" onclick="setPin()">🔑 Set PIN</button>
+        </div>
+    </div>
 </div>
 
-<h1>🧘 Monk Mode Ultra Pro</h1>
-<h2 id="streakText"></h2>
+<!-- Rank Up Celebration -->
+<div id="rankUpOverlay" class="rank-up-overlay" style="display:none;">
+    <div class="rank-up-icon" id="rankUpIcon">👑</div>
+    <div class="rank-up-title">🎉 RANK UP! 🎉</div>
+    <div class="rank-up-name" id="rankUpName">WARRIOR</div>
+    <button class="btn-green btn-large" onclick="closeRankUp()">🚀 Continue Journey</button>
+</div>
 
+<!-- Main App -->
 <div class="container" id="mainApp" style="display:none;">
+    
+    <div class="header">
+        <h1>🧘 Monk Mode Ultra Pro</h1>
+        <p>⚠️ 6 STRICT RULES - NO EXCUSES ⚠️</p>
+    </div>
 
-<div class="card">
-<h3>Today's Discipline</h3>
-<button class="green" onclick="markNoFap()">NoFap ✔</button>
-<button class="green" onclick="markMeditation()">Meditation ✔</button>
-<button class="gray" onclick="finishDay()">Finish Day</button>
-<button class="red" onclick="lock()">Lock</button>
-</div>
+    <!-- Strict Rules -->
+    <div class="rules-card">
+        <h3>⚠️ STRICT RULES - FOLLOW ALL 6!</h3>
+        
+        <div class="rule-item rule-green">
+            <span class="rule-icon">🟢</span>
+            <div>
+                <strong>GREEN DAY</strong> = All 6 Tasks Complete → <strong>Streak +1</strong>
+            </div>
+        </div>
+        
+        <div class="rule-item rule-orange">
+            <span class="rule-icon">🟠</span>
+            <div>
+                <strong>ORANGE DAY</strong> = Even 1 Task Miss → <strong>STREAK RESET</strong>
+            </div>
+        </div>
+        
+        <div class="rule-item rule-red">
+            <span class="rule-icon">🔴</span>
+            <div>
+                <strong>RED DAY</strong> = Total Failure / Relapse → <strong>STREAK RESET</strong>
+            </div>
+        </div>
 
-<div class="card">
-<h3>🧠 Dopamine Recovery Graph</h3>
-<canvas id="dopamineChart"></canvas>
-</div>
+        <div class="required-tasks">
+            <h4>📋 6 MANDATORY TASKS (All Required Daily)</h4>
+            <div class="required-list">
+                <span class="required-item">💪 NoFap</span>
+                <span class="required-item">🧘 1hr Meditation</span>
+                <span class="required-item">🏃 Exercise</span>
+                <span class="required-item">📚 Reading</span>
+                <span class="required-item">🚿 Cold Shower</span>
+                <span class="required-item">🍬 No Sugar</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Today's Status -->
+    <div class="today-status pending" id="todayStatus">
+        <div class="status-icon" id="statusIcon">⏳</div>
+        <div class="status-text" id="statusText">Day In Progress...</div>
+        <div class="status-subtext" id="statusSubtext">Complete ALL 6 tasks for GREEN day</div>
+        <div class="tasks-counter">
+            Tasks Done: <span id="tasksCompleted">0</span> / 6
+        </div>
+    </div>
+
+    <!-- Streak Display -->
+    <div class="streak-display">
+        <div class="streak-number" id="streakNumber">0</div>
+        <div class="streak-label">🔥 Day Streak</div>
+    </div>
+
+    <!-- Current Rank -->
+    <div class="rank-card" id="rankCard">
+        <div class="rank-icon" id="currentRankIcon">🌱</div>
+        <div class="rank-title" id="currentRankTitle">BEGINNER</div>
+        <div class="rank-subtitle" id="currentRankSubtitle">Your journey begins</div>
+        
+        <div class="rank-progress">
+            <div class="progress-header">
+                <span id="currentRankLabel">Beginner</span>
+                <span id="nextRankLabel">Next: Apprentice</span>
+            </div>
+            <div class="progress-bar-container">
+                <div class="progress-bar-fill" id="rankProgressBar" style="width:0%;"></div>
+            </div>
+            <div class="days-remaining" id="daysRemaining">🔥 3 days to next rank</div>
+        </div>
+    </div>
+
+    <!-- 6 Mandatory Tasks -->
+    <div class="card">
+        <h3>⚡ 6 MANDATORY TASKS</h3>
+        <div class="mandatory-tasks">
+            <div class="mandatory-task" id="taskNofap" onclick="toggleTask('nofap')">
+                <div class="task-icon">💪</div>
+                <div class="task-name">NoFap</div>
+                <div class="task-status">Pending</div>
+            </div>
+            
+            <div class="mandatory-task" id="taskMeditation">
+                <div class="task-icon">🧘</div>
+                <div class="task-name">Meditation</div>
+                <div class="task-status" id="medStatus">0/60 min</div>
+            </div>
+            
+            <div class="mandatory-task" id="taskExercise" onclick="toggleTask('exercise')">
+                <div class="task-icon">🏃</div>
+                <div class="task-name">Exercise</div>
+                <div class="task-status">Pending</div>
+            </div>
+            
+            <div class="mandatory-task" id="taskReading" onclick="toggleTask('reading')">
+                <div class="task-icon">📚</div>
+                <div class="task-name">Reading</div>
+                <div class="task-status">Pending</div>
+            </div>
+            
+            <div class="mandatory-task" id="taskColdshower" onclick="toggleTask('coldshower')">
+                <div class="task-icon">🚿</div>
+                <div class="task-name">Cold Shower</div>
+                <div class="task-status">Pending</div>
+            </div>
+            
+            <div class="mandatory-task" id="taskNosugar" onclick="toggleTask('nosugar')">
+                <div class="task-icon">🍬</div>
+                <div class="task-name">No Sugar</div>
+                <div class="task-status">Pending</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Meditation Timer -->
+    <div class="meditation-section">
+        <h3>🧘 Meditation Timer (60 Minutes Required)</h3>
+        <div class="timer-display" id="timerDisplay">00:00:00</div>
+        <div class="timer-progress">
+            <div class="timer-progress-fill" id="timerProgressFill" style="width:0%;"></div>
+        </div>
+        <div class="timer-buttons">
+            <button class="btn-green" id="startBtn" onclick="startTimer()">▶️ Start</button>
+            <button class="btn-orange" id="pauseBtn" onclick="pauseTimer()" disabled>⏸️ Pause</button>
+            <button class="btn-red" onclick="resetTimer()">🔄 Reset</button>
+        </div>
+        <div class="timer-info">
+            <span>Target: <strong>60 min</strong></span>
+            <span>Done: <strong id="totalMedTime">0 min</strong></span>
+            <span>Status: <strong id="medTimerStatus">Pending</strong></span>
+        </div>
+    </div>
+
+    <!-- Finish Day -->
+    <div class="finish-section">
+        <h3>📌 Finish Today's Day</h3>
+        
+        <div class="finish-warning">
+            <p>⚠️ WARNING: Day finish hone ke baad change nahi hoga!</p>
+        </div>
+        
+        <div class="btn-group">
+            <button class="btn-green btn-large" id="btnFinishGreen" onclick="finishDayGreen()" disabled>
+                🟢 Finish GREEN (All 6 Done)
+            </button>
+        </div>
+        
+        <div class="btn-group" style="margin-top:15px;">
+            <button class="btn-orange" onclick="finishDayOrange()">
+                🟠 Finish ORANGE (Partial - Reset)
+            </button>
+            <button class="btn-red" onclick="finishDayRed()">
+                🔴 Finish RED (Failed - Reset)
+            </button>
+        </div>
+        
+        <div class="btn-group" style="margin-top:20px;">
+            <button class="btn-purple" onclick="lock()">🔒 Lock App</button>
+            <button class="btn-gray" onclick="resetAllData()">🗑️ Reset All Data</button>
+        </div>
+    </div>
+
+    <!-- Calendar -->
+    <div class="card">
+        <h3>📅 This Month's Progress</h3>
+        <div class="calendar-header">
+            <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+        </div>
+        <div class="calendar-grid" id="calendarGrid"></div>
+        <div class="calendar-legend">
+            <span>🟢 All 6 Done</span>
+            <span>🟠 Partial</span>
+            <span>🔴 Failed</span>
+        </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="card">
+        <h3>📊 Statistics</h3>
+        <div class="stats-grid">
+            <div class="stat-box">
+                <div class="stat-value" id="totalDays">0</div>
+                <div class="stat-label">Total Days</div>
+            </div>
+            <div class="stat-box green">
+                <div class="stat-value" id="greenDays">0</div>
+                <div class="stat-label">Green Days</div>
+            </div>
+            <div class="stat-box orange">
+                <div class="stat-value" id="orangeDays">0</div>
+                <div class="stat-label">Orange Days</div>
+            </div>
+            <div class="stat-box red">
+                <div class="stat-value" id="redDays">0</div>
+                <div class="stat-label">Red Days</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value" id="longestStreak">0</div>
+                <div class="stat-label">Best Streak</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value" id="successRate">0%</div>
+                <div class="stat-label">Success Rate</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- All Ranks -->
+    <div class="card">
+        <h3>🏆 All Ranks</h3>
+        <div class="ranks-grid" id="ranksGrid"></div>
+    </div>
+
+    <!-- Dopamine Chart -->
+    <div class="card">
+        <h3>🧠 Dopamine Recovery Graph</h3>
+        <div class="chart-container">
+            <canvas id="dopamineChart"></canvas>
+        </div>
+    </div>
+
+    <!-- Motivation -->
+    <div class="card">
+        <h3>💭 Daily Motivation</h3>
+        <div class="quote-box" id="quoteBox"></div>
+    </div>
 
 </div>
 
 <script>
-let data = JSON.parse(localStorage.getItem("monkUltraPro")) || {
-streak:0,
-days:{}
+// ==================== RANK SYSTEM ====================
+const RANKS = [
+    { name: "Beginner", icon: "🌱", days: 0, color: "#64748b", subtitle: "Journey begins here" },
+    { name: "Apprentice", icon: "🔥", days: 3, color: "#f97316", subtitle: "Fire is igniting" },
+    { name: "Warrior", icon: "⚔️", days: 7, color: "#ef4444", subtitle: "1 Week Warrior!" },
+    { name: "Knight", icon: "🛡️", days: 14, color: "#3b82f6", subtitle: "2 Weeks Strong" },
+    { name: "Gladiator", icon: "🗡️", days: 21, color: "#8b5cf6", subtitle: "3 Weeks Beast" },
+    { name: "Samurai", icon: "⛩️", days: 30, color: "#ec4899", subtitle: "1 Month Legend!" },
+    { name: "Spartan", icon: "🏛️", days: 45, color: "#14b8a6", subtitle: "45 Days Iron Will" },
+    { name: "Viking", icon: "🪓", days: 60, color: "#f59e0b", subtitle: "2 Months Power" },
+    { name: "Titan", icon: "🗿", days: 90, color: "#10b981", subtitle: "90 Days Reborn!" },
+    { name: "Demigod", icon: "⚡", days: 120, color: "#6366f1", subtitle: "4 Months Ascended" },
+    { name: "Immortal", icon: "👁️", days: 150, color: "#a855f7", subtitle: "150 Days Transcend" },
+    { name: "Legend", icon: "👑", days: 180, color: "#fbbf24", subtitle: "6 Months King!" },
+    { name: "Monk Master", icon: "🧘", days: 270, color: "#22d3ee", subtitle: "9 Months Enlightened" },
+    { name: "Supreme", icon: "💎", days: 365, color: "#f43f5e", subtitle: "1 Year Champion!" },
+    { name: "Eternal", icon: "🌟", days: 500, color: "#ffffff", subtitle: "500 Days Immortal" },
+    { name: "GOD MODE", icon: "🔱", days: 730, color: "#ffd700", subtitle: "2 Years - ULTIMATE!" }
+];
+
+// Quotes
+const quotes = [
+    "The pain of discipline is far less than the pain of regret.",
+    "Your future self is watching you through memories.",
+    "Discipline is choosing what you want MOST over what you want NOW.",
+    "Hard times create strong men. Strong men create good times.",
+    "Every master was once a disaster who kept practicing.",
+    "The body achieves what the mind believes.",
+    "Be addicted to bettering yourself.",
+    "Your only limit is your mind.",
+    "Control your mind, or it will control you.",
+    "Suffer the pain of discipline or suffer the pain of regret.",
+    "Winners are not people who never fail, but people who never quit.",
+    "The difference between who you are and who you want to be is what you do."
+];
+
+// 6 MANDATORY TASKS
+const MANDATORY_TASKS = ['nofap', 'meditation', 'exercise', 'reading', 'coldshower', 'nosugar'];
+
+// Data Structure
+let data = JSON.parse(localStorage.getItem("monkMode6Strict")) || {
+    streak: 0,
+    longestStreak: 0,
+    totalDays: 0,
+    greenDays: 0,
+    orangeDays: 0,
+    redDays: 0,
+    days: {}
 };
 
-let today=new Date().toLocaleDateString('en-CA');
+let today = new Date().toLocaleDateString('en-CA');
 
-if(!data.days[today]){
-data.days[today]={nofap:false,med:false,status:"default"};
+// Initialize today
+if (!data.days[today]) {
+    data.days[today] = {
+        nofap: false,
+        meditation: false,
+        meditationMinutes: 0,
+        exercise: false,
+        reading: false,
+        coldshower: false,
+        nosugar: false,
+        status: 'pending' // pending, green, orange, red
+    };
 }
 
-function save(){
-localStorage.setItem("monkUltraPro",JSON.stringify(data));
+// Timer Variables
+let timerInterval = null;
+let timerSeconds = 0;
+let isTimerRunning = false;
+
+// Save
+function save() {
+    localStorage.setItem("monkMode6Strict", JSON.stringify(data));
 }
 
-function markNoFap(){data.days[today].nofap=true;}
-function markMeditation(){data.days[today].med=true;}
-
-function finishDay(){
-let d=data.days[today];
-
-if(d.nofap && d.med){
-d.status="green";
-data.streak++;
-}else{
-data.streak=0;
+// Rank Functions
+function getCurrentRank(streak) {
+    let current = RANKS[0];
+    for (let rank of RANKS) {
+        if (streak >= rank.days) current = rank;
+        else break;
+    }
+    return current;
 }
 
-save();
-render();
+function getNextRank(streak) {
+    for (let rank of RANKS) {
+        if (streak < rank.days) return rank;
+    }
+    return null;
 }
 
-function render(){
-document.getElementById("streakText").innerText="Complete Days: "+data.streak;
-updateGraph();
+function getRankIndex(streak) {
+    let index = 0;
+    for (let i = 0; i < RANKS.length; i++) {
+        if (streak >= RANKS[i].days) index = i;
+    }
+    return index;
 }
 
-function dopamineLevel(days){
-if(days<=7) return 20+days*3;
-if(days<=30) return 40+((days-7)*1);
-if(days<=90) return 65+((days-30)*0.33);
-if(days<=180) return 85+((days-90)*0.11);
-return 95+((days-180)*0.02);
+// Toggle Task
+function toggleTask(task) {
+    if (data.days[today].status !== 'pending') {
+        showNotification('❌ Day already finished!', 'error');
+        return;
+    }
+    
+    data.days[today][task] = !data.days[today][task];
+    save();
+    updateTasksUI();
+    checkAllTasksComplete();
+}
+
+// Timer Functions
+function startTimer() {
+    if (data.days[today].status !== 'pending') {
+        showNotification('❌ Day already finished!', 'error');
+        return;
+    }
+    
+    if (!isTimerRunning) {
+        isTimerRunning = true;
+        document.getElementById('startBtn').disabled = true;
+        document.getElementById('pauseBtn').disabled = false;
+        
+        timerInterval = setInterval(() => {
+            timerSeconds++;
+            updateTimerDisplay();
+            
+            // Save every minute
+            if (timerSeconds % 60 === 0) {
+                data.days[today].meditationMinutes = Math.floor(timerSeconds / 60);
+                
+                // Auto-complete meditation at 60 min
+                if (data.days[today].meditationMinutes >= 60 && !data.days[today].meditation) {
+                    data.days[today].meditation = true;
+                    showNotification('🧘 Meditation Complete! 60 min done!', 'success');
+                }
+                
+                save();
+                updateTasksUI();
+                checkAllTasksComplete();
+            }
+        }, 1000);
+    }
+}
+
+function pauseTimer() {
+    if (isTimerRunning) {
+        isTimerRunning = false;
+        clearInterval(timerInterval);
+        document.getElementById('startBtn').disabled = false;
+        document.getElementById('pauseBtn').disabled = true;
+        
+        data.days[today].meditationMinutes = Math.floor(timerSeconds / 60);
+        save();
+        updateTasksUI();
+    }
+}
+
+function resetTimer() {
+    if (confirm('Reset meditation timer? Progress will be lost!')) {
+        pauseTimer();
+        timerSeconds = 0;
+        data.days[today].meditationMinutes = 0;
+        data.days[today].meditation = false;
+        save();
+        updateTimerDisplay();
+        updateTasksUI();
+        checkAllTasksComplete();
+    }
+}
+
+function updateTimerDisplay() {
+    const hours = Math.floor(timerSeconds / 3600);
+    const mins = Math.floor((timerSeconds % 3600) / 60);
+    const secs = timerSeconds % 60;
+    
+    document.getElementById('timerDisplay').textContent = 
+        `${String(hours).padStart(2, '0')}:${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+    
+    const progress = Math.min((timerSeconds / 3600) * 100, 100);
+    document.getElementById('timerProgressFill').style.width = progress + '%';
+    
+    document.getElementById('totalMedTime').textContent = Math.floor(timerSeconds / 60) + ' min';
+    
+    const medStatus = document.getElementById('medTimerStatus');
+    if (timerSeconds >= 3600) {
+        medStatus.textContent = '✓ Complete!';
+        medStatus.style.color = '#10b981';
+    } else if (isTimerRunning) {
+        medStatus.textContent = 'Running...';
+        medStatus.style.color = '#fbbf24';
+    } else {
+        medStatus.textContent = 'Pending';
+        medStatus.style.color = '#ef4444';
+    }
+}
+
+// Check if all tasks complete
+function checkAllTasksComplete() {
+    const dayData = data.days[today];
+    const allComplete = dayData.nofap && 
+                        dayData.meditation && 
+                        dayData.exercise && 
+                        dayData.reading && 
+                        dayData.coldshower && 
+                        dayData.nosugar;
+    
+    const btn = document.getElementById('btnFinishGreen');
+    if (allComplete && dayData.status === 'pending') {
+        btn.disabled = false;
+        btn.style.opacity = '1';
+    } else {
+        btn.disabled = true;
+        btn.style.opacity = '0.5';
+    }
+    
+    // Update counter
+    let count = 0;
+    MANDATORY_TASKS.forEach(task => {
+        if (dayData[task]) count++;
+    });
+    document.getElementById('tasksCompleted').textContent = count;
+}
+
+// Update Tasks UI
+function updateTasksUI() {
+    const dayData = data.days[today];
+    
+    MANDATORY_TASKS.forEach(task => {
+        const el = document.getElementById('task' + task.charAt(0).toUpperCase() + task.slice(1));
+        if (!el) return;
+        
+        const statusEl = el.querySelector('.task-status');
+        
+        if (task === 'meditation') {
+            if (dayData.meditation) {
+                el.classList.add('completed');
+                statusEl.textContent = '✓ 60+ min Done!';
+            } else {
+                el.classList.remove('completed');
+                statusEl.textContent = `${dayData.meditationMinutes || 0}/60 min`;
+            }
+        } else {
+            if (dayData[task]) {
+                el.classList.add('completed');
+                statusEl.textContent = '✓ Done!';
+            } else {
+                el.classList.remove('completed');
+                statusEl.textContent = 'Pending';
+            }
+        }
+    });
+    
+    document.getElementById('medStatus').textContent = dayData.meditation ? 
+        '✓ 60+ min Done!' : `${dayData.meditationMinutes || 0}/60 min`;
+}
+
+// Update Today Status
+function updateTodayStatus() {
+    const dayData = data.days[today];
+    const statusEl = document.getElementById('todayStatus');
+    const iconEl = document.getElementById('statusIcon');
+    const textEl = document.getElementById('statusText');
+    const subtextEl = document.getElementById('statusSubtext');
+    
+    statusEl.classList.remove('pending', 'green', 'orange', 'red');
+    
+    let count = 0;
+    MANDATORY_TASKS.forEach(task => {
+        if (dayData[task]) count++;
+    });
+    
+    switch(dayData.status) {
+        case 'green':
+            statusEl.classList.add('green');
+            iconEl.textContent = '🟢';
+            textEl.textContent = 'GREEN DAY! 🎉';
+            subtextEl.textContent = 'All 6 tasks completed! Streak +1';
+            break;
+        case 'orange':
+            statusEl.classList.add('orange');
+            iconEl.textContent = '🟠';
+            textEl.textContent = 'ORANGE DAY';
+            subtextEl.textContent = `${count}/6 tasks done. Streak was RESET!`;
+            break;
+        case 'red':
+            statusEl.classList.add('red');
+            iconEl.textContent = '🔴';
+            textEl.textContent = 'RED DAY';
+            subtextEl.textContent = 'Total failure. Streak was RESET!';
+            break;
+        default:
+            statusEl.classList.add('pending');
+            iconEl.textContent = '⏳';
+            textEl.textContent = 'Day In Progress...';
+            subtextEl.textContent = 'Complete ALL 6 tasks for GREEN day';
+    }
+    
+    document.getElementById('tasksCompleted').textContent = count;
+}
+
+// Finish Day Functions
+function finishDayGreen() {
+    const dayData = data.days[today];
+    
+    if (dayData.status !== 'pending') {
+        showNotification('❌ Day already finished!', 'error');
+        return;
+    }
+    
+    // Check all 6 tasks
+    const allComplete = dayData.nofap && 
+                        dayData.meditation && 
+                        dayData.exercise && 
+                        dayData.reading && 
+                        dayData.coldshower && 
+                        dayData.nosugar;
+    
+    if (!allComplete) {
+        showNotification('❌ Complete all 6 tasks first!', 'error');
+        return;
+    }
+    
+    const oldRankIndex = getRankIndex(data.streak);
+    
+    dayData.status = 'green';
+    data.streak++;
+    data.totalDays++;
+    data.greenDays++;
+    
+    if (data.streak > data.longestStreak) {
+        data.longestStreak = data.streak;
+    }
+    
+    pauseTimer();
+    save();
+    
+    const newRankIndex = getRankIndex(data.streak);
+    if (newRankIndex > oldRankIndex) {
+        showRankUp(RANKS[newRankIndex]);
+    } else {
+        showNotification('🟢 GREEN DAY! Streak +1! 🎉', 'success');
+    }
+    
+    render();
+}
+
+function finishDayOrange() {
+    const dayData = data.days[today];
+    
+    if (dayData.status !== 'pending') {
+        showNotification('❌ Day already finished!', 'error');
+        return;
+    }
+    
+    // Count completed tasks
+    let count = 0;
+    MANDATORY_TASKS.forEach(task => {
+        if (dayData[task]) count++;
+    });
+    
+    if (confirm(`🟠 ORANGE DAY\n\n${count}/6 tasks complete\n\n⚠️ This will RESET your streak to 0!\n\nConfirm?`)) {
+        dayData.status = 'orange';
+        data.streak = 0;
+        data.totalDays++;
+        data.orangeDays++;
+        
+        pauseTimer();
+        save();
+        showNotification('🟠 ORANGE Day - Streak Reset to 0', 'warning');
+        render();
+    }
+}
+
+function finishDayRed() {
+    const dayData = data.days[today];
+    
+    if (dayData.status !== 'pending') {
+        showNotification('❌ Day already finished!', 'error');
+        return;
+    }
+    
+    if (confirm('🔴 RED DAY - Total Failure\n\n⚠️ This will RESET your streak to 0!\n\nConfirm?')) {
+        dayData.status = 'red';
+        data.streak = 0;
+        data.totalDays++;
+        data.redDays++;
+        
+        pauseTimer();
+        save();
+        showNotification('🔴 RED Day - Start Again Tomorrow! 💪', 'error');
+        render();
+    }
+}
+
+// Reset All Data
+function resetAllData() {
+    if (confirm('⚠️ DELETE ALL DATA?\n\nThis will reset:\n- All streaks\n- All history\n- All progress\n\nThis cannot be undone!')) {
+        if (confirm('Are you REALLY sure? Type "yes" in next prompt to confirm.')) {
+            const confirmation = prompt('Type "yes" to confirm deletion:');
+            if (confirmation === 'yes') {
+                localStorage.removeItem("monkMode6Strict");
+                location.reload();
+            }
+        }
+    }
+}
+
+// Calendar
+function renderCalendar() {
+    const container = document.getElementById('calendarGrid');
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = now.getMonth();
+    
+    const firstDay = new Date(year, month, 1).getDay();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    
+    let html = '';
+    
+    // Empty cells
+    for (let i = 0; i < firstDay; i++) {
+        html += '<div class="calendar-day empty"></div>';
+    }
+    
+    // Days
+    for (let day = 1; day <= daysInMonth; day++) {
+        const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        const dayData = data.days[dateStr];
+        
+        let colorClass = 'empty';
+        if (dayData) {
+            if (dayData.status === 'green') colorClass = 'green';
+            else if (dayData.status === 'orange') colorClass = 'orange';
+            else if (dayData.status === 'red') colorClass = 'red';
+        }
+        
+        const isToday = dateStr === today ? 'today' : '';
+        html += `<div class="calendar-day ${colorClass} ${isToday}">${day}</div>`;
+    }
+    
+    container.innerHTML = html;
+}
+
+// Render All
+function render() {
+    const streak = data.streak;
+    const currentRank = getCurrentRank(streak);
+    const nextRank = getNextRank(streak);
+    
+    // Streak
+    document.getElementById('streakNumber').textContent = streak;
+    
+    // Rank
+    document.getElementById('currentRankIcon').textContent = currentRank.icon;
+    document.getElementById('currentRankTitle').textContent = currentRank.name.toUpperCase();
+    document.getElementById('currentRankTitle').style.color = currentRank.color;
+    document.getElementById('currentRankSubtitle').textContent = currentRank.subtitle;
+    document.getElementById('rankCard').style.borderColor = currentRank.color;
+    
+    // Progress
+    if (nextRank) {
+        const progress = ((streak - currentRank.days) / (nextRank.days - currentRank.days)) * 100;
+        document.getElementById('rankProgressBar').style.width = progress + '%';
+        document.getElementById('rankProgressBar').style.background = 
+            `linear-gradient(90deg, ${currentRank.color}, ${nextRank.color})`;
+        document.getElementById('currentRankLabel').textContent = currentRank.name;
+        document.getElementById('nextRankLabel').textContent = 'Next: ' + nextRank.name;
+        document.getElementById('daysRemaining').textContent = 
+            `🔥 ${nextRank.days - streak} days to ${nextRank.name}`;
+    } else {
+        document.getElementById('rankProgressBar').style.width = '100%';
+        document.getElementById('rankProgressBar').style.background = '#ffd700';
+        document.getElementById('currentRankLabel').textContent = 'MAX RANK';
+        document.getElementById('nextRankLabel').textContent = '🔱 GOD MODE';
+        document.getElementById('daysRemaining').textContent = '🔱 You have achieved GOD MODE!';
+    }
+    
+    // Stats
+    document.getElementById('totalDays').textContent = data.totalDays;
+    document.getElementById('greenDays').textContent = data.greenDays;
+    document.getElementById('orangeDays').textContent = data.orangeDays;
+    document.getElementById('redDays').textContent = data.redDays;
+    document.getElementById('longestStreak').textContent = data.longestStreak;
+    
+    const rate = data.totalDays > 0 ? Math.round((data.greenDays / data.totalDays) * 100) : 0;
+    document.getElementById('successRate').textContent = rate + '%';
+    
+    // Load timer
+    timerSeconds = (data.days[today].meditationMinutes || 0) * 60;
+    updateTimerDisplay();
+    
+    // UI Updates
+    updateTasksUI();
+    updateTodayStatus();
+    checkAllTasksComplete();
+    renderCalendar();
+    renderAllRanks();
+    updateChart();
+    updateQuote();
+}
+
+function renderAllRanks() {
+    const container = document.getElementById('ranksGrid');
+    const currentIndex = getRankIndex(data.streak);
+    
+    container.innerHTML = RANKS.map((rank, i) => {
+        let status = i < currentIndex ? 'achieved' : (i === currentIndex ? 'current' : 'locked');
+        return `
+            <div class="rank-item ${status}">
+                <div class="rank-item-icon">${rank.icon}</div>
+                <div class="rank-item-name">${rank.name}</div>
+                <div class="rank-item-days">${rank.days} days</div>
+            </div>
+        `;
+    }).join('');
+}
+
+// Dopamine Chart
+function dopamineLevel(days) {
+    if (days <= 7) return 20 + days * 4;
+    if (days <= 30) return 48 + ((days - 7) * 1.2);
+    if (days <= 90) return 75 + ((days - 30) * 0.25);
+    if (days <= 180) return 90 + ((days - 90) * 0.08);
+    return Math.min(99, 97 + ((days - 180) * 0.01));
 }
 
 let chart;
-
-function updateGraph(){
-let labels=[];
-let values=[];
-for(let i=0;i<=data.streak;i++){
-labels.push(i);
-values.push(dopamineLevel(i));
+function updateChart() {
+    const labels = [], values = [];
+    const max = Math.max(data.streak + 30, 90);
+    
+    for (let i = 0; i <= max; i += 5) {
+        labels.push('Day ' + i);
+        values.push(dopamineLevel(i));
+    }
+    
+    if (chart) chart.destroy();
+    
+    const ctx = document.getElementById('dopamineChart').getContext('2d');
+    chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels,
+            datasets: [{
+                label: 'Recovery %',
+                data: values,
+                borderColor: '#10b981',
+                backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                fill: true,
+                tension: 0.4,
+                borderWidth: 3,
+                pointBackgroundColor: '#10b981',
+                pointRadius: 0,
+                pointHoverRadius: 6
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { labels: { color: '#e2e8f0' } }
+            },
+            scales: {
+                y: {
+                    min: 0,
+                    max: 100,
+                    ticks: { color: '#94a3b8', callback: v => v + '%' },
+                    grid: { color: 'rgba(148,163,184,0.1)' }
+                },
+                x: {
+                    ticks: { color: '#94a3b8', maxTicksLimit: 8 },
+                    grid: { color: 'rgba(148,163,184,0.1)' }
+                }
+            }
+        }
+    });
 }
 
-if(chart) chart.destroy();
+function updateQuote() {
+    const quote = quotes[Math.floor(Math.random() * quotes.length)];
+    document.getElementById('quoteBox').innerHTML = `<p>"${quote}"</p>`;
+}
 
-let ctx=document.getElementById("dopamineChart").getContext("2d");
-chart=new Chart(ctx,{
-type:"line",
-data:{
-labels:labels,
-datasets:[{
-label:"Recovery %",
-data:values,
-borderColor:"#10b981",
-backgroundColor:"rgba(16,185,129,0.2)",
-fill:true,
-tension:0.3
-}]
-},
-options:{
-scales:{
-y:{min:0,max:100}
+// Rank Up Animation
+function showRankUp(rank) {
+    document.getElementById('rankUpIcon').textContent = rank.icon;
+    document.getElementById('rankUpName').textContent = rank.name.toUpperCase();
+    document.getElementById('rankUpName').style.color = rank.color;
+    document.getElementById('rankUpOverlay').style.display = 'flex';
+    createConfetti();
 }
+
+function closeRankUp() {
+    document.getElementById('rankUpOverlay').style.display = 'none';
 }
+
+function createConfetti() {
+    const colors = ['#10b981', '#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899'];
+    for (let i = 0; i < 60; i++) {
+        const c = document.createElement('div');
+        c.style.cssText = `
+            position: fixed;
+            width: ${5 + Math.random() * 10}px;
+            height: ${5 + Math.random() * 10}px;
+            background: ${colors[Math.floor(Math.random() * colors.length)]};
+            left: ${Math.random() * 100}vw;
+            top: -20px;
+            z-index: 2001;
+            border-radius: ${Math.random() > 0.5 ? '50%' : '0'};
+            animation: fall ${2 + Math.random() * 3}s linear forwards;
+        `;
+        document.body.appendChild(c);
+        setTimeout(() => c.remove(), 5000);
+    }
+}
+
+// Notification
+function showNotification(msg, type) {
+    const colors = {
+        success: '#10b981',
+        error: '#ef4444',
+        warning: '#f59e0b',
+        info: '#3b82f6'
+    };
+    
+    const n = document.createElement('div');
+    n.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        left: 20px;
+        max-width: 400px;
+        margin: auto;
+        background: ${colors[type]};
+        color: white;
+        padding: 15px 25px;
+        border-radius: 12px;
+        font-weight: bold;
+        z-index: 10000;
+        text-align: center;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        animation: slideIn 0.3s ease;
+    `;
+    n.textContent = msg;
+    document.body.appendChild(n);
+    
+    setTimeout(() => {
+        n.style.animation = 'slideOut 0.3s ease';
+        setTimeout(() => n.remove(), 300);
+    }, 3000);
+}
+
+// Lock System
+function unlock() {
+    const pin = document.getElementById('pinInput').value;
+    const savedPin = localStorage.getItem('monkPIN');
+    
+    if (savedPin === pin) {
+        document.getElementById('lockScreen').style.display = 'none';
+        document.getElementById('mainApp').style.display = 'block';
+        document.getElementById('pinInput').value = '';
+        render();
+    } else {
+        showNotification('❌ Wrong PIN!', 'error');
+        document.getElementById('pinInput').value = '';
+    }
+}
+
+function setPin() {
+    const pin = prompt('Enter a 4-digit PIN:');
+    if (pin && /^\d{4}$/.test(pin)) {
+        localStorage.setItem('monkPIN', pin);
+        showNotification('✓ PIN Set Successfully!', 'success');
+    } else {
+        alert('Please enter exactly 4 digits!');
+    }
+}
+
+function lock() {
+    pauseTimer();
+    document.getElementById('mainApp').style.display = 'none';
+    document.getElementById('lockScreen').style.display = 'flex';
+}
+
+// Enter key for PIN
+document.getElementById('pinInput').addEventListener('keypress', e => {
+    if (e.key === 'Enter') unlock();
 });
-}
 
-// 🔐 LOCK SYSTEM
-function unlock(){
-let pin=document.getElementById("pinInput").value;
-let savedPin=localStorage.getItem("monkPIN");
-if(savedPin===pin){
-document.getElementById("lockScreen").style.display="none";
-document.getElementById("mainApp").style.display="block";
-render();
-}else{
-alert("Wrong PIN!");
-}
-}
-
-function setPin(){
-let newPin=prompt("Enter new 4 digit PIN:");
-if(newPin && newPin.length===4){
-localStorage.setItem("monkPIN",newPin);
-alert("PIN Set!");
-}
-}
-
-function lock(){
-document.getElementById("mainApp").style.display="none";
-document.getElementById("lockScreen").style.display="flex";
-}
-
-window.onload=function(){
-if(localStorage.getItem("monkPIN")){
-document.getElementById("lockScreen").style.display="flex";
-}else{
-setPin();
-}
-}
-</script>
-
-</body>
-</html>    }else{
-        percent=100;
+// Initialize
+window.onload = function() {
+    if (localStorage.getItem('monkPIN')) {
+        document.getElementById('lockScreen').style.display = 'flex';
+    } else {
+        alert('👋 Welcome to Monk Mode Ultra Pro!\n\n⚠️ STRICT RULES:\n✓ All 6 tasks MUST be completed daily\n✓ Missing even 1 task = Streak RESET\n\nFirst, set a 4-digit PIN to secure your progress.');
+        setPin();
+        if (localStorage.getItem('monkPIN')) {
+            document.getElementById('lockScreen').style.display = 'flex';
+        }
     }
-    document.getElementById("progressBar").style.width=percent+"%";
+};
 
-    localStorage.setItem("monkData",JSON.stringify(data));
-}
-
-function completeMeditation(){
-    let today=new Date().toDateString();
-
-    if(data.lastDate!==today){
-        data.streak++;
-        data.lastDate=today;
-        data.meditationDates.push(today);
-        alert("🔥 Discipline Day Completed!");
-    }else{
-        alert("Already completed today!");
+// CSS Animations
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes fall {
+        to { transform: translateY(100vh) rotate(720deg); }
     }
-
-    updateUI();
-}
-
-function relapse(){
-    if(confirm("Are you sure? Streak will reset.")){
-        data.streak=0;
-        data.lastDate=null;
-        data.meditationDates=[];
-        updateUI();
+    @keyframes slideIn {
+        from { transform: translateY(-100%); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
     }
-}
-
-updateUI();
-</script>
-
-</body>
-</html>  </div>
-</div>
-
-<script>
-// ===== DATA =====
-let goals = [];
-let progress = {};
-const PASS_KEY = 'goalPass';
-const GOALS_KEY = 'lifeGoals';
-const PROG_KEY = 'dailyProg';
-
-// ===== PASSWORD =====
-function checkFirst() {
-  if (!localStorage.getItem(PASS_KEY)) {
-    document.getElementById('loginSection').classList.add('hidden');
-    document.getElementById('setupSection').classList.remove('hidden');
-  }
-}
-
-function setupPassword() {
-  const p1 = document.getElementById('newPassword').value;
-  const p2 = document.getElementById('confirmPassword').value;
-  if (p1.length < 4) return alert('❌ Min 4 characters!');
-  if (p1 !== p2) return alert('❌ Password match नहीं!');
-  localStorage.setItem(PASS_KEY, btoa(p1));
-  alert('✅ Password set!');
-  location.reload();
-}
-
-function checkPassword() {
-  const input = document.getElementById('passwordInput').value;
-  if (btoa(input) === localStorage.getItem(PASS_KEY)) {
-    document.getElementById('loginScreen').classList.add('hidden');
-    document.getElementById('mainApp').classList.remove('hidden');
-    initApp();
-  } else {
-    document.getElementById('errorMsg').classList.remove('hidden');
-    document.getElementById('passwordInput').classList.add('shake');
-    setTimeout(() => document.getElementById('passwordInput').classList.remove('shake'), 500);
-  }
-}
-
-function changePass() {
-  const old = document.getElementById('oldPass').value;
-  const newP = document.getElementById('newPass').value;
-  if (btoa(old) !== localStorage.getItem(PASS_KEY)) return alert('❌ पुराना Password गलत!');
-  if (newP.length < 4) return alert('❌ Min 4 characters!');
-  localStorage.setItem(PASS_KEY, btoa(newP));
-  alert('✅ Password changed!');
-  closeSettings();
-}
-
-function logout() {
-  document.getElementById('mainApp').classList.add('hidden');
-  document.getElementById('loginScreen').classList.remove('hidden');
-  document.getElementById('passwordInput').value = '';
-  closeSettings();
-}
-
-// ===== SETTINGS =====
-function openSettings() { document.getElementById('settingsModal').classList.remove('hidden'); }
-function closeSettings() { document.getElementById('settingsModal').classList.add('hidden'); }
-
-function resetAll() {
-  if (confirm('⚠️ सारा Data delete?') && confirm('⚠️ Last Warning!')) {
-    localStorage.removeItem(GOALS_KEY);
-    localStorage.removeItem(PROG_KEY);
-    alert('✅ Deleted!');
-    location.reload();
-  }
-}
-
-// ===== MAIN APP =====
-function initApp() {
-  goals = JSON.parse(localStorage.getItem(GOALS_KEY)) || [];
-  progress = JSON.parse(localStorage.getItem(PROG_KEY)) || {};
-  document.getElementById('currentDate').textContent = new Date().toLocaleDateString('hi-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-  render();
-}
-
-function save() {
-  localStorage.setItem(GOALS_KEY, JSON.stringify(goals));
-  localStorage.setItem(PROG_KEY, JSON.stringify(progress));
-}
-
-// ===== GOALS =====
-function openAddGoal() { document.getElementById('addGoalModal').classList.remove('hidden'); }
-function closeAddGoal() { 
-  document.getElementById('addGoalModal').classList.add('hidden'); 
-  document.getElementById('goalName').value = '';
-  document.getElementById('goalTarget').value = '';
-  document.getElementById('goalUnit').value = '';
-}
-
-function saveGoal() {
-  const name = document.getElementById('goalName').value.trim();
-  const target = parseInt(document.getElementById('goalTarget').value);
-  const unit = document.getElementById('goalUnit').value.trim() || 'units';
-  if (!name || !target) return alert('❌ सही details भरो!');
-  goals.push({ id: Date.now(), name, target, unit, current: 0, start: new Date().toISOString() });
-  save();
-  closeAddGoal();
-  render();
-  alert('✅ Goal added!');
-}
-
-function deleteGoal(id) {
-  if (!confirm('⚠️ Delete करना है?')) return;
-  goals = goals.filter(g => g.id !== id);
-  Object.keys(progress).forEach(d => {
-    progress[d] = progress[d].filter(p => p.gid !== id);
-    if (!progress[d].length) delete progress[d];
-  });
-  save();
-  render();
-}
-
-function getLast7(gid) {
-  const arr = [];
-  for (let i = 6; i >= 0; i--) {
-    const d = new Date(); d.setDate(d.getDate() - i);
-    const key = d.toDateString();
-    const sum = (progress[key] || []).filter(p => p.gid === gid).reduce((a, p) => a + p.qty, 0);
-    arr.push(sum);
-  }
-  return arr;
-}
-
-function renderGoals() {
-  const c = document.getElementById('goalsList');
-  if (!goals.length) {
-    c.innerHTML = '<div class="text-center py-8"><div class="text-5xl mb-3">🎯</div><p class="text-gray-600">कोई Goal नहीं! New Goal add करो</p></div>';
-    return;
-  }
-  c.innerHTML = goals.map(g => {
-    const pct = Math.min(100, (g.current / g.target * 100)).toFixed(1);
-    const rem = Math.max(0, g.target - g.current);
-    const last7 = getLast7(g.id);
-    const avg = (last7.reduce((a, b) => a + b, 0) / 7).toFixed(1);
-    const days = avg > 0 ? Math.ceil(rem / avg) : '--';
-    const date = new Date(); if (days !== '--') date.setDate(date.getDate() + parseInt(days));
-    
-    let speedClass = 'speed-normal', speedTxt = 'Normal';
-    const idealDaily = g.target / 180;
-    if (avg < idealDaily * 0.5) { speedClass = 'speed-slow'; speedTxt = 'Slow ⚠️'; }
-    else if (avg > idealDaily * 1.5) { speedClass = 'speed-fast'; speedTxt = 'Fast 🚀'; }
-    
-    return `
-      <div class="bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-5">
-        <div class="flex justify-between items-start mb-3">
-          <div>
-            <h4 class="text-xl font-bold text-purple-900">${g.name}</h4>
-            <div class="text-3xl font-bold text-purple-600">${g.current} / ${g.target} <span class="text-base text-gray-600">${g.unit}</span></div>
-            <div class="text-gray-600">${rem} ${g.unit} बाकी</div>
-          </div>
-          <div class="text-right">
-            <span class="speed-badge ${speedClass}">${speedTxt}</span>
-            <button onclick="deleteGoal(${g.id})" class="ml-2 text-red-500 hover:text-red-700"><i class="fas fa-trash"></i></button>
-          </div>
-        </div>
-        <div class="w-full bg-gray-200 rounded-full h-3 mb-3">
-          <div class="bg-gradient-to-r from-purple-600 to-pink-600 h-3 rounded-full" style="width:${pct}%"></div>
-        </div>
-        <div class="text-center text-sm font-semibold text-purple-600 mb-3">${pct}% Complete</div>
-        <div class="grid grid-cols-3 gap-3 bg-white rounded-xl p-3 text-center text-sm">
-          <div><div class="text-gray-500">7-Day Avg</div><div class="text-lg font-bold text-blue-600">${avg}</div></div>
-          <div><div class="text-gray-500">Days Left</div><div class="text-lg font-bold text-orange-600">${days}</div></div>
-          <div><div class="text-gray-500">Complete On</div><div class="font-bold text-green-600">${days !== '--' ? date.toLocaleDateString('hi-IN', {day:'numeric',month:'short'}) : '--'}</div></div>
-        </div>
-      </div>`;
-  }).join('');
-}
-
-// ===== PROGRESS =====
-function updateSelect() {
-  document.getElementById('selectGoal').innerHTML = '<option value="">Goal Select करो</option>' + goals.map(g => `<option value="${g.id}">${g.name}</option>`).join('');
-}
-
-function addProgress() {
-  const gid = parseInt(document.getElementById('selectGoal').value);
-  const qty = parseInt(document.getElementById('todayQty').value);
-  if (!gid || !qty || qty <= 0) return alert('❌ Goal select करो और quantity भरो!');
-  
-  const today = new Date().toDateString();
-  const goal = goals.find(g => g.id === gid);
-  if (!progress[today]) progress[today] = [];
-  progress[today].push({ gid, name: goal.name, qty, time: new Date().toLocaleTimeString('hi-IN', {hour:'2-digit',minute:'2-digit'}) });
-  goal.current += qty;
-  
-  save();
-  document.getElementById('todayQty').value = '';
-  render();
-  alert('✅ Progress added!');
-}
-
-function delProg(idx) {
-  const today = new Date().toDateString();
-  const e = progress[today][idx];
-  const g = goals.find(x => x.id === e.gid);
-  if (g) g.current -= e.qty;
-  progress[today].splice(idx, 1);
-  if (!progress[today].length) delete progress[today];
-  save();
-  render();
-}
-
-function renderToday() {
-  const today = new Date().toDateString();
-  const list = progress[today] || [];
-  const c = document.getElementById('todayList');
-  if (!list.length) {
-    c.innerHTML = '<div class="text-center py-6"><div class="text-4xl mb-2">📝</div><p class="text-gray-600">आज अभी कुछ नहीं किया!</p></div>';
-    return;
-  }
-  c.innerHTML = list.map((e, i) => `
-    <div class="flex items-center justify-between bg-white rounded-xl p-4 border-2 border-green-200">
-      <div class="flex items-center gap-3">
-        <div class="text-2xl">✅</div>
-        <div><div class="font-semibold">${e.name}</div><div class="text-sm text-gray-500">${e.qty} at ${e.time}</div></div>
-      </div>
-      <button onclick="delProg(${i})" class="text-red-500 hover:text-red-700"><i class="fas fa-trash"></i></button>
-    </div>
-  `).join('');
-}
-
-function updateStats() {
-  const today = new Date().toDateString();
-  let streak = 0, check = new Date();
-  while (true) {
-    const key = check.toDateString();
-    if (progress[key]?.length) { streak++; check.setDate(check.getDate() - 1); }
-    else if (key === today) { check.setDate(check.getDate() - 1); }
-    else break;
-  }
-  document.getElementById('streak').textContent = streak;
-  
-  const allP = Object.values(progress).flat();
-  const days = Object.keys(progress).length || 1;
-  document.getElementById('avgSpeed').textContent = (allP.reduce((a, p) => a + p.qty, 0) / days).toFixed(1);
-  
-  const dailyTotals = Object.values(progress).map(d => d.reduce((a, p) => a + p.qty, 0));
-  document.getElementById('bestDay').textContent = dailyTotals.length ? Math.max(...dailyTotals) : 0;
-  document.getElementById('totalDays').textContent = Object.keys(progress).length;
-}
-
-// ===== TABS =====
-function switchTab(t) {
-  document.querySelectorAll('.tab-content').forEach(e => e.classList.add('hidden'));
-  document.querySelectorAll('[id^="tab"]').forEach(e => e.classList.remove('tab-active'));
-  document.getElementById(t + 'Tab').classList.remove('hidden');
-  document.getElementById('tab' + t.charAt(0).toUpperCase() + t.slice(1)).classList.add('tab-active');
-  if (t === 'analytics') renderAnalytics();
-  if (t === 'history') renderHistory();
-}
-
-let chart = null;
-function renderAnalytics() {
-  if (!goals.length) { document.getElementById('analyticsData').innerHTML = '<p class="text-center text-gray-600 py-6">पहले Goals add करो!</p>'; return; }
-  
-  const labels = [];
-  for (let i = 13; i >= 0; i--) {
-    const d = new Date(); d.setDate(d.getDate() - i);
-    labels.push(d.toLocaleDateString('hi-IN', {day:'numeric',month:'short'}));
-  }
-  
-  const colors = ['#667eea','#f093fb','#4facfe','#43e97b','#fa709a'];
-  const datasets = goals.map((g, idx) => {
-    const data = [];
-    for (let i = 13; i >= 0; i--) {
-      const d = new Date(); d.setDate(d.getDate() - i);
-      data.push((progress[d.toDateString()] || []).filter(p => p.gid === g.id).reduce((a, p) => a + p.qty, 0));
+    @keyframes slideOut {
+        from { transform: translateY(0); opacity: 1; }
+        to { transform: translateY(-100%); opacity: 0; }
     }
-    return { label: g.name, data, borderColor: colors[idx % 5], backgroundColor: colors[idx % 5] + '20', tension: 0.4, borderWidth: 3 };
-  });
-  
-  const ctx = document.getElementById('chart').getContext('2d');
-  if (chart) chart.destroy();
-  chart = new Chart(ctx, { type: 'line', data: { labels, datasets }, options: { responsive: true, scales: { y: { beginAtZero: true } } } });
-  
-  document.getElementById('analyticsData').innerHTML = goals.map(g => {
-    const last7 = getLast7(g.id);
-    const avg = (last7.reduce((a, b) => a + b, 0) / 7).toFixed(1);
-    const consistency = (last7.filter(x => x > 0).length / 7 * 100).toFixed(0);
-    return `
-      <div class="bg-gray-50 rounded-xl p-4">
-        <h4 class="font-bold text-lg mb-2">${g.name}</h4>
-        <div class="grid grid-cols-3 gap-4 text-center">
-          <div><div class="text-sm text-gray-500">7-Day Avg</div><div class="text-xl font-bold text-purple-600">${avg}</div></div>
-          <div><div class="text-sm text-gray-500">Best</div><div class="text-xl font-bold text-green-600">${Math.max(...last7)}</div></div>
-          <div><div class="text-sm text-gray-500">Consistency</div><div class="text-xl font-bold text-blue-600">${consistency}%</div></div>
-        </div>
-      </div>`;
-  }).join('');
-}
-
-function renderHistory() {
-  const dates = Object.keys(progress).sort().reverse();
-  const c = document.getElementById('historyList');
-  if (!dates.length) { c.innerHTML = '<p class="text-center text-gray-600 py-6">कोई history नहीं!</p>'; return; }
-  c.innerHTML = dates.map(d => {
-    const list = progress[d];
-    const total = list.reduce((a, p) => a + p.qty, 0);
-    return `
-      <div class="bg-white rounded-xl p-4 border-2 border-gray-200">
-        <div class="flex justify-between items-center mb-2">
-          <div class="font-bold text-gray-800">${new Date(d).toLocaleDateString('hi-IN', {weekday:'long',day:'numeric',month:'long'})}</div>
-          <div class="text-xl font-bold text-purple-600">Total: ${total}</div>
-        </div>
-        <div class="space-y-1">${list.map(e => `<div class="flex justify-between text-sm bg-gray-50 rounded p-2"><span>${e.name}</span><span class="font-semibold text-purple-600">${e.qty}</span></div>`).join('')}</div>
-      </div>`;
-  }).join('');
-}
-
-function render() {
-  renderGoals();
-  updateSelect();
-  renderToday();
-  updateStats();
-}
-
-checkFirst();
+`;
+document.head.appendChild(style);
 </script>
 
 </body>
