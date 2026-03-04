@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Akash Academy AI - Complete Dashboard</title>
+    <title>Akash Academy AI - Smart Study Dashboard</title>
     
+    <!-- Firebase -->
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
@@ -246,6 +247,17 @@
             color: black;
         }
 
+        .exam-date-btn {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+            border-color: var(--success);
+        }
+
+        .exam-date-btn:hover {
+            background: var(--success);
+            color: white;
+        }
+
         .login-btn {
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
@@ -303,10 +315,54 @@
             font-size: 0.9rem;
         }
 
+        /* Exam Date Banner */
+        .exam-banner {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(245, 158, 11, 0.15));
+            border: 2px solid var(--danger);
+            border-radius: 16px;
+            padding: 1.25rem;
+            margin-bottom: 1.25rem;
+            text-align: center;
+        }
+
+        .exam-banner.set {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(59, 130, 246, 0.15));
+            border-color: var(--success);
+        }
+
+        .exam-banner h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            color: var(--danger);
+        }
+
+        .exam-banner.set h3 {
+            color: var(--success);
+        }
+
+        .exam-countdown {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--danger), var(--warning));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 0.5rem 0;
+        }
+
+        .exam-banner.set .exam-countdown {
+            background: linear-gradient(135deg, var(--success), var(--info));
+            -webkit-background-clip: text;
+        }
+
+        .exam-date-text {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
         /* Stats Grid */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
             gap: 0.75rem;
             margin-bottom: 1.25rem;
         }
@@ -315,7 +371,7 @@
             background: var(--card);
             border: 1px solid var(--border);
             border-radius: 14px;
-            padding: 0.875rem;
+            padding: 1rem;
             text-align: center;
             position: relative;
             overflow: hidden;
@@ -332,14 +388,14 @@
         }
 
         .stat-icon {
-            width: 32px;
-            height: 32px;
+            width: 36px;
+            height: 36px;
             border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1rem;
-            margin: 0 auto 0.4rem;
+            font-size: 1.1rem;
+            margin: 0 auto 0.5rem;
         }
 
         .stat-icon.purple { background: rgba(99, 102, 241, 0.2); }
@@ -349,16 +405,16 @@
         .stat-icon.blue { background: rgba(59, 130, 246, 0.2); }
 
         .stat-value {
-            font-size: 1.4rem;
+            font-size: 1.6rem;
             font-weight: 700;
         }
 
         .stat-label {
             color: var(--text-muted);
-            font-size: 0.7rem;
+            font-size: 0.75rem;
         }
 
-        /* Prediction Box */
+        /* AI Prediction Box */
         .prediction-box {
             background: linear-gradient(135deg, rgba(99, 102, 241, 0.12), rgba(139, 92, 246, 0.12));
             border: 2px solid var(--primary);
@@ -379,12 +435,12 @@
 
         .prediction-main {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 1fr 1fr 1fr;
             gap: 1rem;
             margin-bottom: 1rem;
         }
 
-        @media (max-width: 500px) {
+        @media (max-width: 768px) {
             .prediction-main { grid-template-columns: 1fr; }
         }
 
@@ -399,6 +455,14 @@
             font-size: 2rem;
             font-weight: 700;
             color: var(--success);
+        }
+
+        .prediction-number.warning {
+            color: var(--warning);
+        }
+
+        .prediction-number.danger {
+            color: var(--danger);
         }
 
         .prediction-label {
@@ -416,27 +480,67 @@
         .speed-stats {
             display: flex;
             justify-content: center;
-            gap: 1.5rem;
+            gap: 2rem;
             padding-top: 0.75rem;
             border-top: 1px solid var(--border);
             flex-wrap: wrap;
         }
 
         .speed-item { text-align: center; }
-        .speed-value { font-size: 1.1rem; font-weight: 700; color: var(--warning); }
-        .speed-label { font-size: 0.65rem; color: var(--text-muted); }
+        .speed-value { font-size: 1.3rem; font-weight: 700; color: var(--warning); }
+        .speed-label { font-size: 0.7rem; color: var(--text-muted); }
 
         .trend-indicator {
             text-align: center;
             margin-top: 0.75rem;
-            padding: 0.6rem;
+            padding: 0.8rem;
             border-radius: 8px;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
+            font-weight: 600;
         }
 
         .trend-up { background: rgba(16, 185, 129, 0.1); color: var(--success); }
         .trend-down { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
         .trend-stable { background: rgba(59, 130, 246, 0.1); color: var(--info); }
+        .trend-warning { background: rgba(245, 158, 11, 0.1); color: var(--warning); }
+
+        .completion-comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .comparison-item {
+            background: var(--dark);
+            border-radius: 10px;
+            padding: 0.875rem;
+            text-align: center;
+        }
+
+        .comparison-item.on-track {
+            border: 2px solid var(--success);
+        }
+
+        .comparison-item.behind {
+            border: 2px solid var(--danger);
+        }
+
+        .comparison-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 0.25rem;
+        }
+
+        .comparison-value {
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        .comparison-value.success { color: var(--success); }
+        .comparison-value.danger { color: var(--danger); }
 
         /* Subject Predictions */
         .subject-predictions { margin-top: 1rem; }
@@ -451,6 +555,8 @@
         }
 
         .sub-pred-item.done { border-left-color: var(--success); opacity: 0.7; }
+        .sub-pred-item.warning { border-left-color: var(--warning); }
+        .sub-pred-item.danger { border-left-color: var(--danger); }
 
         .sub-pred-header {
             display: flex;
@@ -463,6 +569,8 @@
 
         .sub-pred-name { font-weight: 600; font-size: 0.9rem; }
         .sub-pred-date { color: var(--success); font-weight: 600; font-size: 0.8rem; }
+        .sub-pred-date.warning { color: var(--warning); }
+        .sub-pred-date.danger { color: var(--danger); }
 
         .sub-pred-bar {
             height: 5px;
@@ -476,6 +584,10 @@
             height: 100%;
             background: linear-gradient(90deg, var(--primary), var(--secondary));
             border-radius: 3px;
+        }
+
+        .sub-pred-fill.warning {
+            background: linear-gradient(90deg, var(--warning), var(--danger));
         }
 
         .sub-pred-stats {
@@ -685,8 +797,8 @@
         }
 
         .progress-bar {
-            width: 45px;
-            height: 5px;
+            width: 50px;
+            height: 6px;
             background: var(--border);
             border-radius: 3px;
             overflow: hidden;
@@ -869,6 +981,7 @@
         .btn-secondary { background: var(--border); color: white; }
         .btn-primary { background: var(--primary); color: white; }
         .btn-danger { background: var(--danger); color: white; }
+        .btn-success { background: var(--success); color: white; }
 
         .btn:hover { transform: translateY(-2px); }
 
@@ -896,6 +1009,34 @@
 
         .modal-warning li {
             margin-bottom: 0.25rem;
+        }
+
+        /* Sync Status */
+        .sync-status {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 10px 16px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            z-index: 100;
+            transition: all 0.3s;
+        }
+
+        .sync-status.syncing {
+            background: rgba(59, 130, 246, 0.9);
+            color: white;
+        }
+
+        .sync-status.synced {
+            background: rgba(16, 185, 129, 0.9);
+            color: white;
+        }
+
+        .sync-status.error {
+            background: rgba(239, 68, 68, 0.9);
+            color: white;
         }
 
         /* Toast */
@@ -935,8 +1076,9 @@
             .logo-icon { width: 30px; height: 30px; font-size: 1.1rem; }
             .header-btn { padding: 6px 10px; font-size: 0.75rem; }
             .container { padding: 1rem; }
-            .stat-card { padding: 0.65rem; }
-            .stat-value { font-size: 1.2rem; }
+            .stat-card { padding: 0.75rem; }
+            .stat-value { font-size: 1.3rem; }
+            .exam-countdown { font-size: 2rem; }
         }
     </style>
 </head>
@@ -983,7 +1125,7 @@
                     <li>All topics</li>
                     <li>All revision schedules</li>
                     <li>All completion history</li>
-                    <li>AI prediction data</li>
+                    <li>Exam date settings</li>
                 </ul>
             </div>
             
@@ -1000,6 +1142,24 @@
         </div>
     </div>
 
+    <!-- 📅 EXAM DATE MODAL -->
+    <div class="modal-overlay" id="examDateModal">
+        <div class="modal">
+            <h3 class="modal-title">📅 Set Exam Date</h3>
+            
+            <p class="modal-desc">
+                Select your exam date. The AI will calculate how many days you have left and predict if you can finish the course on time.
+            </p>
+            
+            <input type="date" class="modal-input" id="examDateInput" style="text-align: center;">
+            
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeExamDateModal()">Cancel</button>
+                <button class="btn btn-success" onclick="saveExamDate()">💾 Save Date</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Main App -->
     <div id="mainApp" style="display: none;">
         <header>
@@ -1010,6 +1170,12 @@
                 </div>
                 
                 <div class="header-actions">
+                    <!-- 📅 EXAM DATE BUTTON -->
+                    <button class="header-btn exam-date-btn" onclick="openExamDateModal()">
+                        <span>📅</span>
+                        <span id="examDateBtnText">Set Exam</span>
+                    </button>
+                    
                     <!-- 🔄 RESET BUTTON -->
                     <button class="header-btn reset-btn" onclick="openResetModal()">
                         <span>🔄</span>
@@ -1035,7 +1201,14 @@
         <div class="container">
             <div class="welcome">
                 <h1 id="welcomeText">Welcome! 👋</h1>
-                <p>AI Course Prediction + ARS Revision System</p>
+                <p>Smart Study Dashboard with AI Predictions & ARS Revision</p>
+            </div>
+
+            <!-- 📅 EXAM COUNTDOWN BANNER -->
+            <div class="exam-banner" id="examBanner">
+                <h3>⚠️ Exam Date Not Set</h3>
+                <div class="exam-countdown">--</div>
+                <div class="exam-date-text">Click "Set Exam" button above to add your exam date</div>
             </div>
 
             <!-- Stats -->
@@ -1048,7 +1221,7 @@
                 <div class="stat-card">
                     <div class="stat-icon orange">📖</div>
                     <div class="stat-value" id="statTotal">0</div>
-                    <div class="stat-label">Topics</div>
+                    <div class="stat-label">Total Topics</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon blue">📖</div>
@@ -1058,7 +1231,7 @@
                 <div class="stat-card">
                     <div class="stat-icon green">✅</div>
                     <div class="stat-value" id="statDone">0</div>
-                    <div class="stat-label">Done</div>
+                    <div class="stat-label">Completed</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon red">⏳</div>
@@ -1068,7 +1241,7 @@
                 <div class="stat-card">
                     <div class="stat-icon orange">🔄</div>
                     <div class="stat-value" id="statTodayRev">0</div>
-                    <div class="stat-label">Today Rev</div>
+                    <div class="stat-label">Today's Rev</div>
                 </div>
             </div>
 
@@ -1076,50 +1249,71 @@
             <div class="prediction-box" id="predictionBox" style="display: none;">
                 <div class="prediction-header">
                     <span>🤖</span>
-                    <span>AI Course Predictor</span>
+                    <span>AI Smart Predictor</span>
                 </div>
                 
                 <div class="prediction-main">
                     <div class="prediction-card">
                         <div class="prediction-number" id="predDays">--</div>
-                        <div class="prediction-label">days to finish</div>
+                        <div class="prediction-label">days to finish course</div>
                         <div class="prediction-date" id="predDate">--</div>
                     </div>
                     <div class="prediction-card">
                         <div class="prediction-number" id="predPending">--</div>
                         <div class="prediction-label">topics pending</div>
-                        <div class="prediction-date" id="predSpeed">Learning...</div>
+                        <div class="prediction-date" id="predSpeed">--</div>
+                    </div>
+                    <div class="prediction-card">
+                        <div class="prediction-number" id="predExamDays">--</div>
+                        <div class="prediction-label">days until exam</div>
+                        <div class="prediction-date" id="predStatus">--</div>
                     </div>
                 </div>
 
                 <div class="speed-stats">
                     <div class="speed-item">
                         <div class="speed-value" id="speedTopics">0</div>
-                        <div class="speed-label">done</div>
+                        <div class="speed-label">completed</div>
                     </div>
                     <div class="speed-item">
                         <div class="speed-value" id="speedDays">0</div>
-                        <div class="speed-label">days</div>
+                        <div class="speed-label">study days</div>
                     </div>
                     <div class="speed-item">
                         <div class="speed-value" id="speedRate">0</div>
-                        <div class="speed-label">per day</div>
+                        <div class="speed-label">topics/day</div>
+                    </div>
+                    <div class="speed-item">
+                        <div class="speed-value" id="speedNeeded">0</div>
+                        <div class="speed-label">needed/day</div>
                     </div>
                 </div>
 
                 <div class="trend-indicator trend-stable" id="trendText">
-                    📊 Finish 2+ topics to see predictions
+                    📊 Start completing topics to see AI predictions
+                </div>
+
+                <!-- Completion vs Exam Date Comparison -->
+                <div class="completion-comparison" id="completionComparison" style="display: none;">
+                    <div class="comparison-item" id="courseFinishItem">
+                        <div class="comparison-label">Course Finishes</div>
+                        <div class="comparison-value" id="courseFinishDate">--</div>
+                    </div>
+                    <div class="comparison-item" id="examDateItem">
+                        <div class="comparison-label">Exam Date</div>
+                        <div class="comparison-value" id="examDateValue">--</div>
+                    </div>
                 </div>
 
                 <div class="subject-predictions" id="subjectPredictions" style="display: none;">
-                    <div class="sub-pred-title">📚 Subject-wise</div>
+                    <div class="sub-pred-title">📚 Subject-wise Progress</div>
                     <div id="subPredList"></div>
                 </div>
             </div>
 
             <!-- Start Message -->
             <div class="info-box" id="startMessage">
-                <strong>👋 Get Started:</strong> Add subjects → Add topics → Start reading → Finish → AI learns your speed!
+                <strong>👋 Get Started:</strong> 1. Set Exam Date → 2. Add Subjects → 3. Add Topics → 4. Start Studying → 5. AI will predict your completion!
             </div>
 
             <!-- ARS Dashboard -->
@@ -1152,14 +1346,17 @@
                     <button class="card-action" id="addSubjectBtn" onclick="addSubject()" disabled>+ Add Subject</button>
                 </div>
                 <div class="info-box">
-                    <strong>Flow:</strong> Add Subject → Add Topics → Click ⏵ Start → Click ✓ Finish → ARS Auto-scheduled!
+                    <strong>📖 Study Flow:</strong> Add Subject → Add Topics → Click ⏵ Start Reading → Click ✓ Finish → ARS Auto-schedules Revisions!
                 </div>
                 <div class="subject-list" id="subjectList">
-                    <div class="empty-ars">Login to add subjects!</div>
+                    <div class="empty-ars">Login with Google to start adding subjects!</div>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Sync Status Indicator -->
+    <div class="sync-status hidden" id="syncStatus">Syncing...</div>
 
     <script>
         // ==================== FIXED PASSWORD ====================
@@ -1168,7 +1365,7 @@
         let wrongAttempts = parseInt(localStorage.getItem("aa_wrongAttempts")) || 0;
         let lockoutUntil = parseInt(localStorage.getItem("aa_lockoutUntil")) || 0;
 
-        // Firebase
+        // Firebase Config
         const firebaseConfig = {
             apiKey: "AIzaSyAm1EZtdULG_Qay6T0sO0k8D8dBfXpVMW4",
             authDomain: "akashacademy-33513.firebaseapp.com",
@@ -1179,8 +1376,15 @@
         };
 
         let auth, db, user = null;
-        let data = { subjects: [], revisions: [], completions: [] };
+        let data = { 
+            subjects: [], 
+            revisions: [], 
+            completions: [],
+            examDate: null,
+            userId: null
+        };
         let modalCb = null;
+        let isSyncing = false;
 
         const ARS_INTERVALS = [1, 3, 7, 14, 30];
 
@@ -1282,20 +1486,18 @@
                 return;
             }
             
-            // Reset all data
+            // Reset all data but keep userId
+            const userId = data.userId;
             data = {
                 subjects: [],
                 revisions: [],
                 completions: [],
+                examDate: null,
+                userId: userId,
                 lastUpdate: Date.now()
             };
             
-            // Save to local & cloud
-            saveLocal();
-            if (user && db) {
-                db.collection('users').doc(user.uid).set({ data }).catch(() => {});
-            }
-            
+            saveData();
             closeResetModal();
             updateUI();
             showToast('🎉 Dashboard Reset! Start fresh!', 'success');
@@ -1305,8 +1507,44 @@
             if (e.key === 'Enter') confirmReset();
         });
 
+        // ==================== 📅 EXAM DATE SYSTEM ====================
+        function openExamDateModal() {
+            const currentDate = data.examDate ? data.examDate : '';
+            document.getElementById('examDateInput').value = currentDate;
+            document.getElementById('examDateModal').classList.add('active');
+        }
+
+        function closeExamDateModal() {
+            document.getElementById('examDateModal').classList.remove('active');
+        }
+
+        function saveExamDate() {
+            const dateInput = document.getElementById('examDateInput').value;
+            
+            if (!dateInput) {
+                showToast('❌ Please select a date!', 'error');
+                return;
+            }
+            
+            const selectedDate = new Date(dateInput);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            
+            if (selectedDate < today) {
+                showToast('❌ Exam date cannot be in the past!', 'error');
+                return;
+            }
+            
+            data.examDate = dateInput;
+            saveData();
+            closeExamDateModal();
+            updateUI();
+            showToast('📅 Exam date saved! AI predictions updated!', 'success');
+        }
+
         // ==================== APP INIT ====================
         function initApp() {
+            // Try to load from local first for immediate display
             loadLocal();
             updateUI();
 
@@ -1318,57 +1556,149 @@
                 auth.onAuthStateChanged(u => {
                     user = u;
                     if (u) {
+                        // User is logged in
                         document.getElementById('loginBtn').classList.add('hidden');
                         document.getElementById('userProfile').classList.remove('hidden');
                         document.getElementById('userName').textContent = u.displayName?.split(' ')[0] || 'User';
                         document.getElementById('userAvatar').src = u.photoURL || '';
                         document.getElementById('welcomeText').textContent = `Hi ${u.displayName?.split(' ')[0] || 'there'}! 👋`;
                         document.getElementById('addSubjectBtn').disabled = false;
+                        
+                        // IMPORTANT: Set userId in data
+                        data.userId = u.uid;
+                        
+                        // Load from cloud (this will merge or overwrite local based on timestamp)
                         loadCloud(u.uid);
                     } else {
+                        // User is logged out
                         document.getElementById('loginBtn').classList.remove('hidden');
                         document.getElementById('userProfile').classList.add('hidden');
                         document.getElementById('addSubjectBtn').disabled = true;
+                        document.getElementById('welcomeText').textContent = 'Welcome! 👋';
+                        
+                        // Clear sensitive data
+                        data.userId = null;
                     }
                     updateUI();
                 });
-            } catch(e) { console.log('Firebase error:', e); }
+            } catch(e) { 
+                console.log('Firebase error:', e);
+                showToast('⚠️ Connection issue. Using offline mode.', 'error');
+            }
         }
 
         function login() {
             const provider = new firebase.auth.GoogleAuthProvider();
-            auth.signInWithPopup(provider).catch(() => showToast('Login failed!', 'error'));
+            auth.signInWithPopup(provider).catch(err => {
+                console.error('Login error:', err);
+                showToast('❌ Login failed! Check popup blocker.', 'error');
+            });
         }
 
-        function logout() { auth.signOut(); }
+        function logout() { 
+            auth.signOut().then(() => {
+                showToast('👋 Logged out successfully!', 'success');
+            }); 
+        }
 
         function loadLocal() {
-            const saved = localStorage.getItem('aa_data_v3');
-            if (saved) data = JSON.parse(saved);
+            const saved = localStorage.getItem('aa_data_v4');
+            if (saved) {
+                try {
+                    const parsed = JSON.parse(saved);
+                    // Merge with defaults to ensure new fields exist
+                    data = { ...data, ...parsed };
+                } catch(e) {
+                    console.error('Error parsing local data:', e);
+                }
+            }
         }
 
-        function saveLocal() { localStorage.setItem('aa_data_v3', JSON.stringify(data)); }
+        function saveLocal() { 
+            localStorage.setItem('aa_data_v4', JSON.stringify(data)); 
+        }
 
         async function loadCloud(uid) {
+            showSyncStatus('syncing');
             try {
                 const doc = await db.collection('users').doc(uid).get();
                 if (doc.exists && doc.data().data) {
                     const cloud = doc.data().data;
+                    
+                    // Check if cloud data is newer
                     if (!data.lastUpdate || cloud.lastUpdate > data.lastUpdate) {
                         data = cloud;
+                        // Ensure userId is set correctly
+                        data.userId = uid;
                         saveLocal();
                         updateUI();
-                        showToast('Synced!', 'success');
+                        showToast('☁️ Data synced from cloud!', 'success');
+                    } else if (data.lastUpdate > cloud.lastUpdate) {
+                        // Local is newer, push to cloud
+                        await saveCloud();
+                        showToast('📤 Local data uploaded!', 'success');
+                    } else {
+                        showToast('✅ Data up to date!', 'success');
                     }
-                } else { saveCloud(); }
-            } catch(e) { console.log('Cloud error:', e); }
+                } else {
+                    // No cloud data, save local to cloud
+                    data.userId = uid;
+                    await saveCloud();
+                }
+                showSyncStatus('synced');
+            } catch(e) { 
+                console.error('Cloud load error:', e);
+                showSyncStatus('error');
+                showToast('⚠️ Using offline data', 'error');
+            }
         }
 
-        function saveCloud() {
+        async function saveCloud() {
             if (!user || !db) return;
-            data.lastUpdate = Date.now();
-            db.collection('users').doc(user.uid).set({ data }).catch(() => {});
+            
+            showSyncStatus('syncing');
+            isSyncing = true;
+            
+            try {
+                data.lastUpdate = Date.now();
+                await db.collection('users').doc(user.uid).set({ data });
+                saveLocal();
+                showSyncStatus('synced');
+            } catch(e) { 
+                console.error('Cloud save error:', e);
+                showSyncStatus('error');
+                showToast('❌ Sync failed! Saved locally.', 'error');
+                saveLocal(); // Ensure local save even if cloud fails
+            } finally {
+                isSyncing = false;
+            }
+        }
+
+        // Debounced save function
+        let saveTimeout;
+        function saveData() {
             saveLocal();
+            if (saveTimeout) clearTimeout(saveTimeout);
+            saveTimeout = setTimeout(() => {
+                saveCloud();
+            }, 1000); // Wait 1 second after last change before syncing
+        }
+
+        function showSyncStatus(status) {
+            const el = document.getElementById('syncStatus');
+            el.classList.remove('hidden', 'syncing', 'synced', 'error');
+            
+            if (status === 'syncing') {
+                el.textContent = '🔄 Syncing...';
+                el.classList.add('syncing');
+            } else if (status === 'synced') {
+                el.textContent = '✅ Synced';
+                el.classList.add('synced');
+                setTimeout(() => el.classList.add('hidden'), 2000);
+            } else if (status === 'error') {
+                el.textContent = '❌ Sync Error';
+                el.classList.add('error');
+            }
         }
 
         // ==================== AI PREDICTION ====================
@@ -1393,12 +1723,47 @@
                 }
             }
             
+            // Calculate exam days and status
+            let examDays = null;
+            let examStatus = null;
+            let neededPerDay = 0;
+            
+            if (data.examDate) {
+                const exam = new Date(data.examDate);
+                const today = new Date();
+                examDays = Math.ceil((exam - today) / (1000 * 60 * 60 * 24));
+                
+                if (examDays < 0) examDays = 0;
+                
+                if (pendingTopics > 0 && examDays > 0) {
+                    neededPerDay = (pendingTopics / examDays).toFixed(2);
+                }
+                
+                // Determine status
+                if (pendingTopics === 0) {
+                    examStatus = 'complete';
+                } else if (daysNeeded > 0 && examDays > 0) {
+                    if (daysNeeded <= examDays) {
+                        examStatus = 'ontrack';
+                    } else {
+                        examStatus = 'behind';
+                    }
+                } else {
+                    examStatus = 'unknown';
+                }
+            }
+            
             const subjectPreds = data.subjects.map(s => {
                 const subTotal = s.topics.length;
                 const subDone = s.topics.filter(t => t.done).length;
                 const subPending = subTotal - subDone;
                 
-                if (subPending === 0) return { name: s.name, done: true, total: subTotal, doneCount: subDone };
+                if (subPending === 0) return { 
+                    name: s.name, 
+                    done: true, 
+                    total: subTotal, 
+                    doneCount: subDone 
+                };
                 
                 const subCompletions = completions.filter(c => c.subjectId === s.id);
                 const subDays = new Set(subCompletions.map(c => c.dateString)).size;
@@ -1406,39 +1771,70 @@
                 const subDaysNeeded = subSpeed > 0 ? Math.ceil(subPending / subSpeed) : 0;
                 const subCompletionDate = subDaysNeeded > 0 ? new Date(Date.now() + subDaysNeeded * 86400000) : null;
                 
+                // Determine if subject will finish before exam
+                let subStatus = 'normal';
+                if (data.examDate && subDaysNeeded > 0) {
+                    const exam = new Date(data.examDate);
+                    const finish = subCompletionDate;
+                    if (finish > exam) subStatus = 'danger';
+                    else if (subDaysNeeded > examDays * 0.8) subStatus = 'warning';
+                }
+                
                 return {
-                    name: s.name, total: subTotal, done: subDone, pending: subPending,
+                    name: s.name, 
+                    total: subTotal, 
+                    done: subDone, 
+                    pending: subPending,
                     percent: Math.round((subDone / subTotal) * 100),
-                    daysNeeded: subDaysNeeded, completionDate: subCompletionDate,
-                    speed: subSpeed.toFixed(2)
+                    daysNeeded: subDaysNeeded, 
+                    completionDate: subCompletionDate,
+                    speed: subSpeed.toFixed(2),
+                    status: subStatus
                 };
             });
             
             let trend = 'stable';
             if (completions.length >= 5) {
-                const recent = completions.slice(-3);
+                const recent = completions.slice(-5);
                 const recentDays = new Set(recent.map(c => c.dateString)).size;
                 const recentSpeed = recentDays > 0 ? recent.length / recentDays : 0;
                 if (recentSpeed > avgTopicsPerDay * 1.2) trend = 'up';
                 else if (recentSpeed < avgTopicsPerDay * 0.8) trend = 'down';
             }
             
-            return { totalTopics, doneTopics, pendingTopics, studyDays, 
-                     avgTopicsPerDay: avgTopicsPerDay.toFixed(2), daysNeeded, 
-                     completionDate, subjectPreds, trend };
+            return { 
+                totalTopics, 
+                doneTopics, 
+                pendingTopics, 
+                studyDays, 
+                avgTopicsPerDay: avgTopicsPerDay.toFixed(2), 
+                daysNeeded, 
+                completionDate, 
+                examDays,
+                examStatus,
+                neededPerDay,
+                subjectPreds, 
+                trend 
+            };
         }
 
         // ==================== ARS SYSTEM ====================
         function scheduleRevisions(subject, topic, finishDate) {
+            // Remove existing revisions for this topic
             data.revisions = data.revisions.filter(r => !(r.subject === subject && r.topic === topic));
+            
+            // Schedule new revisions
             ARS_INTERVALS.forEach((days, i) => {
                 const revDate = new Date(finishDate);
                 revDate.setDate(revDate.getDate() + days);
                 data.revisions.push({
                     id: Date.now() + Math.random() + i,
-                    subject, topic, revisionNumber: i + 1,
+                    subject, 
+                    topic, 
+                    revisionNumber: i + 1,
                     scheduledDate: revDate.toISOString().slice(0, 10),
-                    completed: false
+                    completed: false,
+                    createdAt: new Date().toISOString()
                 });
             });
         }
@@ -1450,8 +1846,10 @@
 
         function getUpcomingRevisions() {
             const today = new Date().toISOString().slice(0, 10);
-            const week = new Date(); week.setDate(week.getDate() + 7);
-            return data.revisions.filter(r => r.scheduledDate > today && r.scheduledDate <= week.toISOString().slice(0, 10) && !r.completed)
+            const week = new Date(); 
+            week.setDate(week.getDate() + 7);
+            return data.revisions
+                .filter(r => r.scheduledDate > today && r.scheduledDate <= week.toISOString().slice(0, 10) && !r.completed)
                 .sort((a, b) => new Date(a.scheduledDate) - new Date(b.scheduledDate));
         }
 
@@ -1459,9 +1857,10 @@
             const rev = data.revisions.find(r => r.id === revId);
             if (!rev) return;
             rev.completed = true;
-            saveCloud();
+            rev.completedAt = new Date().toISOString();
+            saveData();
             updateUI();
-            showToast(`✓ Rev #${rev.revisionNumber} done!`, 'success');
+            showToast(`✅ Revision #${rev.revisionNumber} completed!`, 'success');
         }
 
         // ==================== TOPIC MANAGEMENT ====================
@@ -1469,9 +1868,10 @@
             const s = data.subjects.find(x => x.id === sid);
             if (!s?.topics[idx]) return;
             s.topics[idx].status = 'reading';
-            saveCloud();
+            s.topics[idx].startedAt = new Date().toISOString();
+            saveData();
             updateUI();
-            showToast(`Started: ${s.topics[idx].title}`, 'info');
+            showToast(`📖 Started: ${s.topics[idx].title}`, 'info');
         }
 
         function finishTopic(sid, idx) {
@@ -1484,88 +1884,124 @@
             
             t.status = 'done';
             t.done = true;
+            t.finishedAt = date.toISOString();
             
             if (!data.completions) data.completions = [];
             data.completions.push({
-                topicId: `${sid}-${idx}`, subjectId: sid,
-                subjectName: s.name, topicName: t.title,
-                dateString: dateStr
+                topicId: `${sid}-${idx}`, 
+                subjectId: sid,
+                subjectName: s.name, 
+                topicName: t.title,
+                dateString: dateStr,
+                timestamp: date.toISOString()
             });
             
             scheduleRevisions(s.name, t.title, dateStr);
-            saveCloud();
+            saveData();
             updateUI();
-            showToast(`🎉 ${t.title} done!`, 'success');
+            showToast(`🎉 ${t.title} completed! Revision scheduled!`, 'success');
         }
 
         function resetTopic(sid, idx) {
-            if (!confirm('Reset topic?')) return;
+            if (!confirm('Reset this topic? It will also clear its revision history.')) return;
             const s = data.subjects.find(x => x.id === sid);
             if (!s?.topics[idx]) return;
             
             const t = s.topics[idx];
-            if (data.completions) data.completions = data.completions.filter(c => c.topicId !== `${sid}-${idx}`);
+            
+            // Remove completions
+            if (data.completions) {
+                data.completions = data.completions.filter(c => c.topicId !== `${sid}-${idx}`);
+            }
+            
+            // Remove revisions
             data.revisions = data.revisions.filter(r => !(r.subject === s.name && r.topic === t.title));
             
+            // Reset topic
             t.status = 'pending';
             t.done = false;
-            saveCloud();
+            delete t.startedAt;
+            delete t.finishedAt;
+            
+            saveData();
             updateUI();
-            showToast('Reset!', 'info');
+            showToast('🔄 Topic reset!', 'info');
         }
 
         // ==================== CRUD ====================
         function addSubject() {
             modalCb = name => {
-                data.subjects.push({ id: Date.now(), name, topics: [] });
-                saveCloud();
+                const newSubject = { 
+                    id: Date.now(), 
+                    name, 
+                    topics: [],
+                    createdAt: new Date().toISOString()
+                };
+                data.subjects.push(newSubject);
+                saveData();
                 updateUI();
-                showToast('Subject added!', 'success');
+                showToast('📚 Subject added!', 'success');
             };
-            openModal('Add Subject', 'Subject name...');
+            openModal('Add Subject', 'Subject name (e.g., Mathematics)...');
         }
 
         function addTopic(sid) {
             modalCb = title => {
                 const s = data.subjects.find(x => x.id === sid);
                 if (s) {
-                    s.topics.push({ title, done: false, status: 'pending' });
-                    saveCloud();
+                    s.topics.push({ 
+                        title, 
+                        done: false, 
+                        status: 'pending',
+                        createdAt: new Date().toISOString()
+                    });
+                    saveData();
                     updateUI();
-                    showToast('Topic added!', 'success');
+                    showToast('📝 Topic added!', 'success');
                 }
             };
-            openModal('Add Topic', 'Topic name...');
+            openModal('Add Topic', 'Topic name (e.g., Chapter 1 - Algebra)...');
         }
 
         function delSubject(sid) {
             const subject = data.subjects.find(s => s.id === sid);
             if (!subject) return;
             
-            if (!confirm(`🗑️ Delete "${subject.name}"?\n\nThis will remove all topics & revisions!`)) return;
+            if (!confirm(`🗑️ Delete "${subject.name}"?\n\nThis will remove all ${subject.topics.length} topics and their revision history!`)) return;
             
-            if (data.completions) data.completions = data.completions.filter(c => c.subjectId !== sid);
+            // Clean up completions and revisions
+            if (data.completions) {
+                data.completions = data.completions.filter(c => c.subjectId !== sid);
+            }
             data.revisions = data.revisions.filter(r => r.subject !== subject.name);
+            
+            // Remove subject
             data.subjects = data.subjects.filter(x => x.id !== sid);
             
-            saveCloud();
+            saveData();
             updateUI();
-            showToast(`"${subject.name}" deleted!`, 'success');
+            showToast(`🗑️ "${subject.name}" deleted!`, 'success');
         }
 
         function delTopic(sid, idx) {
-            if (!confirm('Delete topic?')) return;
+            if (!confirm('Delete this topic?')) return;
             const s = data.subjects.find(x => x.id === sid);
             if (!s) return;
             
             const t = s.topics[idx];
-            if (data.completions) data.completions = data.completions.filter(c => c.topicId !== `${sid}-${idx}`);
+            
+            // Clean up
+            if (data.completions) {
+                data.completions = data.completions.filter(c => c.topicId !== `${sid}-${idx}`);
+            }
             data.revisions = data.revisions.filter(r => !(r.subject === s.name && r.topic === t.title));
+            
+            // Remove topic
             s.topics.splice(idx, 1);
             
-            saveCloud();
+            saveData();
             updateUI();
-            showToast('Topic deleted!', 'success');
+            showToast('🗑️ Topic deleted!', 'success');
         }
 
         // ==================== UI UPDATE ====================
@@ -1578,6 +2014,9 @@
             const doneTopics = data.subjects.reduce((a, s) => a + s.topics.filter(t => t.done).length, 0);
             const readingTopics = data.subjects.reduce((a, s) => a + s.topics.filter(t => t.status === 'reading').length, 0);
             
+            // Update Exam Banner
+            updateExamBanner(pred);
+            
             // Stats
             document.getElementById('statSubjects').textContent = data.subjects.length;
             document.getElementById('statTotal').textContent = totalTopics;
@@ -1586,32 +2025,129 @@
             document.getElementById('statPending').textContent = totalTopics - doneTopics;
             document.getElementById('statTodayRev').textContent = todayRevs.length;
             
-            // Prediction
-            if (totalTopics > 0 && doneTopics >= 2) {
+            // Prediction Box
+            if (totalTopics > 0) {
                 document.getElementById('startMessage').style.display = 'none';
                 document.getElementById('predictionBox').style.display = 'block';
                 
                 if (pred) {
+                    // Days to finish
                     document.getElementById('predDays').textContent = pred.pendingTopics === 0 ? '✓' : (pred.daysNeeded || '--');
-                    document.getElementById('predDate').textContent = pred.pendingTopics === 0 ? 'Complete!' : 
-                        (pred.completionDate ? pred.completionDate.toLocaleDateString('en-IN', { month: 'short', day: 'numeric', year: 'numeric' }) : '--');
+                    document.getElementById('predDate').textContent = pred.pendingTopics === 0 ? 'Course Complete!' : 
+                        (pred.completionDate ? `By ${pred.completionDate.toLocaleDateString('en-IN', { month: 'short', day: 'numeric' })}` : 'Keep studying...');
+                    
+                    // Pending topics
                     document.getElementById('predPending').textContent = pred.pendingTopics;
-                    document.getElementById('predSpeed').textContent = `${pred.avgTopicsPerDay}/day`;
+                    document.getElementById('predSpeed').textContent = `${pred.avgTopicsPerDay}/day avg`;
+                    
+                    // Exam days
+                    if (pred.examDays !== null) {
+                        document.getElementById('predExamDays').textContent = pred.examDays;
+                        const statusEl = document.getElementById('predStatus');
+                        
+                        if (pred.examStatus === 'complete') {
+                            statusEl.textContent = '✅ Ready!';
+                            document.getElementById('predExamDays').className = 'prediction-number';
+                        } else if (pred.examStatus === 'ontrack') {
+                            statusEl.textContent = '🟢 On Track';
+                            document.getElementById('predExamDays').className = 'prediction-number';
+                        } else if (pred.examStatus === 'behind') {
+                            statusEl.textContent = '🔴 Behind!';
+                            document.getElementById('predExamDays').className = 'prediction-number danger';
+                        } else {
+                            statusEl.textContent = '⚪ Start studying';
+                        }
+                    } else {
+                        document.getElementById('predExamDays').textContent = '--';
+                        document.getElementById('predStatus').textContent = 'Set exam date';
+                    }
+                    
+                    // Speed stats
                     document.getElementById('speedTopics').textContent = pred.doneTopics;
                     document.getElementById('speedDays').textContent = pred.studyDays;
                     document.getElementById('speedRate').textContent = pred.avgTopicsPerDay;
+                    document.getElementById('speedNeeded').textContent = pred.neededPerDay || '--';
                     
+                    // Trend indicator
                     const trendEl = document.getElementById('trendText');
-                    trendEl.className = `trend-indicator trend-${pred.trend}`;
-                    trendEl.textContent = pred.trend === 'up' ? '📈 Getting faster!' : 
-                        pred.trend === 'down' ? '📉 Slowing down' : '📊 Steady pace';
+                    let trendText = '';
+                    let trendClass = '';
                     
+                    if (pred.pendingTopics === 0) {
+                        trendText = '🎉 Course Complete! All the best for exam!';
+                        trendClass = 'trend-up';
+                    } else if (pred.examStatus === 'behind') {
+                        trendText = `⚠️ ALERT: You need ${pred.neededPerDay} topics/day to finish before exam!`;
+                        trendClass = 'trend-warning';
+                    } else if (pred.trend === 'up') {
+                        trendText = '📈 Great! Your speed is improving!';
+                        trendClass = 'trend-up';
+                    } else if (pred.trend === 'down') {
+                        trendText = '📉 Speed decreasing. Try to be more consistent!';
+                        trendClass = 'trend-down';
+                    } else {
+                        trendText = '📊 Keep studying consistently to maintain pace!';
+                        trendClass = 'trend-stable';
+                    }
+                    
+                    trendEl.className = `trend-indicator ${trendClass}`;
+                    trendEl.textContent = trendText;
+                    
+                    // Completion comparison
+                    if (data.examDate && pred.completionDate) {
+                        document.getElementById('completionComparison').style.display = 'grid';
+                        document.getElementById('courseFinishDate').textContent = pred.completionDate.toLocaleDateString('en-IN', { 
+                            month: 'short', day: 'numeric', year: 'numeric'
+                        });
+                        document.getElementById('examDateValue').textContent = new Date(data.examDate).toLocaleDateString('en-IN', { 
+                            month: 'short', day: 'numeric', year: 'numeric'
+                        });
+                        
+                        const courseItem = document.getElementById('courseFinishItem');
+                        const examItem = document.getElementById('examDateItem');
+                        
+                        if (pred.examStatus === 'ontrack' || pred.examStatus === 'complete') {
+                            courseItem.className = 'comparison-item on-track';
+                            examItem.className = 'comparison-item on-track';
+                            document.getElementById('courseFinishDate').className = 'comparison-value success';
+                        } else {
+                            courseItem.className = 'comparison-item behind';
+                            examItem.className = 'comparison-item behind';
+                            document.getElementById('courseFinishDate').className = 'comparison-value danger';
+                        }
+                    } else {
+                        document.getElementById('completionComparison').style.display = 'none';
+                    }
+                    
+                    // Subject predictions
                     if (pred.subjectPreds?.length > 0) {
                         document.getElementById('subjectPredictions').style.display = 'block';
-                        document.getElementById('subPredList').innerHTML = pred.subjectPreds.map(sub => sub.done ? 
-                            `<div class="sub-pred-item done"><div class="sub-pred-header"><span class="sub-pred-name">✓ ${sub.name}</span><span style="color:var(--success)">Complete</span></div><div class="sub-pred-bar"><div class="sub-pred-fill" style="width:100%"></div></div></div>` :
-                            `<div class="sub-pred-item"><div class="sub-pred-header"><span class="sub-pred-name">${sub.name}</span><span class="sub-pred-date">${sub.daysNeeded}d</span></div><div class="sub-pred-bar"><div class="sub-pred-fill" style="width:${sub.percent}%"></div></div><div class="sub-pred-stats"><span>${sub.done}/${sub.total}</span><span>${sub.percent}%</span></div></div>`
-                        ).join('');
+                        document.getElementById('subPredList').innerHTML = pred.subjectPreds.map(sub => {
+                            if (sub.done) {
+                                return `<div class="sub-pred-item done">
+                                    <div class="sub-pred-header">
+                                        <span class="sub-pred-name">✅ ${sub.name}</span>
+                                        <span style="color:var(--success)">Complete</span>
+                                    </div>
+                                    <div class="sub-pred-bar"><div class="sub-pred-fill" style="width:100%"></div></div>
+                                </div>`;
+                            }
+                            
+                            const statusClass = sub.status === 'danger' ? 'danger' : sub.status === 'warning' ? 'warning' : '';
+                            const statusText = sub.status === 'danger' ? '⚠️ After Exam!' : sub.status === 'warning' ? '⏰ Close!' : `${sub.daysNeeded}d left`;
+                            
+                            return `<div class="sub-pred-item ${statusClass}">
+                                <div class="sub-pred-header">
+                                    <span class="sub-pred-name">${sub.name}</span>
+                                    <span class="sub-pred-date ${statusClass}">${statusText}</span>
+                                </div>
+                                <div class="sub-pred-bar"><div class="sub-pred-fill ${statusClass}" style="width:${sub.percent}%"></div></div>
+                                <div class="sub-pred-stats">
+                                    <span>${sub.done}/${sub.total} done</span>
+                                    <span>${sub.percent}%</span>
+                                </div>
+                            </div>`;
+                        }).join('');
                     }
                 }
             } else {
@@ -1622,122 +2158,23 @@
             // Today's Revisions
             document.getElementById('todayCount').textContent = todayRevs.length;
             document.getElementById('todayList').innerHTML = todayRevs.length ? todayRevs.map(r => 
-                `<div class="ars-item today"><div class="ars-info"><h4>${r.topic}</h4><p>${r.subject}</p></div><div class="ars-meta"><span class="rev-badge rev-${r.revisionNumber}">#${r.revisionNumber}</span><button class="ars-btn done" onclick="completeRevision(${r.id})">Done</button></div></div>`
-            ).join('') : '<div class="empty-ars">🎉 All done!</div>';
+                `<div class="ars-item today">
+                    <div class="ars-info">
+                        <h4>${r.topic}</h4>
+                        <p>${r.subject}</p>
+                    </div>
+                    <div class="ars-meta">
+                        <span class="rev-badge rev-${r.revisionNumber}">#${r.revisionNumber}</span>
+                        <button class="ars-btn done" onclick="completeRevision(${r.id})">Done</button>
+                    </div>
+                </div>`
+            ).join('') : '<div class="empty-ars">🎉 No revisions for today!</div>';
             
             // Upcoming
             document.getElementById('upcomingCount').textContent = upcomingRevs.length;
             document.getElementById('upcomingList').innerHTML = upcomingRevs.length ? upcomingRevs.slice(0, 10).map(r => {
                 const days = Math.ceil((new Date(r.scheduledDate) - new Date()) / 86400000);
-                return `<div class="ars-item ${days === 1 ? 'tomorrow' : 'future'}"><div class="ars-info"><h4>${r.topic}</h4><p>${r.subject} • ${days === 1 ? 'Tomorrow' : `${days}d`}</p></div><div class="ars-meta"><span class="rev-badge rev-${r.revisionNumber}">#${r.revisionNumber}</span></div></div>`;
-            }).join('') : '<div class="empty-ars">No upcoming</div>';
-            
-            // Subjects List
-            const sl = document.getElementById('subjectList');
-            sl.innerHTML = data.subjects.length ? data.subjects.map(s => {
-                const totalT = s.topics.length;
-                const doneT = s.topics.filter(t => t.done).length;
-                const pct = totalT ? Math.round(doneT/totalT*100) : 0;
-                const activeRevs = data.revisions.filter(r => r.subject === s.name && !r.completed).length;
-                
-                return `
-                    <div class="subject-item">
-                        <div class="subject-header" onclick="toggleSub(${s.id})">
-                            <div class="subject-info">
-                                <div class="subject-title">${s.name}</div>
-                                <div class="subject-stats">
-                                    ${doneT}/${totalT} • ${pct}%
-                                    ${activeRevs ? ` • <span style="color:var(--warning)">${activeRevs} revs</span>` : ''}
-                                </div>
-                            </div>
-                            <div class="subject-actions">
-                                <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
-                                ${user ? `
-                                    <button class="subject-btn add" onclick="event.stopPropagation(); addTopic(${s.id})">+ Topic</button>
-                                    <button class="subject-btn delete" onclick="event.stopPropagation(); delSubject(${s.id})">🗑️</button>
-                                ` : ''}
-                            </div>
-                        </div>
-                        <div class="topic-list" id="sub-${s.id}" style="display:none;">
-                            ${s.topics.length ? s.topics.map((t, i) => {
-                                const topicRevs = data.revisions.filter(r => r.topic === t.title && r.subject === s.name && !r.completed);
-                                const nextRev = topicRevs[0];
-                                let revInfo = '';
-                                if (nextRev) {
-                                    const days = Math.ceil((new Date(nextRev.scheduledDate) - new Date()) / 86400000);
-                                    revInfo = days === 0 ? '🔥 Today!' : days === 1 ? '⏰ Tomorrow' : `📅 ${days}d`;
-                                }
-                                
-                                return `
-                                    <div class="topic-item">
-                                        ${t.status === 'reading' ? 
-                                            '<div class="topic-status status-reading">📖</div>' :
-                                            t.done ? '<div class="topic-status status-done">✓</div>' :
-                                            `<div class="topic-status status-pending" onclick="startReading(${s.id},${i})">⏵</div>`
-                                        }
-                                        <div class="topic-name ${t.status === 'reading' ? 'reading' : ''} ${t.done ? 'done' : ''}">
-                                            ${t.title}
-                                            ${t.done && revInfo ? `<div class="topic-rev-info">${revInfo}</div>` : ''}
-                                        </div>
-                                        ${t.status === 'reading' ? '<span class="topic-badge badge-reading">Reading</span>' : 
-                                          t.done && topicRevs.length ? `<span class="topic-badge badge-ars">${revInfo}</span>` :
-                                          t.done ? '<span class="topic-badge badge-done">✓</span>' : ''}
-                                        <div class="topic-actions">
-                                            ${t.status === 'reading' ? `<button class="topic-btn btn-finish" onclick="finishTopic(${s.id},${i})">✓</button>` : ''}
-                                            ${!t.done && t.status !== 'reading' ? `<button class="topic-btn btn-start" onclick="startReading(${s.id},${i})">Start</button>` : ''}
-                                            ${t.done || t.status === 'reading' ? `<button class="topic-btn" style="background:var(--border)" onclick="resetTopic(${s.id},${i})">↺</button>` : ''}
-                                            ${user ? `<button class="topic-btn" style="background:var(--danger)" onclick="delTopic(${s.id},${i})">×</button>` : ''}
-                                        </div>
-                                    </div>
-                                `;
-                            }).join('') : '<div class="empty-ars">No topics. Add some!</div>'}
-                        </div>
-                    </div>
-                `;
-            }).join('') : '<div class="empty-ars">Login to add subjects!</div>';
-        }
-
-        function toggleSub(id) {
-            const el = document.getElementById('sub-' + id);
-            el.style.display = el.style.display === 'none' ? 'flex' : 'none';
-        }
-
-        // Modal
-        function openModal(title, ph) {
-            document.getElementById('modalTitle').textContent = title;
-            document.getElementById('modalInput').placeholder = ph;
-            document.getElementById('modalInput').value = '';
-            document.getElementById('modal').classList.add('active');
-            document.getElementById('modalInput').focus();
-        }
-
-        function closeModal() {
-            document.getElementById('modal').classList.remove('active');
-            modalCb = null;
-        }
-
-        function modalSubmit() {
-            const val = document.getElementById('modalInput').value.trim();
-            if (val && modalCb) { modalCb(val); closeModal(); }
-        }
-
-        document.addEventListener('keydown', e => {
-            if (e.key === 'Escape') { closeModal(); closeResetModal(); }
-            if (e.key === 'Enter' && document.getElementById('modal').classList.contains('active')) modalSubmit();
-        });
-
-        window.addEventListener('load', () => {
-            if (lockoutUntil > Date.now()) startLockoutTimer();
-        });
-
-        function showToast(msg, type = 'success') {
-            const t = document.createElement('div');
-            t.className = 'toast';
-            t.style.borderLeftColor = type === 'error' ? 'var(--danger)' : type === 'info' ? 'var(--warning)' : 'var(--success)';
-            t.textContent = msg;
-            document.body.appendChild(t);
-            setTimeout(() => t.remove(), 3000);
-        }
-    </script>
-</body>
-</html>
+                return `<div class="ars-item ${days === 1 ? 'tomorrow' : 'future'}">
+                    <div class="ars-info">
+                        <h4>${r.topic}</h4>
+                        <p>${r.subject} • ${days === 1 ? 'Tomorrow' : `in ${days}
