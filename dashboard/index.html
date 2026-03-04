@@ -80,6 +80,7 @@
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .lock-content p {
@@ -191,6 +192,7 @@
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .logo-icon {
@@ -202,7 +204,7 @@
             align-items: center;
             justify-content: center;
             font-size: 1.3rem;
-            -webkit-text-fill-color: white;
+            color: white;
         }
 
         .header-actions {
@@ -346,12 +348,15 @@
             background: linear-gradient(135deg, var(--danger), var(--warning));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            background-clip: text;
             margin: 0.5rem 0;
         }
 
         .exam-banner.set .exam-countdown {
             background: linear-gradient(135deg, var(--success), var(--info));
             -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .exam-date-text {
@@ -414,629 +419,13 @@
             font-size: 0.75rem;
         }
 
-        /* AI Prediction Box */
-        .prediction-box {
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.12), rgba(139, 92, 246, 0.12));
-            border: 2px solid var(--primary);
-            border-radius: 16px;
-            padding: 1.25rem;
-            margin-bottom: 1.25rem;
-        }
-
-        .prediction-header {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: var(--primary);
-            margin-bottom: 1rem;
-        }
-
-        .prediction-main {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 1rem;
-            margin-bottom: 1rem;
-        }
-
-        @media (max-width: 768px) {
-            .prediction-main { grid-template-columns: 1fr; }
-        }
-
-        .prediction-card {
-            background: var(--dark);
-            border-radius: 12px;
-            padding: 1rem;
-            text-align: center;
-        }
-
-        .prediction-number {
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--success);
-        }
-
-        .prediction-number.warning {
-            color: var(--warning);
-        }
-
-        .prediction-number.danger {
-            color: var(--danger);
-        }
-
-        .prediction-label {
-            color: var(--text-muted);
-            font-size: 0.8rem;
-        }
-
-        .prediction-date {
-            font-size: 0.9rem;
-            color: var(--primary);
-            font-weight: 600;
-            margin-top: 0.2rem;
-        }
-
-        .speed-stats {
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-            padding-top: 0.75rem;
-            border-top: 1px solid var(--border);
-            flex-wrap: wrap;
-        }
-
-        .speed-item { text-align: center; }
-        .speed-value { font-size: 1.3rem; font-weight: 700; color: var(--warning); }
-        .speed-label { font-size: 0.7rem; color: var(--text-muted); }
-
-        .trend-indicator {
-            text-align: center;
-            margin-top: 0.75rem;
-            padding: 0.8rem;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            font-weight: 600;
-        }
-
-        .trend-up { background: rgba(16, 185, 129, 0.1); color: var(--success); }
-        .trend-down { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
-        .trend-stable { background: rgba(59, 130, 246, 0.1); color: var(--info); }
-        .trend-warning { background: rgba(245, 158, 11, 0.1); color: var(--warning); }
-
-        .completion-comparison {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-            margin-top: 1rem;
-            padding-top: 1rem;
-            border-top: 1px solid var(--border);
-        }
-
-        .comparison-item {
-            background: var(--dark);
-            border-radius: 10px;
-            padding: 0.875rem;
-            text-align: center;
-        }
-
-        .comparison-item.on-track {
-            border: 2px solid var(--success);
-        }
-
-        .comparison-item.behind {
-            border: 2px solid var(--danger);
-        }
-
-        .comparison-label {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            margin-bottom: 0.25rem;
-        }
-
-        .comparison-value {
-            font-size: 1.2rem;
-            font-weight: 700;
-        }
-
-        .comparison-value.success { color: var(--success); }
-        .comparison-value.danger { color: var(--danger); }
-
-        /* Subject Predictions */
-        .subject-predictions { margin-top: 1rem; }
-        .sub-pred-title { font-size: 0.95rem; font-weight: 600; margin-bottom: 0.6rem; }
-
-        .sub-pred-item {
-            background: var(--dark);
-            border-radius: 10px;
-            padding: 0.875rem;
-            margin-bottom: 0.6rem;
-            border-left: 3px solid var(--primary);
-        }
-
-        .sub-pred-item.done { border-left-color: var(--success); opacity: 0.7; }
-        .sub-pred-item.warning { border-left-color: var(--warning); }
-        .sub-pred-item.danger { border-left-color: var(--danger); }
-
-        .sub-pred-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 0.4rem;
-            flex-wrap: wrap;
-            gap: 0.4rem;
-        }
-
-        .sub-pred-name { font-weight: 600; font-size: 0.9rem; }
-        .sub-pred-date { color: var(--success); font-weight: 600; font-size: 0.8rem; }
-        .sub-pred-date.warning { color: var(--warning); }
-        .sub-pred-date.danger { color: var(--danger); }
-
-        .sub-pred-bar {
-            height: 5px;
-            background: var(--border);
-            border-radius: 3px;
-            overflow: hidden;
-            margin-bottom: 0.4rem;
-        }
-
-        .sub-pred-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-            border-radius: 3px;
-        }
-
-        .sub-pred-fill.warning {
-            background: linear-gradient(90deg, var(--warning), var(--danger));
-        }
-
-        .sub-pred-stats {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.7rem;
-            color: var(--text-muted);
-        }
-
-        /* ARS Dashboard */
-        .ars-dashboard {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-            margin-bottom: 1.25rem;
-        }
-
-        @media (max-width: 800px) {
-            .ars-dashboard { grid-template-columns: 1fr; }
-        }
-
-        .ars-section {
-            background: var(--card);
-            border: 2px solid var(--border);
-            border-radius: 14px;
-            padding: 1rem;
-        }
-
-        .ars-section.today {
-            border-color: var(--danger);
-            background: linear-gradient(135deg, rgba(239, 68, 68, 0.06), rgba(245, 158, 11, 0.06));
-        }
-
-        .ars-section.upcoming {
-            border-color: var(--info);
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.06), rgba(99, 102, 241, 0.06));
-        }
-
-        .ars-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 0.75rem;
-        }
-
-        .ars-title {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 1rem;
-            font-weight: 700;
-        }
-
-        .ars-section.today .ars-title { color: var(--danger); }
-        .ars-section.upcoming .ars-title { color: var(--info); }
-
-        .ars-count {
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 700;
-        }
-
-        .ars-section.today .ars-count { background: var(--danger); color: white; }
-        .ars-section.upcoming .ars-count { background: var(--info); color: white; }
-
-        .ars-list {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-            max-height: 250px;
-            overflow-y: auto;
-        }
-
-        .ars-item {
-            background: var(--dark);
-            border-radius: 10px;
-            padding: 0.75rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-left: 4px solid;
-            gap: 0.6rem;
-        }
-
-        .ars-item.today { border-left-color: var(--danger); }
-        .ars-item.tomorrow { border-left-color: var(--warning); }
-        .ars-item.future { border-left-color: var(--info); }
-
-        .ars-info { flex: 1; min-width: 0; }
-        .ars-info h4 { font-size: 0.9rem; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .ars-info p { font-size: 0.75rem; color: var(--text-muted); }
-
-        .ars-meta { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
-
-        .rev-badge {
-            padding: 2px 7px;
-            border-radius: 8px;
-            font-size: 0.65rem;
-            font-weight: 700;
-        }
-
-        .rev-1 { background: #ef4444; color: white; }
-        .rev-2 { background: #f97316; color: white; }
-        .rev-3 { background: #f59e0b; color: black; }
-        .rev-4 { background: #84cc16; color: black; }
-        .rev-5 { background: #10b981; color: white; }
-
-        .ars-btn {
-            padding: 5px 10px;
-            border-radius: 6px;
-            border: none;
-            font-weight: 600;
-            cursor: pointer;
-            font-size: 0.75rem;
-        }
-
-        .ars-btn.done { background: var(--success); color: white; }
-
-        .empty-ars {
-            text-align: center;
-            padding: 1.25rem;
-            color: var(--text-muted);
-            font-size: 0.85rem;
-        }
-
-        /* Card */
-        .card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            padding: 1rem;
-            margin-bottom: 1rem;
-        }
-
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 0.75rem;
-            flex-wrap: wrap;
-            gap: 0.6rem;
-        }
-
-        .card-title { font-size: 1rem; font-weight: 600; }
-
-        .card-action {
-            background: rgba(99, 102, 241, 0.1);
-            color: var(--primary);
-            border: 1px solid var(--primary);
-            padding: 5px 12px;
-            border-radius: 8px;
-            font-size: 0.75rem;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .card-action:hover { background: var(--primary); color: white; }
-
-        .info-box {
-            background: rgba(59, 130, 246, 0.08);
-            border: 1px solid var(--info);
-            border-radius: 10px;
-            padding: 0.75rem;
-            margin-bottom: 0.75rem;
-            font-size: 0.8rem;
-            color: var(--text-muted);
-        }
-
-        /* Subject List */
-        .subject-list {
-            display: flex;
-            flex-direction: column;
-            gap: 0.6rem;
-        }
-
-        .subject-item {
-            background: var(--dark);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            overflow: hidden;
-        }
-
-        .subject-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0.875rem;
-            cursor: pointer;
-            background: rgba(99, 102, 241, 0.04);
-            transition: all 0.3s;
-            gap: 0.75rem;
-        }
-
-        .subject-header:hover { background: rgba(99, 102, 241, 0.08); }
-
-        .subject-info { flex: 1; min-width: 0; }
-        .subject-title { font-weight: 600; font-size: 0.95rem; margin-bottom: 3px; }
-        .subject-stats { font-size: 0.75rem; color: var(--text-muted); }
-
-        .subject-actions {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            flex-shrink: 0;
-            flex-wrap: wrap;
-        }
-
-        .progress-bar {
-            width: 50px;
-            height: 6px;
-            background: var(--border);
-            border-radius: 3px;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-            border-radius: 3px;
-        }
-
-        .subject-btn {
-            padding: 5px 10px;
-            border-radius: 6px;
-            border: none;
-            font-size: 0.7rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .subject-btn.add { background: rgba(99, 102, 241, 0.2); color: var(--primary); }
-        .subject-btn.add:hover { background: var(--primary); color: white; }
-        .subject-btn.delete { background: rgba(239, 68, 68, 0.2); color: var(--danger); }
-        .subject-btn.delete:hover { background: var(--danger); color: white; }
-
-        /* Topic List */
-        .topic-list {
-            padding: 0 0.875rem 0.875rem;
-            display: flex;
-            flex-direction: column;
-            gap: 0.4rem;
-        }
-
-        .topic-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 0.65rem;
-            background: var(--card);
-            border-radius: 8px;
-            font-size: 0.85rem;
-            border: 1px solid transparent;
-            transition: all 0.3s;
-        }
-
-        .topic-item:hover { border-color: var(--primary); }
-
-        .topic-status {
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.75rem;
-            flex-shrink: 0;
-            cursor: pointer;
-        }
-
-        .status-pending { background: var(--border); color: var(--text-muted); }
-        .status-pending:hover { background: var(--warning); color: white; }
-        .status-reading { background: var(--warning); color: white; animation: pulse 2s infinite; }
-        .status-done { background: var(--success); color: white; }
-
-        .topic-name { flex: 1; min-width: 0; }
-        .topic-name.reading { color: var(--warning); font-weight: 600; }
-        .topic-name.done { text-decoration: line-through; opacity: 0.6; color: var(--success); }
-
-        .topic-rev-info { font-size: 0.65rem; color: var(--text-muted); margin-top: 2px; }
-
-        .topic-actions { display: flex; gap: 5px; flex-shrink: 0; }
-
-        .topic-btn {
-            padding: 4px 8px;
-            border-radius: 5px;
-            border: none;
-            font-size: 0.65rem;
-            font-weight: 600;
-            cursor: pointer;
-        }
-
-        .btn-start { background: var(--primary); color: white; }
-        .btn-finish { background: var(--success); color: white; }
-
-        .topic-badge {
-            font-size: 0.6rem;
-            padding: 2px 6px;
-            border-radius: 8px;
-            font-weight: 600;
-            flex-shrink: 0;
-        }
-
-        .badge-reading { background: rgba(245, 158, 11, 0.2); color: var(--warning); }
-        .badge-ars { background: linear-gradient(135deg, var(--warning), var(--danger)); color: white; }
-        .badge-done { background: rgba(16, 185, 129, 0.2); color: var(--success); }
-
-        /* Modal */
-        .modal-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.85);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.2s;
-        }
-
-        .modal-overlay.active {
-            opacity: 1;
-            pointer-events: all;
-        }
-
-        .modal {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 1.5rem;
-            width: 90%;
-            max-width: 400px;
-        }
-
-        .modal-title {
-            font-size: 1.2rem;
-            margin-bottom: 0.75rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .modal-desc {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            margin-bottom: 1rem;
-            line-height: 1.5;
-        }
-
-        .modal-input {
-            width: 100%;
-            background: var(--dark);
-            border: 2px solid var(--border);
-            color: white;
-            padding: 0.75rem;
-            border-radius: 10px;
-            font-size: 1rem;
-            transition: all 0.3s;
-        }
-
-        .modal-input:focus {
-            outline: none;
-            border-color: var(--primary);
-        }
-
-        .modal-input.password {
-            text-align: center;
-            letter-spacing: 10px;
-            font-size: 1.3rem;
-        }
-
-        .modal-actions {
-            display: flex;
-            gap: 0.75rem;
-            justify-content: flex-end;
-            margin-top: 1rem;
-        }
-
-        .btn {
-            padding: 10px 18px;
-            border-radius: 10px;
-            border: none;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 0.9rem;
-            transition: all 0.3s;
-        }
-
-        .btn-secondary { background: var(--border); color: white; }
-        .btn-primary { background: var(--primary); color: white; }
-        .btn-danger { background: var(--danger); color: white; }
-        .btn-success { background: var(--success); color: white; }
-
-        .btn:hover { transform: translateY(-2px); }
-
-        .modal-warning {
-            background: rgba(239, 68, 68, 0.1);
-            border: 1px solid var(--danger);
-            border-radius: 10px;
-            padding: 1rem;
-            margin-bottom: 1rem;
-        }
-
-        .modal-warning h4 {
-            color: var(--danger);
-            margin-bottom: 0.5rem;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .modal-warning ul {
-            color: var(--text-muted);
-            font-size: 0.85rem;
-            padding-left: 1.25rem;
-        }
-
-        .modal-warning li {
-            margin-bottom: 0.25rem;
-        }
-
-        /* Sync Status */
-        .sync-status {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            padding: 10px 16px;
-            border-radius: 50px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            z-index: 100;
-            transition: all 0.3s;
-        }
-
-        .sync-status.syncing {
-            background: rgba(59, 130, 246, 0.9);
-            color: white;
-        }
-
-        .sync-status.synced {
-            background: rgba(16, 185, 129, 0.9);
-            color: white;
-        }
-
-        .sync-status.error {
-            background: rgba(239, 68, 68, 0.9);
-            color: white;
+        .hidden { display: none !important; }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            50% { transform: translateX(10px); }
+            75% { transform: translateX(-10px); }
         }
 
         /* Toast */
@@ -1059,27 +448,6 @@
             from { transform: translateX(400px); opacity: 0; }
             to { transform: translateX(0); opacity: 1; }
         }
-
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-10px); }
-            50% { transform: translateX(10px); }
-            75% { transform: translateX(-10px); }
-        }
-
-        .hidden { display: none !important; }
-
-        /* Responsive */
-        @media (max-width: 500px) {
-            .header-content { gap: 0.75rem; }
-            .logo { font-size: 1.1rem; }
-            .logo-icon { width: 30px; height: 30px; font-size: 1.1rem; }
-            .header-btn { padding: 6px 10px; font-size: 0.75rem; }
-            .container { padding: 1rem; }
-            .stat-card { padding: 0.75rem; }
-            .stat-value { font-size: 1.3rem; }
-            .exam-countdown { font-size: 2rem; }
-        }
     </style>
 </head>
 <body>
@@ -1097,71 +465,12 @@
             </button>
             <div class="lock-error" id="lockError"></div>
             <div class="lockout-timer" id="lockoutTimer" style="display: none;"></div>
-            <div class="lock-footer">⚠️ Password cannot be changed</div>
-        </div>
-    </div>
-
-    <!-- Add/Edit Modal -->
-    <div class="modal-overlay" id="modal">
-        <div class="modal">
-            <h3 class="modal-title" id="modalTitle">Add</h3>
-            <input type="text" class="modal-input" id="modalInput" placeholder="Enter...">
-            <div class="modal-actions">
-                <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
-                <button class="btn btn-primary" onclick="modalSubmit()">Add</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- 🔄 RESET CONFIRMATION MODAL -->
-    <div class="modal-overlay" id="resetModal">
-        <div class="modal">
-            <h3 class="modal-title">🔄 Reset Dashboard</h3>
-            
-            <div class="modal-warning">
-                <h4>⚠️ Warning: This will delete:</h4>
-                <ul>
-                    <li>All subjects</li>
-                    <li>All topics</li>
-                    <li>All revision schedules</li>
-                    <li>All completion history</li>
-                    <li>Exam date settings</li>
-                </ul>
-            </div>
-            
-            <p class="modal-desc">
-                Enter password to confirm reset and start fresh for a new exam preparation.
-            </p>
-            
-            <input type="password" class="modal-input password" id="resetPassword" maxlength="6" placeholder="••••••" inputmode="numeric">
-            
-            <div class="modal-actions">
-                <button class="btn btn-secondary" onclick="closeResetModal()">Cancel</button>
-                <button class="btn btn-danger" onclick="confirmReset()">🗑️ Reset Everything</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- 📅 EXAM DATE MODAL -->
-    <div class="modal-overlay" id="examDateModal">
-        <div class="modal">
-            <h3 class="modal-title">📅 Set Exam Date</h3>
-            
-            <p class="modal-desc">
-                Select your exam date. The AI will calculate how many days you have left and predict if you can finish the course on time.
-            </p>
-            
-            <input type="date" class="modal-input" id="examDateInput" style="text-align: center;">
-            
-            <div class="modal-actions">
-                <button class="btn btn-secondary" onclick="closeExamDateModal()">Cancel</button>
-                <button class="btn btn-success" onclick="saveExamDate()">💾 Save Date</button>
-            </div>
+            <div class="lock-footer">⚠️ Password: 193434</div>
         </div>
     </div>
 
     <!-- Main App -->
-    <div id="mainApp" style="display: none;">
+    <div id="mainApp" class="hidden">
         <header>
             <div class="header-content">
                 <div class="logo">
@@ -1170,48 +479,20 @@
                 </div>
                 
                 <div class="header-actions">
-                    <!-- 📅 EXAM DATE BUTTON -->
-                    <button class="header-btn exam-date-btn" onclick="openExamDateModal()">
-                        <span>📅</span>
-                        <span id="examDateBtnText">Set Exam</span>
-                    </button>
-                    
-                    <!-- 🔄 RESET BUTTON -->
-                    <button class="header-btn reset-btn" onclick="openResetModal()">
-                        <span>🔄</span>
-                        <span>Reset</span>
-                    </button>
-                    
                     <button class="header-btn lock-app-btn" onclick="lockApp()">
                         <span>🔒</span>
                         <span>Lock</span>
                     </button>
-                    
-                    <button class="login-btn" id="loginBtn" onclick="login()">☁️ Login</button>
-                    
-                    <div class="user-profile hidden" id="userProfile">
-                        <img src="" class="user-avatar" id="userAvatar">
-                        <span id="userName" style="font-size: 0.85rem;">User</span>
-                        <button class="logout-btn" onclick="logout()">Logout</button>
-                    </div>
                 </div>
             </div>
         </header>
 
         <div class="container">
             <div class="welcome">
-                <h1 id="welcomeText">Welcome! 👋</h1>
-                <p>Smart Study Dashboard with AI Predictions & ARS Revision</p>
+                <h1>Welcome! 👋</h1>
+                <p>Smart Study Dashboard</p>
             </div>
 
-            <!-- 📅 EXAM COUNTDOWN BANNER -->
-            <div class="exam-banner" id="examBanner">
-                <h3>⚠️ Exam Date Not Set</h3>
-                <div class="exam-countdown">--</div>
-                <div class="exam-date-text">Click "Set Exam" button above to add your exam date</div>
-            </div>
-
-            <!-- Stats -->
             <div class="stats-grid">
                 <div class="stat-card">
                     <div class="stat-icon purple">📚</div>
@@ -1219,144 +500,13 @@
                     <div class="stat-label">Subjects</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-icon orange">📖</div>
-                    <div class="stat-value" id="statTotal">0</div>
-                    <div class="stat-label">Total Topics</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon blue">📖</div>
-                    <div class="stat-value" id="statReading">0</div>
-                    <div class="stat-label">Reading</div>
-                </div>
-                <div class="stat-card">
                     <div class="stat-icon green">✅</div>
                     <div class="stat-value" id="statDone">0</div>
                     <div class="stat-label">Completed</div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-icon red">⏳</div>
-                    <div class="stat-value" id="statPending">0</div>
-                    <div class="stat-label">Pending</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon orange">🔄</div>
-                    <div class="stat-value" id="statTodayRev">0</div>
-                    <div class="stat-label">Today's Rev</div>
-                </div>
-            </div>
-
-            <!-- AI Prediction -->
-            <div class="prediction-box" id="predictionBox" style="display: none;">
-                <div class="prediction-header">
-                    <span>🤖</span>
-                    <span>AI Smart Predictor</span>
-                </div>
-                
-                <div class="prediction-main">
-                    <div class="prediction-card">
-                        <div class="prediction-number" id="predDays">--</div>
-                        <div class="prediction-label">days to finish course</div>
-                        <div class="prediction-date" id="predDate">--</div>
-                    </div>
-                    <div class="prediction-card">
-                        <div class="prediction-number" id="predPending">--</div>
-                        <div class="prediction-label">topics pending</div>
-                        <div class="prediction-date" id="predSpeed">--</div>
-                    </div>
-                    <div class="prediction-card">
-                        <div class="prediction-number" id="predExamDays">--</div>
-                        <div class="prediction-label">days until exam</div>
-                        <div class="prediction-date" id="predStatus">--</div>
-                    </div>
-                </div>
-
-                <div class="speed-stats">
-                    <div class="speed-item">
-                        <div class="speed-value" id="speedTopics">0</div>
-                        <div class="speed-label">completed</div>
-                    </div>
-                    <div class="speed-item">
-                        <div class="speed-value" id="speedDays">0</div>
-                        <div class="speed-label">study days</div>
-                    </div>
-                    <div class="speed-item">
-                        <div class="speed-value" id="speedRate">0</div>
-                        <div class="speed-label">topics/day</div>
-                    </div>
-                    <div class="speed-item">
-                        <div class="speed-value" id="speedNeeded">0</div>
-                        <div class="speed-label">needed/day</div>
-                    </div>
-                </div>
-
-                <div class="trend-indicator trend-stable" id="trendText">
-                    📊 Start completing topics to see AI predictions
-                </div>
-
-                <!-- Completion vs Exam Date Comparison -->
-                <div class="completion-comparison" id="completionComparison" style="display: none;">
-                    <div class="comparison-item" id="courseFinishItem">
-                        <div class="comparison-label">Course Finishes</div>
-                        <div class="comparison-value" id="courseFinishDate">--</div>
-                    </div>
-                    <div class="comparison-item" id="examDateItem">
-                        <div class="comparison-label">Exam Date</div>
-                        <div class="comparison-value" id="examDateValue">--</div>
-                    </div>
-                </div>
-
-                <div class="subject-predictions" id="subjectPredictions" style="display: none;">
-                    <div class="sub-pred-title">📚 Subject-wise Progress</div>
-                    <div id="subPredList"></div>
-                </div>
-            </div>
-
-            <!-- Start Message -->
-            <div class="info-box" id="startMessage">
-                <strong>👋 Get Started:</strong> 1. Set Exam Date → 2. Add Subjects → 3. Add Topics → 4. Start Studying → 5. AI will predict your completion!
-            </div>
-
-            <!-- ARS Dashboard -->
-            <div class="ars-dashboard">
-                <div class="ars-section today">
-                    <div class="ars-header">
-                        <div class="ars-title">🔥 Today's Revisions</div>
-                        <span class="ars-count" id="todayCount">0</span>
-                    </div>
-                    <div class="ars-list" id="todayList">
-                        <div class="empty-ars">🎉 No revisions today!</div>
-                    </div>
-                </div>
-
-                <div class="ars-section upcoming">
-                    <div class="ars-header">
-                        <div class="ars-title">📅 Upcoming (7 days)</div>
-                        <span class="ars-count" id="upcomingCount">0</span>
-                    </div>
-                    <div class="ars-list" id="upcomingList">
-                        <div class="empty-ars">No upcoming revisions</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Subjects -->
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-title">📚 Subjects & Topics</div>
-                    <button class="card-action" id="addSubjectBtn" onclick="addSubject()" disabled>+ Add Subject</button>
-                </div>
-                <div class="info-box">
-                    <strong>📖 Study Flow:</strong> Add Subject → Add Topics → Click ⏵ Start Reading → Click ✓ Finish → ARS Auto-schedules Revisions!
-                </div>
-                <div class="subject-list" id="subjectList">
-                    <div class="empty-ars">Login with Google to start adding subjects!</div>
-                </div>
             </div>
         </div>
     </div>
-
-    <!-- Sync Status Indicator -->
-    <div class="sync-status hidden" id="syncStatus">Syncing...</div>
 
     <script>
         // ==================== FIXED PASSWORD ====================
@@ -1365,32 +515,11 @@
         let wrongAttempts = parseInt(localStorage.getItem("aa_wrongAttempts")) || 0;
         let lockoutUntil = parseInt(localStorage.getItem("aa_lockoutUntil")) || 0;
 
-        // Firebase Config
-        const firebaseConfig = {
-            apiKey: "AIzaSyAm1EZtdULG_Qay6T0sO0k8D8dBfXpVMW4",
-            authDomain: "akashacademy-33513.firebaseapp.com",
-            projectId: "akashacademy-33513",
-            storageBucket: "akashacademy-33513.appspot.com",
-            messagingSenderId: "169097190637",
-            appId: "1:169097190637:web:e8523bc099374a6955c0e4"
-        };
-
-        let auth, db, user = null;
-        let data = { 
-            subjects: [], 
-            revisions: [], 
-            completions: [],
-            examDate: null,
-            userId: null
-        };
-        let modalCb = null;
-        let isSyncing = false;
-
-        const ARS_INTERVALS = [1, 3, 7, 14, 30];
-
         // ==================== LOCK SYSTEM ====================
         function unlockApp() {
             const now = Date.now();
+            
+            // Check if locked out
             if (lockoutUntil > now) {
                 showLockError(`🔒 Wait ${Math.ceil((lockoutUntil - now) / 1000)}s`);
                 return;
@@ -1399,24 +528,35 @@
             const password = document.getElementById('lockPassword').value;
             
             if (password === MASTER_PASSWORD) {
+                // ✅ CORRECT PASSWORD
                 wrongAttempts = 0;
                 localStorage.setItem("aa_wrongAttempts", "0");
+                
+                // Hide lock screen
                 document.getElementById('lockScreen').style.display = 'none';
-                document.getElementById('mainApp').style.display = 'block';
+                
+                // Show main app
+                document.getElementById('mainApp').classList.remove('hidden');
+                
+                // Clear password
                 document.getElementById('lockPassword').value = '';
                 document.getElementById('lockError').style.display = 'none';
-                initApp();
+                
+                showToast('✅ Unlocked Successfully!', 'success');
             } else {
+                // ❌ WRONG PASSWORD
                 wrongAttempts++;
                 localStorage.setItem("aa_wrongAttempts", wrongAttempts.toString());
                 document.getElementById('lockPassword').value = '';
-                showLockError(`❌ Wrong! ${wrongAttempts}/5`);
+                showLockError(`❌ Wrong! Attempt ${wrongAttempts}/5`);
                 
+                // Shake animation
                 document.getElementById('lockPassword').style.animation = 'shake 0.5s';
                 setTimeout(() => document.getElementById('lockPassword').style.animation = '', 500);
                 
+                // Lock after 5 wrong attempts
                 if (wrongAttempts >= 5) {
-                    lockoutUntil = Date.now() + 60000;
+                    lockoutUntil = Date.now() + 60000; // 60 seconds
                     localStorage.setItem("aa_lockoutUntil", lockoutUntil.toString());
                     wrongAttempts = 0;
                     localStorage.setItem("aa_wrongAttempts", "0");
@@ -1449,732 +589,42 @@
                     inputEl.disabled = false;
                     btnEl.disabled = false;
                 } else {
-                    timerEl.textContent = `🔒 ${Math.ceil((lockoutUntil - now) / 1000)}s`;
+                    timerEl.textContent = `🔒 Locked for ${Math.ceil((lockoutUntil - now) / 1000)}s`;
                 }
             }, 1000);
         }
 
         function lockApp() {
-            document.getElementById('mainApp').style.display = 'none';
+            document.getElementById('mainApp').classList.add('hidden');
             document.getElementById('lockScreen').style.display = 'flex';
             document.getElementById('lockPassword').value = '';
             document.getElementById('lockError').style.display = 'none';
         }
 
+        // Enter key support
         document.getElementById('lockPassword').addEventListener('keypress', e => {
             if (e.key === 'Enter') unlockApp();
         });
 
-        // ==================== 🔄 RESET DASHBOARD SYSTEM ====================
-        function openResetModal() {
-            document.getElementById('resetPassword').value = '';
-            document.getElementById('resetModal').classList.add('active');
-        }
-
-        function closeResetModal() {
-            document.getElementById('resetModal').classList.remove('active');
-        }
-
-        function confirmReset() {
-            const password = document.getElementById('resetPassword').value;
+        // Toast notification
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = message;
+            toast.style.borderLeftColor = type === 'success' ? '#10b981' : '#ef4444';
+            document.body.appendChild(toast);
             
-            if (password !== MASTER_PASSWORD) {
-                showToast('❌ Wrong Password!', 'error');
-                document.getElementById('resetPassword').value = '';
-                document.getElementById('resetPassword').style.animation = 'shake 0.5s';
-                setTimeout(() => document.getElementById('resetPassword').style.animation = '', 500);
-                return;
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        // Check if should show lockout timer on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            const now = Date.now();
+            if (lockoutUntil > now) {
+                startLockoutTimer();
             }
-            
-            // Reset all data but keep userId
-            const userId = data.userId;
-            data = {
-                subjects: [],
-                revisions: [],
-                completions: [],
-                examDate: null,
-                userId: userId,
-                lastUpdate: Date.now()
-            };
-            
-            saveData();
-            closeResetModal();
-            updateUI();
-            showToast('🎉 Dashboard Reset! Start fresh!', 'success');
-        }
-
-        document.getElementById('resetPassword').addEventListener('keypress', e => {
-            if (e.key === 'Enter') confirmReset();
         });
+    </script>
 
-        // ==================== 📅 EXAM DATE SYSTEM ====================
-        function openExamDateModal() {
-            const currentDate = data.examDate ? data.examDate : '';
-            document.getElementById('examDateInput').value = currentDate;
-            document.getElementById('examDateModal').classList.add('active');
-        }
-
-        function closeExamDateModal() {
-            document.getElementById('examDateModal').classList.remove('active');
-        }
-
-        function saveExamDate() {
-            const dateInput = document.getElementById('examDateInput').value;
-            
-            if (!dateInput) {
-                showToast('❌ Please select a date!', 'error');
-                return;
-            }
-            
-            const selectedDate = new Date(dateInput);
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-            
-            if (selectedDate < today) {
-                showToast('❌ Exam date cannot be in the past!', 'error');
-                return;
-            }
-            
-            data.examDate = dateInput;
-            saveData();
-            closeExamDateModal();
-            updateUI();
-            showToast('📅 Exam date saved! AI predictions updated!', 'success');
-        }
-
-        // ==================== APP INIT ====================
-        function initApp() {
-            // Try to load from local first for immediate display
-            loadLocal();
-            updateUI();
-
-            try {
-                firebase.initializeApp(firebaseConfig);
-                auth = firebase.auth();
-                db = firebase.firestore();
-                
-                auth.onAuthStateChanged(u => {
-                    user = u;
-                    if (u) {
-                        // User is logged in
-                        document.getElementById('loginBtn').classList.add('hidden');
-                        document.getElementById('userProfile').classList.remove('hidden');
-                        document.getElementById('userName').textContent = u.displayName?.split(' ')[0] || 'User';
-                        document.getElementById('userAvatar').src = u.photoURL || '';
-                        document.getElementById('welcomeText').textContent = `Hi ${u.displayName?.split(' ')[0] || 'there'}! 👋`;
-                        document.getElementById('addSubjectBtn').disabled = false;
-                        
-                        // IMPORTANT: Set userId in data
-                        data.userId = u.uid;
-                        
-                        // Load from cloud (this will merge or overwrite local based on timestamp)
-                        loadCloud(u.uid);
-                    } else {
-                        // User is logged out
-                        document.getElementById('loginBtn').classList.remove('hidden');
-                        document.getElementById('userProfile').classList.add('hidden');
-                        document.getElementById('addSubjectBtn').disabled = true;
-                        document.getElementById('welcomeText').textContent = 'Welcome! 👋';
-                        
-                        // Clear sensitive data
-                        data.userId = null;
-                    }
-                    updateUI();
-                });
-            } catch(e) { 
-                console.log('Firebase error:', e);
-                showToast('⚠️ Connection issue. Using offline mode.', 'error');
-            }
-        }
-
-        function login() {
-            const provider = new firebase.auth.GoogleAuthProvider();
-            auth.signInWithPopup(provider).catch(err => {
-                console.error('Login error:', err);
-                showToast('❌ Login failed! Check popup blocker.', 'error');
-            });
-        }
-
-        function logout() { 
-            auth.signOut().then(() => {
-                showToast('👋 Logged out successfully!', 'success');
-            }); 
-        }
-
-        function loadLocal() {
-            const saved = localStorage.getItem('aa_data_v4');
-            if (saved) {
-                try {
-                    const parsed = JSON.parse(saved);
-                    // Merge with defaults to ensure new fields exist
-                    data = { ...data, ...parsed };
-                } catch(e) {
-                    console.error('Error parsing local data:', e);
-                }
-            }
-        }
-
-        function saveLocal() { 
-            localStorage.setItem('aa_data_v4', JSON.stringify(data)); 
-        }
-
-        async function loadCloud(uid) {
-            showSyncStatus('syncing');
-            try {
-                const doc = await db.collection('users').doc(uid).get();
-                if (doc.exists && doc.data().data) {
-                    const cloud = doc.data().data;
-                    
-                    // Check if cloud data is newer
-                    if (!data.lastUpdate || cloud.lastUpdate > data.lastUpdate) {
-                        data = cloud;
-                        // Ensure userId is set correctly
-                        data.userId = uid;
-                        saveLocal();
-                        updateUI();
-                        showToast('☁️ Data synced from cloud!', 'success');
-                    } else if (data.lastUpdate > cloud.lastUpdate) {
-                        // Local is newer, push to cloud
-                        await saveCloud();
-                        showToast('📤 Local data uploaded!', 'success');
-                    } else {
-                        showToast('✅ Data up to date!', 'success');
-                    }
-                } else {
-                    // No cloud data, save local to cloud
-                    data.userId = uid;
-                    await saveCloud();
-                }
-                showSyncStatus('synced');
-            } catch(e) { 
-                console.error('Cloud load error:', e);
-                showSyncStatus('error');
-                showToast('⚠️ Using offline data', 'error');
-            }
-        }
-
-        async function saveCloud() {
-            if (!user || !db) return;
-            
-            showSyncStatus('syncing');
-            isSyncing = true;
-            
-            try {
-                data.lastUpdate = Date.now();
-                await db.collection('users').doc(user.uid).set({ data });
-                saveLocal();
-                showSyncStatus('synced');
-            } catch(e) { 
-                console.error('Cloud save error:', e);
-                showSyncStatus('error');
-                showToast('❌ Sync failed! Saved locally.', 'error');
-                saveLocal(); // Ensure local save even if cloud fails
-            } finally {
-                isSyncing = false;
-            }
-        }
-
-        // Debounced save function
-        let saveTimeout;
-        function saveData() {
-            saveLocal();
-            if (saveTimeout) clearTimeout(saveTimeout);
-            saveTimeout = setTimeout(() => {
-                saveCloud();
-            }, 1000); // Wait 1 second after last change before syncing
-        }
-
-        function showSyncStatus(status) {
-            const el = document.getElementById('syncStatus');
-            el.classList.remove('hidden', 'syncing', 'synced', 'error');
-            
-            if (status === 'syncing') {
-                el.textContent = '🔄 Syncing...';
-                el.classList.add('syncing');
-            } else if (status === 'synced') {
-                el.textContent = '✅ Synced';
-                el.classList.add('synced');
-                setTimeout(() => el.classList.add('hidden'), 2000);
-            } else if (status === 'error') {
-                el.textContent = '❌ Sync Error';
-                el.classList.add('error');
-            }
-        }
-
-        // ==================== AI PREDICTION ====================
-        function calculatePrediction() {
-            const totalTopics = data.subjects.reduce((a, s) => a + s.topics.length, 0);
-            const doneTopics = data.subjects.reduce((a, s) => a + s.topics.filter(t => t.done).length, 0);
-            const pendingTopics = totalTopics - doneTopics;
-            
-            if (totalTopics === 0) return null;
-            
-            const completions = data.completions || [];
-            const studyDays = new Set(completions.map(c => c.dateString)).size;
-            
-            let avgTopicsPerDay = 0, daysNeeded = 0, completionDate = null;
-            
-            if (studyDays > 0 && doneTopics > 0) {
-                avgTopicsPerDay = doneTopics / studyDays;
-                if (avgTopicsPerDay > 0 && pendingTopics > 0) {
-                    daysNeeded = Math.ceil(pendingTopics / avgTopicsPerDay);
-                    completionDate = new Date();
-                    completionDate.setDate(completionDate.getDate() + daysNeeded);
-                }
-            }
-            
-            // Calculate exam days and status
-            let examDays = null;
-            let examStatus = null;
-            let neededPerDay = 0;
-            
-            if (data.examDate) {
-                const exam = new Date(data.examDate);
-                const today = new Date();
-                examDays = Math.ceil((exam - today) / (1000 * 60 * 60 * 24));
-                
-                if (examDays < 0) examDays = 0;
-                
-                if (pendingTopics > 0 && examDays > 0) {
-                    neededPerDay = (pendingTopics / examDays).toFixed(2);
-                }
-                
-                // Determine status
-                if (pendingTopics === 0) {
-                    examStatus = 'complete';
-                } else if (daysNeeded > 0 && examDays > 0) {
-                    if (daysNeeded <= examDays) {
-                        examStatus = 'ontrack';
-                    } else {
-                        examStatus = 'behind';
-                    }
-                } else {
-                    examStatus = 'unknown';
-                }
-            }
-            
-            const subjectPreds = data.subjects.map(s => {
-                const subTotal = s.topics.length;
-                const subDone = s.topics.filter(t => t.done).length;
-                const subPending = subTotal - subDone;
-                
-                if (subPending === 0) return { 
-                    name: s.name, 
-                    done: true, 
-                    total: subTotal, 
-                    doneCount: subDone 
-                };
-                
-                const subCompletions = completions.filter(c => c.subjectId === s.id);
-                const subDays = new Set(subCompletions.map(c => c.dateString)).size;
-                const subSpeed = subDays > 0 ? subDone / subDays : avgTopicsPerDay;
-                const subDaysNeeded = subSpeed > 0 ? Math.ceil(subPending / subSpeed) : 0;
-                const subCompletionDate = subDaysNeeded > 0 ? new Date(Date.now() + subDaysNeeded * 86400000) : null;
-                
-                // Determine if subject will finish before exam
-                let subStatus = 'normal';
-                if (data.examDate && subDaysNeeded > 0) {
-                    const exam = new Date(data.examDate);
-                    const finish = subCompletionDate;
-                    if (finish > exam) subStatus = 'danger';
-                    else if (subDaysNeeded > examDays * 0.8) subStatus = 'warning';
-                }
-                
-                return {
-                    name: s.name, 
-                    total: subTotal, 
-                    done: subDone, 
-                    pending: subPending,
-                    percent: Math.round((subDone / subTotal) * 100),
-                    daysNeeded: subDaysNeeded, 
-                    completionDate: subCompletionDate,
-                    speed: subSpeed.toFixed(2),
-                    status: subStatus
-                };
-            });
-            
-            let trend = 'stable';
-            if (completions.length >= 5) {
-                const recent = completions.slice(-5);
-                const recentDays = new Set(recent.map(c => c.dateString)).size;
-                const recentSpeed = recentDays > 0 ? recent.length / recentDays : 0;
-                if (recentSpeed > avgTopicsPerDay * 1.2) trend = 'up';
-                else if (recentSpeed < avgTopicsPerDay * 0.8) trend = 'down';
-            }
-            
-            return { 
-                totalTopics, 
-                doneTopics, 
-                pendingTopics, 
-                studyDays, 
-                avgTopicsPerDay: avgTopicsPerDay.toFixed(2), 
-                daysNeeded, 
-                completionDate, 
-                examDays,
-                examStatus,
-                neededPerDay,
-                subjectPreds, 
-                trend 
-            };
-        }
-
-        // ==================== ARS SYSTEM ====================
-        function scheduleRevisions(subject, topic, finishDate) {
-            // Remove existing revisions for this topic
-            data.revisions = data.revisions.filter(r => !(r.subject === subject && r.topic === topic));
-            
-            // Schedule new revisions
-            ARS_INTERVALS.forEach((days, i) => {
-                const revDate = new Date(finishDate);
-                revDate.setDate(revDate.getDate() + days);
-                data.revisions.push({
-                    id: Date.now() + Math.random() + i,
-                    subject, 
-                    topic, 
-                    revisionNumber: i + 1,
-                    scheduledDate: revDate.toISOString().slice(0, 10),
-                    completed: false,
-                    createdAt: new Date().toISOString()
-                });
-            });
-        }
-
-        function getTodayRevisions() {
-            const today = new Date().toISOString().slice(0, 10);
-            return data.revisions.filter(r => r.scheduledDate === today && !r.completed);
-        }
-
-        function getUpcomingRevisions() {
-            const today = new Date().toISOString().slice(0, 10);
-            const week = new Date(); 
-            week.setDate(week.getDate() + 7);
-            return data.revisions
-                .filter(r => r.scheduledDate > today && r.scheduledDate <= week.toISOString().slice(0, 10) && !r.completed)
-                .sort((a, b) => new Date(a.scheduledDate) - new Date(b.scheduledDate));
-        }
-
-        function completeRevision(revId) {
-            const rev = data.revisions.find(r => r.id === revId);
-            if (!rev) return;
-            rev.completed = true;
-            rev.completedAt = new Date().toISOString();
-            saveData();
-            updateUI();
-            showToast(`✅ Revision #${rev.revisionNumber} completed!`, 'success');
-        }
-
-        // ==================== TOPIC MANAGEMENT ====================
-        function startReading(sid, idx) {
-            const s = data.subjects.find(x => x.id === sid);
-            if (!s?.topics[idx]) return;
-            s.topics[idx].status = 'reading';
-            s.topics[idx].startedAt = new Date().toISOString();
-            saveData();
-            updateUI();
-            showToast(`📖 Started: ${s.topics[idx].title}`, 'info');
-        }
-
-        function finishTopic(sid, idx) {
-            const s = data.subjects.find(x => x.id === sid);
-            if (!s?.topics[idx]) return;
-            
-            const t = s.topics[idx];
-            const date = new Date();
-            const dateStr = date.toISOString().slice(0, 10);
-            
-            t.status = 'done';
-            t.done = true;
-            t.finishedAt = date.toISOString();
-            
-            if (!data.completions) data.completions = [];
-            data.completions.push({
-                topicId: `${sid}-${idx}`, 
-                subjectId: sid,
-                subjectName: s.name, 
-                topicName: t.title,
-                dateString: dateStr,
-                timestamp: date.toISOString()
-            });
-            
-            scheduleRevisions(s.name, t.title, dateStr);
-            saveData();
-            updateUI();
-            showToast(`🎉 ${t.title} completed! Revision scheduled!`, 'success');
-        }
-
-        function resetTopic(sid, idx) {
-            if (!confirm('Reset this topic? It will also clear its revision history.')) return;
-            const s = data.subjects.find(x => x.id === sid);
-            if (!s?.topics[idx]) return;
-            
-            const t = s.topics[idx];
-            
-            // Remove completions
-            if (data.completions) {
-                data.completions = data.completions.filter(c => c.topicId !== `${sid}-${idx}`);
-            }
-            
-            // Remove revisions
-            data.revisions = data.revisions.filter(r => !(r.subject === s.name && r.topic === t.title));
-            
-            // Reset topic
-            t.status = 'pending';
-            t.done = false;
-            delete t.startedAt;
-            delete t.finishedAt;
-            
-            saveData();
-            updateUI();
-            showToast('🔄 Topic reset!', 'info');
-        }
-
-        // ==================== CRUD ====================
-        function addSubject() {
-            modalCb = name => {
-                const newSubject = { 
-                    id: Date.now(), 
-                    name, 
-                    topics: [],
-                    createdAt: new Date().toISOString()
-                };
-                data.subjects.push(newSubject);
-                saveData();
-                updateUI();
-                showToast('📚 Subject added!', 'success');
-            };
-            openModal('Add Subject', 'Subject name (e.g., Mathematics)...');
-        }
-
-        function addTopic(sid) {
-            modalCb = title => {
-                const s = data.subjects.find(x => x.id === sid);
-                if (s) {
-                    s.topics.push({ 
-                        title, 
-                        done: false, 
-                        status: 'pending',
-                        createdAt: new Date().toISOString()
-                    });
-                    saveData();
-                    updateUI();
-                    showToast('📝 Topic added!', 'success');
-                }
-            };
-            openModal('Add Topic', 'Topic name (e.g., Chapter 1 - Algebra)...');
-        }
-
-        function delSubject(sid) {
-            const subject = data.subjects.find(s => s.id === sid);
-            if (!subject) return;
-            
-            if (!confirm(`🗑️ Delete "${subject.name}"?\n\nThis will remove all ${subject.topics.length} topics and their revision history!`)) return;
-            
-            // Clean up completions and revisions
-            if (data.completions) {
-                data.completions = data.completions.filter(c => c.subjectId !== sid);
-            }
-            data.revisions = data.revisions.filter(r => r.subject !== subject.name);
-            
-            // Remove subject
-            data.subjects = data.subjects.filter(x => x.id !== sid);
-            
-            saveData();
-            updateUI();
-            showToast(`🗑️ "${subject.name}" deleted!`, 'success');
-        }
-
-        function delTopic(sid, idx) {
-            if (!confirm('Delete this topic?')) return;
-            const s = data.subjects.find(x => x.id === sid);
-            if (!s) return;
-            
-            const t = s.topics[idx];
-            
-            // Clean up
-            if (data.completions) {
-                data.completions = data.completions.filter(c => c.topicId !== `${sid}-${idx}`);
-            }
-            data.revisions = data.revisions.filter(r => !(r.subject === s.name && r.topic === t.title));
-            
-            // Remove topic
-            s.topics.splice(idx, 1);
-            
-            saveData();
-            updateUI();
-            showToast('🗑️ Topic deleted!', 'success');
-        }
-
-        // ==================== UI UPDATE ====================
-        function updateUI() {
-            const pred = calculatePrediction();
-            const todayRevs = getTodayRevisions();
-            const upcomingRevs = getUpcomingRevisions();
-            
-            const totalTopics = data.subjects.reduce((a, s) => a + s.topics.length, 0);
-            const doneTopics = data.subjects.reduce((a, s) => a + s.topics.filter(t => t.done).length, 0);
-            const readingTopics = data.subjects.reduce((a, s) => a + s.topics.filter(t => t.status === 'reading').length, 0);
-            
-            // Update Exam Banner
-            updateExamBanner(pred);
-            
-            // Stats
-            document.getElementById('statSubjects').textContent = data.subjects.length;
-            document.getElementById('statTotal').textContent = totalTopics;
-            document.getElementById('statReading').textContent = readingTopics;
-            document.getElementById('statDone').textContent = doneTopics;
-            document.getElementById('statPending').textContent = totalTopics - doneTopics;
-            document.getElementById('statTodayRev').textContent = todayRevs.length;
-            
-            // Prediction Box
-            if (totalTopics > 0) {
-                document.getElementById('startMessage').style.display = 'none';
-                document.getElementById('predictionBox').style.display = 'block';
-                
-                if (pred) {
-                    // Days to finish
-                    document.getElementById('predDays').textContent = pred.pendingTopics === 0 ? '✓' : (pred.daysNeeded || '--');
-                    document.getElementById('predDate').textContent = pred.pendingTopics === 0 ? 'Course Complete!' : 
-                        (pred.completionDate ? `By ${pred.completionDate.toLocaleDateString('en-IN', { month: 'short', day: 'numeric' })}` : 'Keep studying...');
-                    
-                    // Pending topics
-                    document.getElementById('predPending').textContent = pred.pendingTopics;
-                    document.getElementById('predSpeed').textContent = `${pred.avgTopicsPerDay}/day avg`;
-                    
-                    // Exam days
-                    if (pred.examDays !== null) {
-                        document.getElementById('predExamDays').textContent = pred.examDays;
-                        const statusEl = document.getElementById('predStatus');
-                        
-                        if (pred.examStatus === 'complete') {
-                            statusEl.textContent = '✅ Ready!';
-                            document.getElementById('predExamDays').className = 'prediction-number';
-                        } else if (pred.examStatus === 'ontrack') {
-                            statusEl.textContent = '🟢 On Track';
-                            document.getElementById('predExamDays').className = 'prediction-number';
-                        } else if (pred.examStatus === 'behind') {
-                            statusEl.textContent = '🔴 Behind!';
-                            document.getElementById('predExamDays').className = 'prediction-number danger';
-                        } else {
-                            statusEl.textContent = '⚪ Start studying';
-                        }
-                    } else {
-                        document.getElementById('predExamDays').textContent = '--';
-                        document.getElementById('predStatus').textContent = 'Set exam date';
-                    }
-                    
-                    // Speed stats
-                    document.getElementById('speedTopics').textContent = pred.doneTopics;
-                    document.getElementById('speedDays').textContent = pred.studyDays;
-                    document.getElementById('speedRate').textContent = pred.avgTopicsPerDay;
-                    document.getElementById('speedNeeded').textContent = pred.neededPerDay || '--';
-                    
-                    // Trend indicator
-                    const trendEl = document.getElementById('trendText');
-                    let trendText = '';
-                    let trendClass = '';
-                    
-                    if (pred.pendingTopics === 0) {
-                        trendText = '🎉 Course Complete! All the best for exam!';
-                        trendClass = 'trend-up';
-                    } else if (pred.examStatus === 'behind') {
-                        trendText = `⚠️ ALERT: You need ${pred.neededPerDay} topics/day to finish before exam!`;
-                        trendClass = 'trend-warning';
-                    } else if (pred.trend === 'up') {
-                        trendText = '📈 Great! Your speed is improving!';
-                        trendClass = 'trend-up';
-                    } else if (pred.trend === 'down') {
-                        trendText = '📉 Speed decreasing. Try to be more consistent!';
-                        trendClass = 'trend-down';
-                    } else {
-                        trendText = '📊 Keep studying consistently to maintain pace!';
-                        trendClass = 'trend-stable';
-                    }
-                    
-                    trendEl.className = `trend-indicator ${trendClass}`;
-                    trendEl.textContent = trendText;
-                    
-                    // Completion comparison
-                    if (data.examDate && pred.completionDate) {
-                        document.getElementById('completionComparison').style.display = 'grid';
-                        document.getElementById('courseFinishDate').textContent = pred.completionDate.toLocaleDateString('en-IN', { 
-                            month: 'short', day: 'numeric', year: 'numeric'
-                        });
-                        document.getElementById('examDateValue').textContent = new Date(data.examDate).toLocaleDateString('en-IN', { 
-                            month: 'short', day: 'numeric', year: 'numeric'
-                        });
-                        
-                        const courseItem = document.getElementById('courseFinishItem');
-                        const examItem = document.getElementById('examDateItem');
-                        
-                        if (pred.examStatus === 'ontrack' || pred.examStatus === 'complete') {
-                            courseItem.className = 'comparison-item on-track';
-                            examItem.className = 'comparison-item on-track';
-                            document.getElementById('courseFinishDate').className = 'comparison-value success';
-                        } else {
-                            courseItem.className = 'comparison-item behind';
-                            examItem.className = 'comparison-item behind';
-                            document.getElementById('courseFinishDate').className = 'comparison-value danger';
-                        }
-                    } else {
-                        document.getElementById('completionComparison').style.display = 'none';
-                    }
-                    
-                    // Subject predictions
-                    if (pred.subjectPreds?.length > 0) {
-                        document.getElementById('subjectPredictions').style.display = 'block';
-                        document.getElementById('subPredList').innerHTML = pred.subjectPreds.map(sub => {
-                            if (sub.done) {
-                                return `<div class="sub-pred-item done">
-                                    <div class="sub-pred-header">
-                                        <span class="sub-pred-name">✅ ${sub.name}</span>
-                                        <span style="color:var(--success)">Complete</span>
-                                    </div>
-                                    <div class="sub-pred-bar"><div class="sub-pred-fill" style="width:100%"></div></div>
-                                </div>`;
-                            }
-                            
-                            const statusClass = sub.status === 'danger' ? 'danger' : sub.status === 'warning' ? 'warning' : '';
-                            const statusText = sub.status === 'danger' ? '⚠️ After Exam!' : sub.status === 'warning' ? '⏰ Close!' : `${sub.daysNeeded}d left`;
-                            
-                            return `<div class="sub-pred-item ${statusClass}">
-                                <div class="sub-pred-header">
-                                    <span class="sub-pred-name">${sub.name}</span>
-                                    <span class="sub-pred-date ${statusClass}">${statusText}</span>
-                                </div>
-                                <div class="sub-pred-bar"><div class="sub-pred-fill ${statusClass}" style="width:${sub.percent}%"></div></div>
-                                <div class="sub-pred-stats">
-                                    <span>${sub.done}/${sub.total} done</span>
-                                    <span>${sub.percent}%</span>
-                                </div>
-                            </div>`;
-                        }).join('');
-                    }
-                }
-            } else {
-                document.getElementById('predictionBox').style.display = 'none';
-                document.getElementById('startMessage').style.display = 'block';
-            }
-            
-            // Today's Revisions
-            document.getElementById('todayCount').textContent = todayRevs.length;
-            document.getElementById('todayList').innerHTML = todayRevs.length ? todayRevs.map(r => 
-                `<div class="ars-item today">
-                    <div class="ars-info">
-                        <h4>${r.topic}</h4>
-                        <p>${r.subject}</p>
-                    </div>
-                    <div class="ars-meta">
-                        <span class="rev-badge rev-${r.revisionNumber}">#${r.revisionNumber}</span>
-                        <button class="ars-btn done" onclick="completeRevision(${r.id})">Done</button>
-                    </div>
-                </div>`
-            ).join('') : '<div class="empty-ars">🎉 No revisions for today!</div>';
-            
-            // Upcoming
-            document.getElementById('upcomingCount').textContent = upcomingRevs.length;
-            document.getElementById('upcomingList').innerHTML = upcomingRevs.length ? upcomingRevs.slice(0, 10).map(r => {
-                const days = Math.ceil((new Date(r.scheduledDate) - new Date()) / 86400000);
-                return `<div class="ars-item ${days === 1 ? 'tomorrow' : 'future'}">
-                    <div class="ars-info">
-                        <h4>${r.topic}</h4>
-                        <p>${r.subject} • ${days === 1 ? 'Tomorrow' : `in ${days}
+</body>
+</html>
