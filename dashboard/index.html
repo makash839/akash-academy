@@ -414,6 +414,7 @@
         .rev-3 { background: #f59e0b; color: black; }
         .rev-4 { background: #84cc16; color: black; }
         .rev-5 { background: #10b981; color: white; }
+        .rev-6, .rev-7, .rev-8, .rev-9, .rev-10 { background: #6366f1; color: white; }
 
         .ars-btn {
             padding: 5px 10px; border-radius: 6px; border: none;
@@ -731,7 +732,7 @@
         <div class="container">
             <div class="welcome">
                 <h1 id="welcomeText">Welcome! 👋</h1>
-                <p>AI Course Prediction + ARS Revision System</p>
+                <p>AI Course Prediction + Infinite ARS Revision System</p>
             </div>
 
             <!-- 📅 EXAM DATE BANNER -->
@@ -838,7 +839,8 @@
 
             <!-- Start Message -->
             <div class="info-box" id="startMessage">
-                <strong>👋 Get Started:</strong> Add subjects → Add topics → Start reading → Finish → AI learns your speed!
+                <strong>👋 Get Started:</strong> Add subjects → Add topics → Start reading → Finish → AI learns your speed!<br>
+                <strong>♾️ Infinite ARS:</strong> 1d → 3d → 7d → 14d → then every 14 days forever!
             </div>
 
             <!-- ARS Dashboard -->
@@ -870,7 +872,7 @@
                     <button class="card-action" id="addSubjectBtn" onclick="addSubject()" disabled>+ Add Subject</button>
                 </div>
                 <div class="info-box">
-                    <strong>Flow:</strong> Add Subject → Add Topics → Click ⏵ Start → Click ✓ Finish → ARS Auto-scheduled!
+                    <strong>Flow:</strong> Add Subject → Add Topics → Click ⏵ Start → Click ✓ Finish → Infinite ARS Auto-scheduled!
                 </div>
                 <div class="subject-list" id="subjectList">
                     <div class="empty-ars">Login to add subjects!</div>
@@ -882,6 +884,12 @@
     <script>
         // ==================== FIXED PASSWORD ====================
         const MASTER_PASSWORD = "193434";
+        
+        // ==================== ♾️ INFINITE ARS SYSTEM ====================
+        // First revisions at 1, 3, 7, 14 days, then every 14 days FOREVER
+        const ARS_INTERVALS_BASE = [1, 3, 7, 14];
+        const ARS_REPEAT_INTERVAL = 14; // Har 14 din baad infinite
+        const MAX_REVISIONS = 50; // Safety limit (2 years worth)
         
         let wrongAttempts = parseInt(localStorage.getItem("aa_wrongAttempts")) || 0;
         let lockoutUntil = parseInt(localStorage.getItem("aa_lockoutUntil")) || 0;
@@ -899,8 +907,6 @@
         let auth, db, user = null;
         let data = { subjects: [], revisions: [], completions: [], examDate: null, examName: '' };
         let modalCb = null;
-
-        const ARS_INTERVALS = [1, 3, 7, 14, 30];
 
         // ==================== LOCK SYSTEM ====================
         function unlockApp() {
@@ -1240,13 +1246,11 @@
                     var cloudHasData = cloud.subjects && cloud.subjects.length > 0;
 
                     if (cloudHasData && !localHasData) {
-                        // 🔥 FIX: New browser, no local data → use cloud
                         data = cloud;
                         saveLocal();
                         updateUI();
                         showToast('☁️ Data loaded from cloud!', 'success');
                     } else if (cloudHasData && localHasData) {
-                        // Both have data → use newer
                         var cloudTime = cloud.lastUpdate || 0;
                         var localTime = data.lastUpdate || 0;
                         if (cloudTime > localTime) {
@@ -1255,22 +1259,18 @@
                             updateUI();
                             showToast('☁️ Synced from cloud!', 'success');
                         } else if (localTime > cloudTime) {
-                            // Local is newer, push to cloud
                             saveCloud();
                             showToast('☁️ Cloud updated!', 'success');
                         } else {
                             showToast('☁️ Already synced!', 'success');
                         }
                     } else if (!cloudHasData && localHasData) {
-                        // Cloud empty, local has data → push to cloud
                         saveCloud();
                         showToast('☁️ Uploaded to cloud!', 'success');
                     } else {
-                        // Both empty
                         showToast('☁️ Connected!', 'success');
                     }
                 } else {
-                    // No cloud document exists
                     if (data.subjects && data.subjects.length > 0) {
                         saveCloud();
                         showToast('☁️ First upload done!', 'success');
@@ -1361,19 +1361,40 @@
             };
         }
 
-        // ==================== ARS SYSTEM ====================
+        // ==================== ♾️ INFINITE ARS SYSTEM ====================
         function scheduleRevisions(subject, topic, finishDate) {
-            data.revisions = data.revisions.filter(function(r) { return !(r.subject === subject && r.topic === topic); });
-            ARS_INTERVALS.forEach(function(days, i) {
+            // Remove old revisions for this topic
+            data.revisions = data.revisions.filter(function(r) { 
+                return !(r.subject === subject && r.topic === topic); 
+            });
+            
+            // Schedule infinite revisions
+            for (var i = 0; i < MAX_REVISIONS; i++) {
+                var totalDays;
+                
+                if (i < ARS_INTERVALS_BASE.length) {
+                    // First 4 revisions: 1, 3, 7, 14 days
+                    totalDays = ARS_INTERVALS_BASE[i];
+                } else {
+                    // After that: 14 + 14 + 14... (every 14 days)
+                    // Rev 5 = 14 + 14 = 28 days
+                    // Rev 6 = 14 + 14 + 14 = 42 days
+                    // And so on...
+                    totalDays = ARS_INTERVALS_BASE[ARS_INTERVALS_BASE.length - 1] + ((i - ARS_INTERVALS_BASE.length + 1) * ARS_REPEAT_INTERVAL);
+                }
+                
                 var revDate = new Date(finishDate);
-                revDate.setDate(revDate.getDate() + days);
+                revDate.setDate(revDate.getDate() + totalDays);
+                
                 data.revisions.push({
                     id: Date.now() + Math.random() + i,
-                    subject: subject, topic: topic, revisionNumber: i + 1,
+                    subject: subject, 
+                    topic: topic, 
+                    revisionNumber: i + 1,
                     scheduledDate: revDate.toISOString().slice(0, 10),
                     completed: false
                 });
-            });
+            }
         }
 
         function getTodayRevisions() {
@@ -1391,281 +1412,4 @@
         }
 
         function completeRevision(revId) {
-            var rev = data.revisions.find(function(r) { return r.id === revId; });
-            if (!rev) return;
-            rev.completed = true;
-            saveCloud();
-            updateUI();
-            showToast('✓ Rev #' + rev.revisionNumber + ' done!', 'success');
-        }
-
-        // ==================== TOPIC MANAGEMENT ====================
-        function startReading(sid, idx) {
-            var s = data.subjects.find(function(x) { return x.id === sid; });
-            if (!s || !s.topics[idx]) return;
-            s.topics[idx].status = 'reading';
-            saveCloud();
-            updateUI();
-            showToast('Started: ' + s.topics[idx].title, 'info');
-        }
-
-        function finishTopic(sid, idx) {
-            var s = data.subjects.find(function(x) { return x.id === sid; });
-            if (!s || !s.topics[idx]) return;
-
-            var t = s.topics[idx];
-            var date = new Date();
-            var dateStr = date.toISOString().slice(0, 10);
-
-            t.status = 'done';
-            t.done = true;
-
-            if (!data.completions) data.completions = [];
-            data.completions.push({
-                topicId: sid + '-' + idx, subjectId: sid,
-                subjectName: s.name, topicName: t.title,
-                dateString: dateStr
-            });
-
-            scheduleRevisions(s.name, t.title, dateStr);
-            saveCloud();
-            updateUI();
-            showToast('🎉 ' + t.title + ' done!', 'success');
-        }
-
-        function resetTopic(sid, idx) {
-            if (!confirm('Reset topic?')) return;
-            var s = data.subjects.find(function(x) { return x.id === sid; });
-            if (!s || !s.topics[idx]) return;
-
-            var t = s.topics[idx];
-            if (data.completions) data.completions = data.completions.filter(function(c) { return c.topicId !== (sid + '-' + idx); });
-            data.revisions = data.revisions.filter(function(r) { return !(r.subject === s.name && r.topic === t.title); });
-
-            t.status = 'pending';
-            t.done = false;
-            saveCloud();
-            updateUI();
-            showToast('Reset!', 'info');
-        }
-
-        // ==================== CRUD ====================
-        function addSubject() {
-            modalCb = function(name) {
-                data.subjects.push({ id: Date.now(), name: name, topics: [] });
-                saveCloud();
-                updateUI();
-                showToast('Subject added!', 'success');
-            };
-            openModal('Add Subject', 'Subject name...');
-        }
-
-        function addTopic(sid) {
-            modalCb = function(title) {
-                var s = data.subjects.find(function(x) { return x.id === sid; });
-                if (s) {
-                    s.topics.push({ title: title, done: false, status: 'pending' });
-                    saveCloud();
-                    updateUI();
-                    showToast('Topic added!', 'success');
-                }
-            };
-            openModal('Add Topic', 'Topic name...');
-        }
-
-        function delSubject(sid) {
-            var subject = data.subjects.find(function(s) { return s.id === sid; });
-            if (!subject) return;
-            if (!confirm('🗑️ Delete "' + subject.name + '"?\n\nThis will remove all topics & revisions!')) return;
-            if (data.completions) data.completions = data.completions.filter(function(c) { return c.subjectId !== sid; });
-            data.revisions = data.revisions.filter(function(r) { return r.subject !== subject.name; });
-            data.subjects = data.subjects.filter(function(x) { return x.id !== sid; });
-            saveCloud();
-            updateUI();
-            showToast('"' + subject.name + '" deleted!', 'success');
-        }
-
-        function delTopic(sid, idx) {
-            if (!confirm('Delete topic?')) return;
-            var s = data.subjects.find(function(x) { return x.id === sid; });
-            if (!s) return;
-            var t = s.topics[idx];
-            if (data.completions) data.completions = data.completions.filter(function(c) { return c.topicId !== (sid + '-' + idx); });
-            data.revisions = data.revisions.filter(function(r) { return !(r.subject === s.name && r.topic === t.title); });
-            s.topics.splice(idx, 1);
-            saveCloud();
-            updateUI();
-            showToast('Topic deleted!', 'success');
-        }
-
-        // ==================== UI UPDATE ====================
-        function updateUI() {
-            var pred = calculatePrediction();
-            var todayRevs = getTodayRevisions();
-            var upcomingRevs = getUpcomingRevisions();
-
-            var totalTopics = data.subjects.reduce(function(a, s) { return a + s.topics.length; }, 0);
-            var doneTopics = data.subjects.reduce(function(a, s) { return a + s.topics.filter(function(t) { return t.done; }).length; }, 0);
-            var readingTopics = data.subjects.reduce(function(a, s) { return a + s.topics.filter(function(t) { return t.status === 'reading'; }).length; }, 0);
-
-            // Stats
-            document.getElementById('statSubjects').textContent = data.subjects.length;
-            document.getElementById('statTotal').textContent = totalTopics;
-            document.getElementById('statReading').textContent = readingTopics;
-            document.getElementById('statDone').textContent = doneTopics;
-            document.getElementById('statPending').textContent = totalTopics - doneTopics;
-            document.getElementById('statTodayRev').textContent = todayRevs.length;
-
-            // Exam Banner
-            updateExamBanner(pred);
-
-            // Prediction
-            if (totalTopics > 0 && doneTopics >= 2) {
-                document.getElementById('startMessage').style.display = 'none';
-                document.getElementById('predictionBox').style.display = 'block';
-
-                if (pred) {
-                    document.getElementById('predDays').textContent = pred.pendingTopics === 0 ? '✓' : (pred.daysNeeded || '--');
-                    document.getElementById('predDate').textContent = pred.pendingTopics === 0 ? 'Complete!' :
-                        (pred.completionDate ? pred.completionDate.toLocaleDateString('en-IN', { month: 'short', day: 'numeric', year: 'numeric' }) : '--');
-                    document.getElementById('predPending').textContent = pred.pendingTopics;
-                    document.getElementById('predSpeed').textContent = pred.avgTopicsPerDay + '/day';
-                    document.getElementById('speedTopics').textContent = pred.doneTopics;
-                    document.getElementById('speedDays').textContent = pred.studyDays;
-                    document.getElementById('speedRate').textContent = pred.avgTopicsPerDay;
-
-                    var trendEl = document.getElementById('trendText');
-                    trendEl.className = 'trend-indicator trend-' + pred.trend;
-                    trendEl.textContent = pred.trend === 'up' ? '📈 Getting faster!' :
-                        pred.trend === 'down' ? '📉 Slowing down' : '📊 Steady pace';
-
-                    if (pred.subjectPreds && pred.subjectPreds.length > 0) {
-                        document.getElementById('subjectPredictions').style.display = 'block';
-                        document.getElementById('subPredList').innerHTML = pred.subjectPreds.map(function(sub) {
-                            if (sub.done) {
-                                return '<div class="sub-pred-item done"><div class="sub-pred-header"><span class="sub-pred-name">✓ ' + sub.name + '</span><span style="color:var(--success)">Complete</span></div><div class="sub-pred-bar"><div class="sub-pred-fill" style="width:100%"></div></div></div>';
-                            }
-                            return '<div class="sub-pred-item"><div class="sub-pred-header"><span class="sub-pred-name">' + sub.name + '</span><span class="sub-pred-date">' + sub.daysNeeded + 'd</span></div><div class="sub-pred-bar"><div class="sub-pred-fill" style="width:' + sub.percent + '%"></div></div><div class="sub-pred-stats"><span>' + sub.done + '/' + sub.total + '</span><span>' + sub.percent + '%</span></div></div>';
-                        }).join('');
-                    }
-                }
-            } else {
-                document.getElementById('predictionBox').style.display = 'none';
-                document.getElementById('startMessage').style.display = 'block';
-            }
-
-            // Today's Revisions
-            document.getElementById('todayCount').textContent = todayRevs.length;
-            document.getElementById('todayList').innerHTML = todayRevs.length ? todayRevs.map(function(r) {
-                return '<div class="ars-item today"><div class="ars-info"><h4>' + r.topic + '</h4><p>' + r.subject + '</p></div><div class="ars-meta"><span class="rev-badge rev-' + r.revisionNumber + '">#' + r.revisionNumber + '</span><button class="ars-btn done" onclick="completeRevision(' + r.id + ')">Done</button></div></div>';
-            }).join('') : '<div class="empty-ars">🎉 All done!</div>';
-
-            // Upcoming
-            document.getElementById('upcomingCount').textContent = upcomingRevs.length;
-            document.getElementById('upcomingList').innerHTML = upcomingRevs.length ? upcomingRevs.slice(0, 10).map(function(r) {
-                var days = Math.ceil((new Date(r.scheduledDate) - new Date()) / 86400000);
-                return '<div class="ars-item ' + (days === 1 ? 'tomorrow' : 'future') + '"><div class="ars-info"><h4>' + r.topic + '</h4><p>' + r.subject + ' • ' + (days === 1 ? 'Tomorrow' : days + 'd') + '</p></div><div class="ars-meta"><span class="rev-badge rev-' + r.revisionNumber + '">#' + r.revisionNumber + '</span></div></div>';
-            }).join('') : '<div class="empty-ars">No upcoming</div>';
-
-            // Subjects List
-            var sl = document.getElementById('subjectList');
-            sl.innerHTML = data.subjects.length ? data.subjects.map(function(s) {
-                var totalT = s.topics.length;
-                var doneT = s.topics.filter(function(t) { return t.done; }).length;
-                var pct = totalT ? Math.round(doneT / totalT * 100) : 0;
-                var activeRevs = data.revisions.filter(function(r) { return r.subject === s.name && !r.completed; }).length;
-
-                var topicsHtml = '';
-                if (s.topics.length) {
-                    topicsHtml = s.topics.map(function(t, i) {
-                        var topicRevs = data.revisions.filter(function(r) { return r.topic === t.title && r.subject === s.name && !r.completed; });
-                        var nextRev = topicRevs[0];
-                        var revInfo = '';
-                        if (nextRev) {
-                            var dys = Math.ceil((new Date(nextRev.scheduledDate) - new Date()) / 86400000);
-                            revInfo = dys === 0 ? '🔥 Today!' : dys === 1 ? '⏰ Tomorrow' : '📅 ' + dys + 'd';
-                        }
-
-                        var statusHtml = '';
-                        if (t.status === 'reading') {
-                            statusHtml = '<div class="topic-status status-reading">📖</div>';
-                        } else if (t.done) {
-                            statusHtml = '<div class="topic-status status-done">✓</div>';
-                        } else {
-                            statusHtml = '<div class="topic-status status-pending" onclick="startReading(' + s.id + ',' + i + ')">⏵</div>';
-                        }
-
-                        var nameClass = t.status === 'reading' ? 'reading' : (t.done ? 'done' : '');
-                        var revInfoHtml = (t.done && revInfo) ? '<div class="topic-rev-info">' + revInfo + '</div>' : '';
-
-                        var badgeHtml = '';
-                        if (t.status === 'reading') badgeHtml = '<span class="topic-badge badge-reading">Reading</span>';
-                        else if (t.done && topicRevs.length) badgeHtml = '<span class="topic-badge badge-ars">' + revInfo + '</span>';
-                        else if (t.done) badgeHtml = '<span class="topic-badge badge-done">✓</span>';
-
-                        var actionsHtml = '';
-                        if (t.status === 'reading') actionsHtml += '<button class="topic-btn btn-finish" onclick="finishTopic(' + s.id + ',' + i + ')">✓</button>';
-                        if (!t.done && t.status !== 'reading') actionsHtml += '<button class="topic-btn btn-start" onclick="startReading(' + s.id + ',' + i + ')">Start</button>';
-                        if (t.done || t.status === 'reading') actionsHtml += '<button class="topic-btn" style="background:var(--border)" onclick="resetTopic(' + s.id + ',' + i + ')">↺</button>';
-                        if (user) actionsHtml += '<button class="topic-btn" style="background:var(--danger)" onclick="delTopic(' + s.id + ',' + i + ')">×</button>';
-
-                        return '<div class="topic-item">' + statusHtml + '<div class="topic-name ' + nameClass + '">' + t.title + revInfoHtml + '</div>' + badgeHtml + '<div class="topic-actions">' + actionsHtml + '</div></div>';
-                    }).join('');
-                } else {
-                    topicsHtml = '<div class="empty-ars">No topics. Add some!</div>';
-                }
-
-                var subjectBtns = '';
-                if (user) {
-                    subjectBtns = '<button class="subject-btn add" onclick="event.stopPropagation(); addTopic(' + s.id + ')">+ Topic</button><button class="subject-btn delete" onclick="event.stopPropagation(); delSubject(' + s.id + ')">🗑️</button>';
-                }
-
-                return '<div class="subject-item"><div class="subject-header" onclick="toggleSub(' + s.id + ')"><div class="subject-info"><div class="subject-title">' + s.name + '</div><div class="subject-stats">' + doneT + '/' + totalT + ' • ' + pct + '%' + (activeRevs ? ' • <span style="color:var(--warning)">' + activeRevs + ' revs</span>' : '') + '</div></div><div class="subject-actions"><div class="progress-bar"><div class="progress-fill" style="width:' + pct + '%"></div></div>' + subjectBtns + '</div></div><div class="topic-list" id="sub-' + s.id + '" style="display:none;">' + topicsHtml + '</div></div>';
-            }).join('') : '<div class="empty-ars">Login to add subjects!</div>';
-        }
-
-        function toggleSub(id) {
-            var el = document.getElementById('sub-' + id);
-            el.style.display = el.style.display === 'none' ? 'flex' : 'none';
-        }
-
-        // Modal
-        function openModal(title, ph) {
-            document.getElementById('modalTitle').textContent = title;
-            document.getElementById('modalInput').placeholder = ph;
-            document.getElementById('modalInput').value = '';
-            document.getElementById('modal').classList.add('active');
-            setTimeout(function() { document.getElementById('modalInput').focus(); }, 100);
-        }
-
-        function closeModal() {
-            document.getElementById('modal').classList.remove('active');
-            modalCb = null;
-        }
-
-        function modalSubmit() {
-            var val = document.getElementById('modalInput').value.trim();
-            if (val && modalCb) { modalCb(val); closeModal(); }
-        }
-
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') { closeModal(); closeResetModal(); closeExamModal(); }
-            if (e.key === 'Enter' && document.getElementById('modal').classList.contains('active')) modalSubmit();
-        });
-
-        window.addEventListener('load', function() {
-            if (lockoutUntil > Date.now()) startLockoutTimer();
-        });
-
-        function showToast(msg, type) {
-            type = type || 'success';
-            var t = document.createElement('div');
-            t.className = 'toast';
-            t.style.borderLeftColor = type === 'error' ? 'var(--danger)' : type === 'info' ? 'var(--warning)' : 'var(--success)';
-            t.textContent = msg;
-            document.body.appendChild(t);
-            setTimeout(function() { t.remove(); }, 3000);
-        }
-    </script>
-</body>
-</html>
+            var rev = data.rev
