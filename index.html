@@ -72,6 +72,7 @@
         .ghatna { background: linear-gradient(135deg, #4b6cb7 0%, #182848 100%); }
         .goals { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
         .dashboard { background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); }
+        .planner21 { background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%); border: 2px solid #fbbf24; }
 
         .exam-icon { font-size: 50px; margin-bottom: 10px; }
         .exam-header h2 { font-size: 1.6rem; font-weight: bold; }
@@ -102,6 +103,38 @@
         }
 
         .secure-badge { margin-top: 40px; color: white; opacity: 0.8; }
+
+        /* Special styling for 21-day planner card */
+        .planner21 .exam-icon {
+            filter: drop-shadow(0 0 10px rgba(251, 191, 36, 0.5));
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .badge-new {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: #fbbf24;
+            color: #000;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            animation: glow 1.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { box-shadow: 0 0 5px #fbbf24; }
+            to { box-shadow: 0 0 20px #fbbf24, 0 0 30px #fbbf24; }
+        }
+
+        .exam-card { position: relative; }
     </style>
 </head>
 <body>
@@ -197,6 +230,26 @@
                         <li><i class="fas fa-check-circle text-green-500"></i> Productivity & Heatmap</li>
                     </ul>
                     <div class="start-btn dashboard">Open Dashboard 🚀</div>
+                </div>
+            </div>
+
+            <!-- ⭐ NEW: 21-DAY FOCUS PLANNER -->
+            <div class="exam-card" onclick="window.location.href='21-day-planner.html'">
+                <span class="badge-new">🔥 Popular</span>
+                <div class="exam-header planner21">
+                    <div class="exam-icon">📅</div>
+                    <h2>21-Day Focus Planner</h2>
+                </div>
+                <div class="exam-body">
+                    <ul class="feature-list">
+                        <li><i class="fas fa-fire text-orange-500"></i> Dopamine Detox System</li>
+                        <li><i class="fas fa-chart-line text-blue-500"></i> Progress Tracking</li>
+                        <li><i class="fas fa-brain text-purple-500"></i> Daily Reflection Journal</li>
+                        <li><i class="fas fa-save text-green-500"></i> Auto-Save Data</li>
+                    </ul>
+                    <div class="start-btn planner21" style="background: linear-gradient(135deg, #fbbf24, #d97706); color: #000;">
+                        Start 21-Day Challenge 🚀
+                    </div>
                 </div>
             </div>
 
