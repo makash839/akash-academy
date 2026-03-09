@@ -1,0 +1,1597 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>21-Day Focus Planner - Ultimate Edition</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap');
+        
+        :root {
+            --bg-dark: #0a0f1a;
+            --bg-card: #111827;
+            --bg-elevated: #1f2937;
+            --text-main: #f9fafb;
+            --text-muted: #9ca3af;
+            --text-subtle: #6b7280;
+            --gold: #fbbf24;
+            --gold-light: #fcd34d;
+            --gold-dark: #d97706;
+            --gold-glow: rgba(251, 191, 36, 0.15);
+            --border: #374151;
+            --success: #10b981;
+            --success-glow: rgba(16, 185, 129, 0.2);
+            --danger: #ef4444;
+            --info: #3b82f6;
+            --purple: #8b5cf6;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--bg-dark) 0%, #0f172a 50%, #1e1b4b 100%);
+            color: var(--text-main);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+            line-height: 1.6;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-dark);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--gold-dark);
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 280px;
+            background: rgba(17, 24, 39, 0.95);
+            backdrop-filter: blur(10px);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            box-shadow: 4px 0 24px rgba(0,0,0,0.4);
+        }
+
+        .brand {
+            padding: 24px;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+            background: linear-gradient(180deg, rgba(251,191,36,0.1) 0%, transparent 100%);
+        }
+
+        .brand h1 {
+            color: var(--gold);
+            font-family: 'Playfair Display', serif;
+            letter-spacing: 2px;
+            font-size: 1.8rem;
+            text-shadow: 0 2px 10px rgba(251,191,36,0.3);
+        }
+
+        .brand p {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 6px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        .stats-bar {
+            padding: 16px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-around;
+            text-align: center;
+        }
+
+        .stat-item {
+            flex: 1;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--gold);
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .day-list {
+            padding: 12px;
+            flex: 1;
+        }
+
+        .day-btn {
+            background: transparent;
+            border: 1px solid transparent;
+            color: var(--text-muted);
+            width: 100%;
+            padding: 14px 16px;
+            text-align: left;
+            cursor: pointer;
+            border-radius: 10px;
+            margin-bottom: 6px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .day-btn::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 3px;
+            background: var(--gold);
+            transform: scaleY(0);
+            transition: transform 0.3s;
+        }
+
+        .day-btn:hover {
+            background: rgba(255,255,255,0.03);
+            color: white;
+            transform: translateX(4px);
+        }
+
+        .day-btn.active {
+            background: linear-gradient(90deg, rgba(251,191,36,0.15) 0%, transparent 100%);
+            border-color: rgba(251,191,36,0.3);
+            color: var(--gold);
+            font-weight: 600;
+        }
+
+        .day-btn.active::before {
+            transform: scaleY(1);
+        }
+
+        .day-btn.completed {
+            background: rgba(16,185,129,0.08);
+            border-color: rgba(16,185,129,0.2);
+        }
+
+        .day-btn.completed .day-number {
+            color: var(--success);
+        }
+
+        .check-icon {
+            opacity: 0;
+            color: var(--success);
+            font-size: 1.1rem;
+            transform: scale(0);
+            transition: all 0.3s;
+        }
+
+        .day-btn.completed .check-icon {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .day-number {
+            font-weight: 500;
+        }
+
+        .streak-badge {
+            position: absolute;
+            right: 40px;
+            background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+            color: black;
+            font-size: 0.65rem;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-weight: 700;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.3s;
+        }
+
+        .day-btn.active .streak-badge {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 32px;
+            overflow-y: auto;
+            background: radial-gradient(ellipse at top right, rgba(251,191,36,0.05) 0%, transparent 50%),
+                        radial-gradient(ellipse at bottom left, rgba(139,92,246,0.05) 0%, transparent 50%);
+        }
+
+        .header-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--border);
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .header-title h2 {
+            font-size: 2.5rem;
+            color: white;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .header-title span {
+            background: linear-gradient(135deg, var(--gold), var(--gold-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header-subtitle {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-top: 4px;
+        }
+
+        .progress-container {
+            background: var(--bg-card);
+            padding: 16px 24px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            min-width: 240px;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .progress-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .progress-percentage {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--gold);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--bg-elevated);
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--gold-dark), var(--gold), var(--gold-light));
+            width: 0%;
+            transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 20px var(--gold-glow);
+            position: relative;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: var(--bg-card);
+            color: var(--text-main);
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn:hover {
+            background: var(--bg-elevated);
+            border-color: var(--gold);
+            transform: translateY(-2px);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+            color: black;
+            border: none;
+            font-weight: 600;
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 4px 20px var(--gold-glow);
+        }
+
+        .btn-danger {
+            border-color: var(--danger);
+            color: var(--danger);
+        }
+
+        .btn-danger:hover {
+            background: rgba(239,68,68,0.1);
+        }
+
+        /* Planner Grid */
+        .planner-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 24px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.3), 0 2px 4px -1px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(251,191,36,0.3), transparent);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.4), 0 10px 10px -5px rgba(0,0,0,0.2);
+            border-color: rgba(251,191,36,0.2);
+        }
+
+        .card:hover::before {
+            opacity: 1;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        .card-header {
+            color: var(--gold);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+        }
+
+        .card-header-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            color: black;
+        }
+
+        /* Inputs */
+        .input-group {
+            margin-bottom: 16px;
+        }
+
+        .input-label {
+            display: block;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 500;
+        }
+
+        input[type="text"], input[type="number"], textarea, select {
+            width: 100%;
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            color: white;
+            padding: 14px;
+            border-radius: 10px;
+            outline: none;
+            transition: all 0.3s;
+            font-size: 0.95rem;
+        }
+
+        input[type="text"]:focus, input[type="number"]:focus, textarea:focus, select:focus {
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px var(--gold-glow);
+            background: var(--bg-elevated);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+            line-height: 1.6;
+        }
+
+        /* Priority List */
+        .priority-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .priority-item {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            background: var(--bg-dark);
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            transition: all 0.3s;
+        }
+
+        .priority-item:focus-within {
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px var(--gold-glow);
+        }
+
+        .priority-number {
+            background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+            color: black;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: 700;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+        }
+
+        .priority-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: white;
+            padding: 4px;
+            outline: none;
+            font-size: 0.95rem;
+        }
+
+        .priority-input::placeholder {
+            color: var(--text-subtle);
+        }
+
+        /* Time Slots */
+        .time-slots {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .time-slot {
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.3s;
+        }
+
+        .time-slot:focus-within {
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px var(--gold-glow);
+        }
+
+        .time-icon {
+            font-size: 1.2rem;
+            width: 40px;
+            text-align: center;
+        }
+
+        .time-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: white;
+            outline: none;
+            font-size: 0.9rem;
+        }
+
+        /* Checklist */
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: var(--bg-dark);
+            padding: 14px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid transparent;
+        }
+
+        .checkbox-item:hover {
+            background: var(--bg-elevated);
+            border-color: var(--border);
+        }
+
+        .checkbox-item.checked {
+            background: rgba(16,185,129,0.1);
+            border-color: var(--success);
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            display: none;
+        }
+
+        .custom-checkbox {
+            width: 22px;
+            height: 22px;
+            border: 2px solid var(--border);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            flex-shrink: 0;
+        }
+
+        .checkbox-item.checked .custom-checkbox {
+            background: var(--success);
+            border-color: var(--success);
+        }
+
+        .checkbox-item.checked .custom-checkbox::after {
+            content: '✓';
+            color: white;
+            font-weight: bold;
+            font-size: 0.85rem;
+        }
+
+        .checkbox-text {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            transition: color 0.3s;
+        }
+
+        .checkbox-item.checked .checkbox-text {
+            color: var(--success);
+            text-decoration: line-through;
+        }
+
+        /* Mood Selector */
+        .mood-container {
+            background: var(--bg-dark);
+            border-radius: 12px;
+            padding: 16px;
+        }
+
+        .mood-label {
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+            min-height: 20px;
+        }
+
+        .mood-selector {
+            display: flex;
+            justify-content: space-between;
+            gap: 8px;
+        }
+
+        .mood-btn {
+            flex: 1;
+            background: var(--bg-elevated);
+            border: 2px solid transparent;
+            padding: 16px 8px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1.8rem;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .mood-btn:hover {
+            transform: translateY(-4px) scale(1.1);
+            background: var(--border);
+        }
+
+        .mood-btn.selected {
+            background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+            border-color: var(--gold-light);
+            transform: translateY(-4px) scale(1.1);
+            box-shadow: 0 8px 20px var(--gold-glow);
+        }
+
+        .mood-btn.selected::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 4px;
+            background: var(--gold);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--gold);
+        }
+
+        /* Energy Meter */
+        .energy-meter {
+            margin-top: 20px;
+        }
+
+        .energy-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .energy-slider {
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            background: linear-gradient(90deg, var(--danger), var(--gold), var(--success));
+            -webkit-appearance: none;
+            appearance: none;
+            outline: none;
+        }
+
+        .energy-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: white;
+            border: 3px solid var(--gold);
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            transition: transform 0.2s;
+        }
+
+        .energy-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+
+        /* Study Hours Counter */
+        .study-counter {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+        }
+
+        .counter-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: var(--bg-elevated);
+            color: var(--gold);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .counter-btn:hover {
+            background: var(--gold);
+            color: black;
+            border-color: var(--gold);
+        }
+
+        .counter-value {
+            flex: 1;
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--gold);
+            font-family: 'Playfair Display', serif;
+        }
+
+        .counter-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Journal Cards */
+        .journal-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .journal-card {
+            background: var(--bg-dark);
+            border-radius: 12px;
+            padding: 16px;
+            border: 1px solid var(--border);
+        }
+
+        .journal-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        /* Quote Section */
+        .quote-card {
+            background: linear-gradient(135deg, rgba(251,191,36,0.1), rgba(139,92,246,0.1));
+            border: 1px solid rgba(251,191,36,0.2);
+            text-align: center;
+            padding: 32px;
+        }
+
+        .quote-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            color: var(--gold-light);
+            font-style: italic;
+            line-height: 1.6;
+            margin-bottom: 16px;
+        }
+
+        .quote-author {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(5px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 32px;
+            max-width: 500px;
+            width: 90%;
+            transform: scale(0.9);
+            transition: transform 0.3s;
+        }
+
+        .modal-overlay.active .modal {
+            transform: scale(1);
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            margin-bottom: 16px;
+            color: var(--gold);
+        }
+
+        .modal-text {
+            color: var(--text-muted);
+            margin-bottom: 24px;
+            line-height: 1.6;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+
+        /* Save Status */
+        #save-status {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: var(--success);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            box-shadow: 0 4px 20px var(--success-glow);
+            transform: translateY(100px) scale(0.9);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 100;
+        }
+
+        #save-status.show {
+            transform: translateY(0) scale(1);
+        }
+
+        /* Confetti Animation */
+        @keyframes confetti {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-100vh) rotate(720deg); opacity: 0; }
+        }
+
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: var(--gold);
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+                overflow: auto;
+                height: auto;
+            }
+
+            .sidebar {
+                width: 100%;
+                height: auto;
+                max-height: 200px;
+                flex-direction: row;
+                overflow-x: auto;
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+            }
+
+            .brand, .stats-bar {
+                display: none;
+            }
+
+            .day-list {
+                display: flex;
+                gap: 8px;
+                padding: 12px;
+                flex-direction: row;
+            }
+
+            .day-btn {
+                min-width: 80px;
+                flex-direction: column;
+                justify-content: center;
+                padding: 12px;
+            }
+
+            .main-content {
+                padding: 20px;
+            }
+
+            .header-section {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .planner-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .journal-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .full-width {
+                grid-column: 1;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        .card:nth-child(1) { animation-delay: 0.1s; }
+        .card:nth-child(2) { animation-delay: 0.2s; }
+        .card:nth-child(3) { animation-delay: 0.3s; }
+        .card:nth-child(4) { animation-delay: 0.4s; }
+        .card:nth-child(5) { animation-delay: 0.5s; }
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="brand">
+            <h1>THREEDOSHA</h1>
+            <p>Ultimate Focus System</p>
+        </div>
+        
+        <div class="stats-bar">
+            <div class="stat-item">
+                <span class="stat-value" id="currentStreak">0</span>
+                <span class="stat-label">Day Streak</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-value" id="totalHours">0</span>
+                <span class="stat-label">Total Hours</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-value" id="avgMood">-</span>
+                <span class="stat-label">Avg Mood</span>
+            </div>
+        </div>
+
+        <div class="day-list" id="dayList"></div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="header-section">
+            <div class="header-title">
+                <h2>Day <span id="currentDayTitle">1</span></h2>
+                <div class="header-subtitle">of 21-Day Focus Transformation • <span id="currentDate"></span></div>
+            </div>
+            
+            <div class="progress-container">
+                <div class="progress-header">
+                    <span class="progress-label">Journey Progress</span>
+                    <span class="progress-percentage" id="progressText">0%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressBar"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+            <button class="btn btn-primary" onclick="exportData()">
+                <span>💾</span> Export Data
+            </button>
+            <button class="btn" onclick="document.getElementById('importFile').click()">
+                <span>📁</span> Import Data
+            </button>
+            <input type="file" id="importFile" style="display:none" accept=".json" onchange="importData(this)">
+            <button class="btn btn-danger" onclick="confirmReset()">
+                <span>🗑️</span> Reset All
+            </button>
+        </div>
+
+        <!-- Quote -->
+        <div class="card quote-card full-width">
+            <div class="quote-text" id="dailyQuote">"The secret of your future is hidden in your daily routine."</div>
+            <div class="quote-author">— Mike Murdock</div>
+        </div>
+
+        <!-- Planner Grid -->
+        <div class="planner-grid">
+            
+            <!-- Main Goal -->
+            <div class="card full-width">
+                <div class="card-header">
+                    <div class="card-header-icon">🎯</div>
+                    One Big Goal For Today (आज का मुख्य लक्ष्य)
+                </div>
+                <input type="text" id="mainGoal" placeholder="Write your most important goal for today...">
+            </div>
+
+            <!-- Priorities -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-header-icon">⚡</div>
+                    Top 3 Priorities
+                </div>
+                <div class="priority-list">
+                    <div class="priority-item">
+                        <div class="priority-number">1</div>
+                        <input type="text" class="priority-input" id="prio1" placeholder="Most important task...">
+                    </div>
+                    <div class="priority-item">
+                        <div class="priority-number">2</div>
+                        <input type="text" class="priority-input" id="prio2" placeholder="Second priority...">
+                    </div>
+                    <div class="priority-item">
+                        <div class="priority-number">3</div>
+                        <input type="text" class="priority-input" id="prio3" placeholder="Third priority...">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Time Schedule -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-header-icon">⏰</div>
+                    Deep Work Schedule
+                </div>
+                <div class="time-slots">
+                    <div class="time-slot">
+                        <span class="time-icon">🌅</span>
+                        <input type="text" class="time-input" id="morningSlot" placeholder="Morning session (e.g., 6AM - 9AM)">
+                    </div>
+                    <div class="time-slot">
+                        <span class="time-icon">☀️</span>
+                        <input type="text" class="time-input" id="afternoonSlot" placeholder="Afternoon session (e.g., 2PM - 5PM)">
+                    </div>
+                    <div class="time-slot">
+                        <span class="time-icon">🌙</span>
+                        <input type="text" class="time-input" id="eveningSlot" placeholder="Evening session (e.g., 7PM - 9PM)">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dopamine Detox -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-header-icon">🛡️</div>
+                    Dopamine Detox Rules
+                </div>
+                <div class="checkbox-group">
+                    <label class="checkbox-item" onclick="toggleCheckbox(this)">
+                        <input type="checkbox" id="rule1">
+                        <div class="custom-checkbox"></div>
+                        <span class="checkbox-text">No phone for first hour after waking</span>
+                    </label>
+                    <label class="checkbox-item" onclick="toggleCheckbox(this)">
+                        <input type="checkbox" id="rule2">
+                        <div class="custom-checkbox"></div>
+                        <span class="checkbox-text">No social media before 6 PM</span>
+                    </label>
+                    <label class="checkbox-item" onclick="toggleCheckbox(this)">
+                        <input type="checkbox" id="rule3">
+                        <div class="custom-checkbox"></div>
+                        <span class="checkbox-text">No junk food or sugar today</span>
+                    </label>
+                    <label class="checkbox-item" onclick="toggleCheckbox(this)">
+                        <input type="checkbox" id="rule4">
+                        <div class="custom-checkbox"></div>
+                        <span class="checkbox-text">Phone on DND during focus sessions</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Mood & Energy -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-header-icon">💫</div>
+                    Energy & Mood Tracker
+                </div>
+                
+                <div class="mood-container">
+                    <div class="mood-label" id="moodLabel">How are you feeling today?</div>
+                    <div class="mood-selector" id="moodSelector">
+                        <button class="mood-btn" onclick="setMood('exhausted')" data-mood="exhausted">😫</button>
+                        <button class="mood-btn" onclick="setMood('tired')" data-mood="tired">😔</button>
+                        <button class="mood-btn" onclick="setMood('neutral')" data-mood="neutral">😐</button>
+                        <button class="mood-btn" onclick="setMood('good')" data-mood="good">🙂</button>
+                        <button class="mood-btn" onclick="setMood('energized')" data-mood="energized">💪</button>
+                        <button class="mood-btn" onclick="setMood('unstoppable')" data-mood="unstoppable">🔥</button>
+                    </div>
+                    <input type="hidden" id="moodValue">
+                </div>
+
+                <div class="energy-meter">
+                    <div class="energy-label">
+                        <span>Energy Level</span>
+                        <span id="energyValue">50%</span>
+                    </div>
+                    <input type="range" class="energy-slider" id="energyLevel" min="0" max="100" value="50" oninput="updateEnergy(this.value)">
+                </div>
+
+                <div class="study-counter">
+                    <button class="counter-btn" onclick="adjustHours(-0.5)">−</button>
+                    <div>
+                        <div class="counter-value" id="studyHours">0</div>
+                        <div class="counter-label">Study Hours</div>
+                    </div>
+                    <button class="counter-btn" onclick="adjustHours(0.5)">+</button>
+                </div>
+            </div>
+
+            <!-- Journal -->
+            <div class="card full-width">
+                <div class="card-header">
+                    <div class="card-header-icon">📔</div>
+                    Daily Reflection
+                </div>
+                <div class="journal-grid">
+                    <div class="journal-card">
+                        <div class="journal-header">🏆 Win of the Day</div>
+                        <textarea id="win" placeholder="What was your biggest achievement today?"></textarea>
+                    </div>
+                    <div class="journal-card">
+                        <div class="journal-header">🎯 Tomorrow's Focus</div>
+                        <textarea id="improve" placeholder="What will you improve tomorrow?"></textarea>
+                    </div>
+                    <div class="journal-card">
+                        <div class="journal-header">💭 Key Insight</div>
+                        <textarea id="insight" placeholder="What did you learn today?"></textarea>
+                    </div>
+                    <div class="journal-card">
+                        <div class="journal-header">🙏 Gratitude</div>
+                        <textarea id="gratitude" placeholder="What are you grateful for?"></textarea>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Save Status -->
+    <div id="save-status">
+        <span>✓</span> Auto-saved successfully
+    </div>
+
+    <!-- Modal -->
+    <div class="modal-overlay" id="modal">
+        <div class="modal">
+            <h3 class="modal-title" id="modalTitle">Confirm Action</h3>
+            <p class="modal-text" id="modalText">Are you sure?</p>
+            <div class="modal-actions">
+                <button class="btn" onclick="closeModal()">Cancel</button>
+                <button class="btn btn-primary" id="modalConfirm" onclick="closeModal()">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Quotes Database
+        const quotes = [
+            { text: "The secret of your future is hidden in your daily routine.", author: "Mike Murdock" },
+            { text: "Success is the sum of small efforts, repeated day in and day out.", author: "Robert Collier" },
+            { text: "Discipline is the bridge between goals and accomplishment.", author: "Jim Rohn" },
+            { text: "Your future is created by what you do today, not tomorrow.", author: "Robert Kiyosaki" },
+            { text: "Small daily improvements are the key to staggering long-term results.", author: "Darren Hardy" },
+            { text: "The only way to do great work is to love what you do.", author: "Steve Jobs" },
+            { text: "Focus on being productive instead of busy.", author: "Tim Ferriss" },
+            { text: "Winners embrace hard work. They love the discipline of it.", author: "Lou Holtz" },
+            { text: "Your habits will determine your future.", author: "Jack Canfield" },
+            { text: "Excellence is not a singular act, but a habit.", author: "Aristotle" },
+            { text: "The pain of discipline is far less than the pain of regret.", author: "Sarah Bombell" },
+            { text: "Success doesn't come from what you do occasionally. It comes from what you do consistently.", author: "Marie Forleo" },
+            { text: "Dream big. Start small. Act now.", author: "Robin Sharma" },
+            { text: "What you do today can improve all your tomorrows.", author: "Ralph Marston" },
+            { text: "Action is the foundational key to all success.", author: "Pablo Picasso" },
+            { text: "Don't watch the clock; do what it does. Keep going.", author: "Sam Levenson" },
+            { text: "The future depends on what you do today.", author: "Mahatma Gandhi" },
+            { text: "Success is walking from failure to failure with no loss of enthusiasm.", author: "Winston Churchill" },
+            { text: "The way to get started is to quit talking and begin doing.", author: "Walt Disney" },
+            { text: "Believe you can and you're halfway there.", author: "Theodore Roosevelt" },
+            { text: "It always seems impossible until it's done.", author: "Nelson Mandela" }
+        ];
+
+        const totalDays = 21;
+        let currentDay = 1;
+        let plannerData = {};
+        let currentStudyHours = 0;
+
+        const fieldIds = ['mainGoal', 'prio1', 'prio2', 'prio3', 'morningSlot', 'afternoonSlot', 'eveningSlot', 
+                         'rule1', 'rule2', 'rule3', 'rule4', 'win', 'improve', 'insight', 'gratitude', 
+                         'studyHours', 'moodValue', 'energyLevel'];
+
+        const moodLabels = {
+            'exhausted': 'Take it easy today, rest is important',
+            'tired': 'Gather your energy, small steps matter',
+            'neutral': 'Steady state, ready to focus',
+            'good': 'Good energy, let\'s make it count',
+            'energized': 'Great! Time for deep work',
+            'unstoppable': 'You\'re on fire! Maximum productivity'
+        };
+
+        function init() {
+            loadData();
+            renderSidebar();
+            loadDay(1);
+            updateStats();
+            setupEventListeners();
+            updateDate();
+            showDailyQuote();
+        }
+
+        function updateDate() {
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-US', options);
+        }
+
+        function showDailyQuote() {
+            const quote = quotes[currentDay - 1] || quotes[0];
+            document.getElementById('dailyQuote').textContent = `"${quote.text}"`;
+            document.querySelector('.quote-author').textContent = `— ${quote.author}`;
+        }
+
+        function loadData() {
+            const stored = localStorage.getItem('focusPlannerUltimate');
+            if (stored) {
+                plannerData = JSON.parse(stored);
+            } else {
+                for (let i = 1; i <= totalDays; i++) {
+                    plannerData[i] = { 
+                        studyHours: 0, 
+                        energyLevel: 50,
+                        completed: false 
+                    };
+                }
+            }
+        }
+
+        function saveData() {
+            const data = {};
+            fieldIds.forEach(id => {
+                const el = document.getElementById(id);
+                if (!el) return;
+                data[id] = el.type === 'checkbox' ? el.checked : el.value;
+            });
+            
+            data.completed = isDayFilled(currentDay);
+            plannerData[currentDay] = data;
+            
+            localStorage.setItem('focusPlannerUltimate', JSON.stringify(plannerData));
+            
+            showSaveStatus();
+            updateProgress();
+            updateStats();
+            renderSidebar();
+            
+            if (data.completed && !plannerData[currentDay].celebrated) {
+                plannerData[currentDay].celebrated = true;
+                celebrate();
+            }
+        }
+
+        function renderSidebar() {
+            const container = document.getElementById('dayList');
+            container.innerHTML = '';
+            
+            for (let i = 1; i <= totalDays; i++) {
+                const btn = document.createElement('div');
+                btn.className = `day-btn ${i === currentDay ? 'active' : ''}`;
+                
+                const dayData = plannerData[i] || {};
+                const hasData = dayData.completed || isDayFilled(i);
+                
+                if (hasData) btn.classList.add('completed');
+                
+                const streak = calculateStreak();
+                const showStreak = i === currentDay && streak > 0;
+                
+                btn.innerHTML = `
+                    <span class="day-number">Day ${i}</span>
+                    ${showStreak ? `<span class="streak-badge">🔥 ${streak}</span>` : ''}
+                    <span class="check-icon">✓</span>
+                `;
+                btn.onclick = () => loadDay(i);
+                container.appendChild(btn);
+            }
+        }
+
+        function loadDay(day) {
+            currentDay = day;
+            document.getElementById('currentDayTitle').textContent = day;
+            showDailyQuote();
+            
+            const data = plannerData[day] || {};
+            
+            fieldIds.forEach(id => {
+                const el = document.getElementById(id);
+                if (!el) return;
+                
+                if (el.type === 'checkbox') {
+                    el.checked = data[id] || false;
+                    const parent = el.closest('.checkbox-item');
+                    if (parent) {
+                        parent.classList.toggle('checked', el.checked);
+                    }
+                } else {
+                    el.value = data[id] || '';
+                }
+            });
+            
+            currentStudyHours = parseFloat(data.studyHours) || 0;
+            document.getElementById('studyHours').textContent = currentStudyHours;
+            
+            updateMoodUI(data.moodValue);
+            updateEnergy(data.energyLevel || 50);
+            
+            renderSidebar();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function toggleCheckbox(el) {
+            const checkbox = el.querySelector('input[type="checkbox"]');
+            checkbox.checked = !checkbox.checked;
+            el.classList.toggle('checked', checkbox.checked);
+            saveData();
+        }
+
+        function setMood(mood) {
+            document.getElementById('moodValue').value = mood;
+            document.getElementById('moodLabel').textContent = moodLabels[mood] || 'How are you feeling today?';
+            updateMoodUI(mood);
+            saveData();
+        }
+
+        function updateMoodUI(mood) {
+            document.querySelectorAll('.mood-btn').forEach(btn => {
+                btn.classList.toggle('selected', btn.dataset.mood === mood);
+            });
+            if (mood && moodLabels[mood]) {
+                document.getElementById('moodLabel').textContent = moodLabels[mood];
+            }
+        }
+
+        function updateEnergy(value) {
+            document.getElementById('energyLevel').value = value;
+            document.getElementById('energyValue').textContent = value + '%';
+        }
+
+        function adjustHours(delta) {
+            currentStudyHours = Math.max(0, currentStudyHours + delta);
+            document.getElementById('studyHours').textContent = currentStudyHours;
+            document.getElementById('studyHours').value = currentStudyHours;
+            saveData();
+        }
+
+        function isDayFilled(day) {
+            const d = plannerData[day];
+            if (!d) return false;
+            return (d.mainGoal && d.mainGoal.length > 2) || 
+                   (d.win && d.win.length > 2) ||
+                   (d.prio1 && d.prio1.length > 2);
+        }
+
+        function calculateStreak() {
+            let streak = 0;
+            for (let i = 1; i <= totalDays; i++) {
+                if (isDayFilled(i) || (plannerData[i] && plannerData[i].completed)) {
+                    streak++;
+                } else if (i < currentDay) {
+                    streak = 0;
+                }
+            }
+            return streak;
+        }
+
+        function updateStats() {
+            const streak = calculateStreak();
+            document.getElementById('currentStreak').textContent = streak;
+            
+            let totalHours = 0;
+            let moodSum = 0;
+            let moodCount = 0;
+            const moodValues = { 'exhausted': 1, 'tired': 2, 'neutral': 3, 'good': 4, 'energized': 5, 'unstoppable': 6 };
+            
+            for (let i = 1; i <= totalDays; i++) {
+                const d = plannerData[i];
+                if (d) {
+                    totalHours += parseFloat(d.studyHours) || 0;
+                    if (d.moodValue && moodValues[d.moodValue]) {
+                        moodSum += moodValues[d.moodValue];
+                        moodCount++;
+                    }
+                }
+            }
+            
+            document.getElementById('totalHours').textContent = totalHours.toFixed(1);
+            
+            const avgMood = moodCount > 0 ? (moodSum / moodCount).toFixed(1) : '-';
+            document.getElementById('avgMood').textContent = avgMood;
+        }
+
+        function updateProgress() {
+            let completed = 0;
+            for (let i = 1; i <= totalDays; i++) {
+                if (isDayFilled(i) || (plannerData[i] && plannerData[i].completed)) {
+                    completed++;
+                }
+            }
+            const percentage = Math.round((completed / totalDays) * 100);
+            document.getElementById('progressBar').style.width = percentage + '%';
+            document.getElementById('progressText').textContent = percentage + '%';
+        }
+
+        function showSaveStatus() {
+            const status = document.getElementById('save-status');
+            status.classList.add('show');
+            setTimeout(() => status.classList.remove('show'), 2000);
+        }
+
+        function celebrate() {
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + 'vw';
+                    confetti.style.backgroundColor = ['#fbbf24', '#10b981', '#3b82f6', '#8b5cf6'][Math.floor(Math.random() * 4)];
+                    confetti.style.animation = `confetti ${1 + Math.random()}s ease-out forwards`;
+                    document.body.appendChild(confetti);
+                    setTimeout(() => confetti.remove(), 2000);
+                }, i * 30);
+            }
+        }
+
+        function exportData() {
+            const dataStr = JSON.stringify(plannerData, null, 2);
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `focus-planner-backup-${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function importData(input) {
+            const file = input.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    if (confirm('This will replace all current data. Continue?')) {
+                        plannerData = data;
+                        localStorage.setItem('focusPlannerUltimate', JSON.stringify(plannerData));
+                        loadDay(1);
+                        updateStats();
+                        renderSidebar();
+                        alert('Data imported successfully!');
+                    }
+                } catch (err) {
+                    alert('Invalid file format');
+                }
+            };
+            reader.readAsText(file);
+            input.value = '';
+        }
+
+        function confirmReset() {
+            document.getElementById('modalTitle').textContent = 'Reset All Data?';
+            document.getElementById('modalText').textContent = 'This will permanently delete all your 21 days of progress. This action cannot be undone.';
+            document.getElementById('modalConfirm').onclick = () => {
+                localStorage.removeItem('focusPlannerUltimate');
+                location.reload();
+            };
+            document.getElementById('modal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+        }
+
+        function setupEventListeners() {
+            fieldIds.forEach(id => {
+                const el = document.getElementById(id);
+                if (!el) return;
+                
+                if (el.type === 'checkbox') {
+                    el.addEventListener('change', saveData);
+                } else {
+                    el.addEventListener('input', debounce(saveData, 500));
+                }
+            });
+
+            document.addEventListener('keydown', (e) => {
+                if (e.ctrlKey || e.metaKey) {
+                    if (e.key === 's') {
+                        e.preventDefault();
+                        saveData();
+                        showSaveStatus();
+                    }
+                }
+            });
+        }
+
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        // Initialize
+        init();
+    </script>
+</body>
+</html>
