@@ -1,412 +1,588 @@
-// Pitman Shorthand Practice App - JavaScript
+// ============================================
+// PITMAN SHORTHAND PRACTICE APP
+// ============================================
 
-// Exercise Database
-const exercisesDatabase = {
-    1: { // Chapter 1 - Simple Consonants
-        1: {
-            text: "pay bay tea deep chay jay",
-            shorthand: "p b t d ch j",
-            words: ["pay", "bay", "tea", "deep", "chay", "jay"],
-            hint: "Simple consonant strokes - P, B, T, D, CH, J"
-        },
-        2: {
-            text: "kay gay eff vee ess zee",
-            shorthand: "k g f v s z",
-            words: ["kay", "gay", "eff", "vee", "ess", "zee"],
-            hint: "More consonant strokes - K, G, F, V, S, Z"
-        },
-        3: {
-            text: "em en el ar",
-            shorthand: "m n l r",
-            words: ["em", "en", "el", "ar"],
-            hint: "Nasal and liquid consonants - M, N, L, R"
-        }
-    },
-    2: { // Chapter 2 - Vowels
-        1: {
-            text: "tea tie too toe ta taw",
-            shorthand: "t t t t t t",
-            words: ["tea", "tie", "too", "toe", "ta", "taw"],
-            hint: "Light vowels with T - ee, i, oo, o, a, aw"
-        },
-        2: {
-            text: "deep dye dupe dope dark dawn",
-            shorthand: "d d d d d d",
-            words: ["deep", "dye", "dupe", "dope", "dark", "dawn"],
-            hint: "Heavy vowels with D"
-        }
-    },
-    3: { // Chapter 3 - Diphthongs
-        1: {
-            text: "pay bay day gay",
-            shorthand: "p b d g",
-            words: ["pay", "bay", "day", "gay"],
-            hint: "Diphthong 'ay' sound"
-        },
-        2: {
-            text: "pie buy die guy",
-            shorthand: "p b d g",
-            words: ["pie", "buy", "die", "guy"],
-            hint: "Diphthong 'ie/y' sound"
-        }
-    },
-    4: { // Chapter 4 - Consonant Blends
-        1: {
-            text: "play pray stay spray",
-            shorthand: "pl pr st spr",
-            words: ["play", "pray", "stay", "spray"],
-            hint: "Common consonant blends"
-        },
-        2: {
-            text: "street spring strong script",
-            shorthand: "str spr str scr",
-            words: ["street", "spring", "strong", "script"],
-            hint: "Triple consonant blends"
-        }
-    },
-    5: { // Chapter 5 - Halving Principle
-        1: {
-            text: "put but cut get",
-            shorthand: "pt bt ct gt",
-            words: ["put", "but", "cut", "get"],
-            hint: "Halving for T"
-        },
-        2: {
-            text: "paid bade cade gait",
-            shorthand: "pd bd cd gd",
-            words: ["paid", "bade", "cade", "gait"],
-            hint: "Halving for D"
-        }
-    },
-    6: { // Chapter 6 - Doubling Principle
-        1: {
-            text: "better letter setter getter",
-            shorthand: "btr ltr str gtr",
-            words: ["better", "letter", "setter", "getter"],
-            hint: "Doubling for -ter"
-        }
-    },
-    7: { // Chapter 7 - Prefixes & Suffixes
-        1: {
-            text: "unlikely unfair unable uncertain",
-            shorthand: "un-likely un-fair un-able un-certain",
-            words: ["unlikely", "unfair", "unable", "uncertain"],
-            hint: "Prefix: un-"
-        }
-    },
-    8: { // Chapter 8 - Phrases
-        1: {
-            text: "I am I have I will he is",
-            shorthand: "I-am I-hv I-wl he-is",
-            words: ["I", "am", "I", "have", "I", "will", "he", "is"],
-            hint: "Common phrases"
-        }
+// Exercise Database (Stored in localStorage)
+let exerciseDB = {};
+let currentExercise = null;
+let currentChapter = null;
+let zoomLevel = 1;
+
+// Initialize App
+document.addEventListener('DOMContentLoaded', function() {
+    loadDatabase();
+    updateStats();
+    loadSavedProgress();
+    
+    // Word counter
+    document.getElementById('userAnswer').addEventListener('input', function() {
+        const words = this.value.trim().split(/\s+/).filter(w => w.length > 0);
+        document.getElementById('wordCount').textContent = words.length;
+    });
+});
+
+// Load Database from localStorage
+function loadDatabase() {
+    const saved = localStorage.getItem('pitmanExerciseDB');
+    if (saved) {
+        exerciseDB = JSON.parse(saved);
+    } else {
+        // Default exercises (Sample)
+        exerciseDB = {
+            "1": {
+                name: "Chapter 1 - Basic Strokes",
+                exercises: {
+                    "1": {
+                        answer: ["pay", "bay", "tea", "deep"],
+                        hint: "P, B, T, D strokes",
+                        image: "images/exercises/chapter1/ex1.png"
+                    },
+                    "2": {
+                        answer: ["take", "date", "make", "bake"],
+                        hint: "Practice more P, B, T, D",
+                        image: "images/exercises/chapter1/ex2.png"
+                    },
+                    "3": {
+                        answer: ["tape", "type", "top", "tip"],
+                        hint: "T stroke variations",
+                        image: "images/exercises/chapter1/ex3.png"
+                    }
+                }
+            },
+            "2": {
+                name: "Chapter 2 - K, G, F, V",
+                exercises: {
+                    "1": {
+                        answer: ["keep", "key", "cake", "kick"],
+                        hint: "K stroke",
+                        image: "images/exercises/chapter2/ex1.png"
+                    },
+                    "2": {
+                        answer: ["gate", "gave", "game", "go"],
+                        hint: "G stroke",
+                        image: "images/exercises/chapter2/ex2.png"
+                    }
+                }
+            },
+            "3": {
+                name: "Chapter 3 - M, N, L, R",
+                exercises: {
+                    "1": {
+                        answer: ["may", "make", "made", "me"],
+                        hint: "M stroke",
+                        image: "images/exercises/chapter3/ex1.png"
+                    }
+                }
+            }
+        };
+        saveDatabase();
     }
-};
+}
 
-// Current exercise tracking
-let currentChapter = 0;
-let currentExercise = 0;
-let currentExerciseData = null;
+// Save Database
+function saveDatabase() {
+    localStorage.setItem('pitmanExerciseDB', JSON.stringify(exerciseDB));
+}
 
-// Load exercises for selected chapter
-function loadChapterExercises() {
-    const chapterSelect = document.getElementById('chapterSelect');
-    const exerciseSelect = document.getElementById('exerciseSelect');
-    const selectedChapter = parseInt(chapterSelect.value);
+// Load Exercise List for Chapter
+function loadExerciseList() {
+    const chapter = document.getElementById('chapterSelect').value;
+    const listContainer = document.getElementById('exerciseList');
     
-    currentChapter = selectedChapter;
+    if (!chapter) {
+        listContainer.innerHTML = '<p class="text-muted text-center">Pehle chapter select karein</p>';
+        return;
+    }
     
-    // Clear previous exercises
-    exerciseSelect.innerHTML = '<option value="0">-- Select Exercise --</option>';
+    currentChapter = chapter;
+    const progress = JSON.parse(localStorage.getItem('pitmanProgress')) || {};
+    const chapterData = exerciseDB[chapter];
     
-    if (selectedChapter > 0 && exercisesDatabase[selectedChapter]) {
-        const exercises = exercisesDatabase[selectedChapter];
-        let exerciseNum = 1;
+    if (!chapterData || !chapterData.exercises) {
+        listContainer.innerHTML = `
+            <div class="text-center p-3">
+                <i class="fas fa-folder-open fa-3x text-muted mb-2"></i>
+                <p class="text-muted">Is chapter mein abhi exercises nahi hain</p>
+                <button class="btn btn-sm btn-primary" onclick="scrollToAdmin()">
+                    <i class="fas fa-plus"></i> Add Exercise
+                </button>
+            </div>
+        `;
+        return;
+    }
+    
+    let html = '';
+    const exercises = chapterData.exercises;
+    let completedCount = 0;
+    
+    for (let exNum in exercises) {
+        const exProgress = progress[`${chapter}_${exNum}`];
+        const isCompleted = exProgress && exProgress.score >= 70;
+        if (isCompleted) completedCount++;
         
-        for (let key in exercises) {
-            const option = document.createElement('option');
-            option.value = key;
-            option.textContent = `Exercise ${exerciseNum}`;
-            exerciseSelect.appendChild(option);
-            exerciseNum++;
-        }
+        html += `
+            <div class="exercise-item ${isCompleted ? 'completed' : ''}" 
+                 onclick="loadExercise('${chapter}', '${exNum}')">
+                <div>
+                    <i class="fas fa-pen-nib me-2"></i>
+                    Exercise ${exNum}
+                </div>
+                <div>
+                    ${isCompleted ? 
+                        `<span class="badge bg-success score-badge">${exProgress.score}%</span>` : 
+                        '<i class="fas fa-circle text-muted status-icon" style="font-size:0.6rem"></i>'
+                    }
+                </div>
+            </div>
+        `;
     }
+    
+    listContainer.innerHTML = html;
+    
+    // Update chapter progress
+    const totalEx = Object.keys(exercises).length;
+    const progressPercent = Math.round((completedCount / totalEx) * 100);
+    document.getElementById('chapterProgress').style.width = progressPercent + '%';
+    document.getElementById('chapterProgress').textContent = progressPercent + '%';
 }
 
-// Start selected exercise
-function startExercise() {
-    const exerciseSelect = document.getElementById('exerciseSelect');
-    const selectedExercise = parseInt(exerciseSelect.value);
+// Load Specific Exercise
+function loadExercise(chapter, exNum) {
+    const exercise = exerciseDB[chapter]?.exercises?.[exNum];
     
-    if (currentChapter === 0 || selectedExercise === 0) {
-        alert('Pehle Chapter aur Exercise select karein!');
+    if (!exercise) {
+        showToast('Error', 'Exercise not found!', 'danger');
         return;
     }
     
-    currentExercise = selectedExercise;
-    currentExerciseData = exercisesDatabase[currentChapter][currentExercise];
+    currentChapter = chapter;
+    currentExercise = exNum;
     
-    // Display exercise
-    document.getElementById('exerciseText').textContent = currentExerciseData.text;
-    document.getElementById('userInput').value = '';
+    // Update UI
+    document.getElementById('noExercise').style.display = 'none';
+    document.getElementById('exerciseImage').style.display = 'block';
+    document.getElementById('answerCard').style.display = 'block';
+    document.getElementById('resultsCard').style.display = 'none';
     
-    // Show practice area
-    document.getElementById('practiceArea').style.display = 'block';
-    document.getElementById('resultsSection').style.display = 'none';
+    // Set image
+    const img = document.getElementById('shorthandImg');
+    img.src = exercise.image;
+    img.onerror = function() {
+        this.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjNmNGY2Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxOCIgZmlsbD0iIzk0YTNiOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPuKcjSBJbWFnZSBub3QgZm91bmQ8L3RleHQ+PHRleHQgeD0iNTAlIiB5PSI3MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxMiIgZmlsbD0iIzk0YTNiOCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+VXBsb2FkIHNob3J0aGFuZCBpbWFnZTwvdGV4dD48L3N2Zz4=';
+    };
     
-    // Scroll to practice area
-    document.getElementById('practiceArea').scrollIntoView({ behavior: 'smooth' });
+    // Load saved answer if exists
+    const savedAnswer = localStorage.getItem(`draft_${chapter}_${exNum}`);
+    document.getElementById('userAnswer').value = savedAnswer || '';
+    
+    // Update word count
+    const words = (savedAnswer || '').trim().split(/\s+/).filter(w => w.length > 0);
+    document.getElementById('wordCount').textContent = words.length;
+    
+    // Highlight active exercise
+    document.querySelectorAll('.exercise-item').forEach(item => item.classList.remove('active'));
+    event.target.closest('.exercise-item')?.classList.add('active');
+    
+    // Scroll to image on mobile
+    if (window.innerWidth < 768) {
+        document.getElementById('shorthandCard').scrollIntoView({ behavior: 'smooth' });
+    }
 }
 
-// Check user's answer
+// Check Answer
 function checkAnswer() {
-    if (!currentExerciseData) {
-        alert('Pehle exercise start karein!');
+    if (!currentExercise || !currentChapter) {
+        showToast('Error', 'Pehle exercise select karein!', 'warning');
         return;
     }
     
-    const userInput = document.getElementById('userInput').value.trim().toLowerCase();
-    const correctWords = currentExerciseData.words;
-    const userWords = userInput.split(/\s+/);
+    const exercise = exerciseDB[currentChapter].exercises[currentExercise];
+    const userInput = document.getElementById('userAnswer').value.trim().toLowerCase();
+    const userWords = userInput.split(/[\s,]+/).filter(w => w.length > 0);
+    const correctWords = exercise.answer.map(w => w.toLowerCase());
     
     let correctCount = 0;
-    let mistakes = [];
+    let results = [];
     
-    // Compare each word
-    correctWords.forEach((correctWord, index) => {
-        const userWord = userWords[index] || '';
+    // Compare words
+    const maxLen = Math.max(userWords.length, correctWords.length);
+    
+    for (let i = 0; i < maxLen; i++) {
+        const correct = correctWords[i] || '';
+        const user = userWords[i] || '';
+        const isCorrect = correct === user;
         
-        if (userWord === correctWord.toLowerCase()) {
-            correctCount++;
-        } else {
-            mistakes.push({
-                position: index + 1,
-                correct: correctWord,
-                user: userWord || '(missing)',
-                hint: `"${correctWord}" ki jagah aapne "${userWord || 'kuch nahi'}" likha`
-            });
-        }
-    });
+        if (isCorrect && correct) correctCount++;
+        
+        results.push({
+            index: i + 1,
+            correct: correct,
+            user: user,
+            isCorrect: isCorrect
+        });
+    }
     
     // Calculate score
-    const totalWords = correctWords.length;
-    const score = Math.round((correctCount / totalWords) * 100);
+    const score = correctWords.length > 0 ? Math.round((correctCount / correctWords.length) * 100) : 0;
     
     // Display results
-    displayResults(score, correctCount, totalWords, mistakes);
+    displayResults(score, results, correctCount, correctWords.length);
     
     // Save progress
     saveProgress(currentChapter, currentExercise, score);
     
-    // Update overall progress
-    updateOverallProgress();
+    // Update stats
+    updateStats();
+    loadExerciseList();
 }
 
-// Display results
-function displayResults(score, correct, total, mistakes) {
-    const resultsSection = document.getElementById('resultsSection');
-    const scoreDisplay = document.getElementById('scoreDisplay');
-    const scoreMessage = document.getElementById('scoreMessage');
-    const correctCount = document.getElementById('correctCount');
-    const mistakeCount = document.getElementById('mistakeCount');
-    const mistakesDetails = document.getElementById('mistakesDetails');
+// Display Results
+function displayResults(score, results, correct, total) {
+    document.getElementById('resultsCard').style.display = 'block';
     
-    // Show results section
-    resultsSection.style.display = 'block';
-    resultsSection.scrollIntoView({ behavior: 'smooth' });
+    // Score circle
+    const scoreCircle = document.getElementById('scoreCircle');
+    scoreCircle.className = 'score-circle';
     
-    // Display score
-    scoreDisplay.textContent = `${score}%`;
-    
-    // Score message
-    if (score === 100) {
-        scoreMessage.innerHTML = '<i class="fas fa-trophy text-warning"></i> Perfect! Bahut badhiya! 🎉';
-        scoreDisplay.className = 'display-3 fw-bold text-success';
-    } else if (score >= 80) {
-        scoreMessage.innerHTML = '<i class="fas fa-thumbs-up"></i> Bahut achha! Keep it up! 👍';
-        scoreDisplay.className = 'display-3 fw-bold text-success';
+    if (score >= 80) {
+        scoreCircle.classList.add('excellent');
+        document.getElementById('scoreMessage').innerHTML = '🎉 Excellent! Bahut badhiya!';
     } else if (score >= 60) {
-        scoreMessage.innerHTML = '<i class="fas fa-smile"></i> Achha hai! Thoda aur practice karein.';
-        scoreDisplay.className = 'display-3 fw-bold text-warning';
+        scoreCircle.classList.add('good');
+        document.getElementById('scoreMessage').innerHTML = '👍 Good! Thoda aur practice karein!';
     } else {
-        scoreMessage.innerHTML = '<i class="fas fa-redo"></i> Koi baat nahi! Phir se try karein.';
-        scoreDisplay.className = 'display-3 fw-bold text-danger';
+        scoreCircle.classList.add('poor');
+        document.getElementById('scoreMessage').innerHTML = '💪 Keep trying! Practice makes perfect!';
     }
     
-    // Display counts
-    correctCount.textContent = correct;
-    mistakeCount.textContent = mistakes.length;
+    document.getElementById('scorePercent').textContent = score + '%';
     
-    // Display mistakes
-    if (mistakes.length > 0) {
-        let mistakesHTML = '<h5 class="text-danger mb-3"><i class="fas fa-exclamation-triangle"></i> Galtiyan:</h5>';
-        
-        mistakes.forEach((mistake, index) => {
-            mistakesHTML += `
-                <div class="mistake-item">
-                    <strong>Word ${mistake.position}:</strong><br>
-                    <span class="wrong-word">${mistake.user}</span> 
-                    <i class="fas fa-arrow-right"></i> 
-                    <span class="correct-word">${mistake.correct}</span><br>
-                    <small class="text-muted"><i class="fas fa-lightbulb"></i> ${mistake.hint}</small>
-                </div>
-            `;
-        });
-        
-        mistakesDetails.innerHTML = mistakesHTML;
-    } else {
-        mistakesDetails.innerHTML = `
-            <div class="alert alert-success text-center">
-                <i class="fas fa-check-circle fa-3x mb-3"></i>
-                <h4>Koi galti nahi! Sab sahi hai! 🎉</h4>
-            </div>
+    // Comparison table
+    let tableHtml = '';
+    results.forEach(r => {
+        tableHtml += `
+            <tr class="${r.isCorrect ? 'correct' : 'incorrect'}">
+                <td>${r.index}</td>
+                <td class="correct-word">${r.correct || '-'}</td>
+                <td class="${r.isCorrect ? 'correct-word' : 'wrong-word'}">
+                    ${r.user || '(empty)'}
+                </td>
+                <td>
+                    ${r.isCorrect ? 
+                        '<i class="fas fa-check-circle text-success"></i>' : 
+                        '<i class="fas fa-times-circle text-danger"></i>'
+                    }
+                </td>
+            </tr>
         `;
-    }
-}
-
-// Show hint
-function showHint() {
-    if (!currentExerciseData) {
-        alert('Pehle exercise start karein!');
-        return;
-    }
+    });
     
-    alert(`💡 Hint: ${currentExerciseData.hint}`);
-}
-
-// Reset exercise
-function resetExercise() {
-    document.getElementById('userInput').value = '';
-    document.getElementById('resultsSection').style.display = 'none';
-}
-
-// Retry exercise
-function retryExercise() {
-    resetExercise();
-    document.getElementById('practiceArea').scrollIntoView({ behavior: 'smooth' });
-}
-
-// Next exercise
-function nextExercise() {
-    const exerciseSelect = document.getElementById('exerciseSelect');
-    const currentValue = parseInt(exerciseSelect.value);
-    const nextValue = currentValue + 1;
+    document.getElementById('comparisonTable').innerHTML = tableHtml;
     
-    // Check if next exercise exists
-    const nextOption = exerciseSelect.querySelector(`option[value="${nextValue}"]`);
+    // Scroll to results
+    document.getElementById('resultsCard').scrollIntoView({ behavior: 'smooth' });
     
-    if (nextOption) {
-        exerciseSelect.value = nextValue;
-        startExercise();
-    } else {
-        alert('Yeh chapter ki saari exercises complete ho gayi hain! Next chapter choose karein.');
-    }
+    // Clear draft after checking
+    localStorage.removeItem(`draft_${currentChapter}_${currentExercise}`);
 }
 
-// Back to selection
-function backToSelection() {
-    document.getElementById('practiceArea').style.display = 'none';
-    document.getElementById('resultsSection').style.display = 'none';
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-// Save progress in localStorage
+// Save Progress
 function saveProgress(chapter, exercise, score) {
     let progress = JSON.parse(localStorage.getItem('pitmanProgress')) || {};
+    const key = `${chapter}_${exercise}`;
     
-    if (!progress[chapter]) {
-        progress[chapter] = {};
-    }
-    
-    // Save score (keep highest score)
-    if (!progress[chapter][exercise] || progress[chapter][exercise] < score) {
-        progress[chapter][exercise] = score;
+    // Keep highest score
+    if (!progress[key] || progress[key].score < score) {
+        progress[key] = {
+            score: score,
+            date: new Date().toISOString(),
+            attempts: (progress[key]?.attempts || 0) + 1
+        };
+    } else {
+        progress[key].attempts = (progress[key]?.attempts || 0) + 1;
     }
     
     localStorage.setItem('pitmanProgress', JSON.stringify(progress));
 }
 
-// Update overall progress
-function updateOverallProgress() {
+// Auto Save Draft
+let autoSaveTimeout;
+function autoSave() {
+    clearTimeout(autoSaveTimeout);
+    
+    document.getElementById('autoSaveStatus').innerHTML = 
+        '<i class="fas fa-spinner fa-spin"></i> Saving...';
+    
+    autoSaveTimeout = setTimeout(() => {
+        if (currentChapter && currentExercise) {
+            const answer = document.getElementById('userAnswer').value;
+            localStorage.setItem(`draft_${currentChapter}_${currentExercise}`, answer);
+            
+            document.getElementById('autoSaveStatus').innerHTML = 
+                '<i class="fas fa-check text-success"></i> Saved';
+        }
+    }, 1000);
+}
+
+// Update Stats
+function updateStats() {
     const progress = JSON.parse(localStorage.getItem('pitmanProgress')) || {};
     
-    let totalExercises = 0;
-    let completedExercises = 0;
+    // Total exercises
+    let totalEx = 0;
+    for (let ch in exerciseDB) {
+        totalEx += Object.keys(exerciseDB[ch].exercises || {}).length;
+    }
+    document.getElementById('totalExercises').textContent = totalEx;
+    
+    // Completed (score >= 70%)
+    let completed = 0;
     let totalScore = 0;
     
-    // Count total exercises
-    for (let chapter in exercisesDatabase) {
-        totalExercises += Object.keys(exercisesDatabase[chapter]).length;
+    for (let key in progress) {
+        if (progress[key].score >= 70) completed++;
+        totalScore += progress[key].score;
     }
     
-    // Count completed exercises
-    for (let chapter in progress) {
-        for (let exercise in progress[chapter]) {
-            completedExercises++;
-            totalScore += progress[chapter][exercise];
+    document.getElementById('completedCount').textContent = completed;
+    
+    // Average accuracy
+    const attempts = Object.keys(progress).length;
+    const avgScore = attempts > 0 ? Math.round(totalScore / attempts) : 0;
+    document.getElementById('avgAccuracy').textContent = avgScore + '%';
+    
+    // Streak (simplified - days with activity)
+    const streak = calculateStreak();
+    document.getElementById('streak').textContent = streak;
+}
+
+// Calculate Streak
+function calculateStreak() {
+    const progress = JSON.parse(localStorage.getItem('pitmanProgress')) || {};
+    const dates = new Set();
+    
+    for (let key in progress) {
+        if (progress[key].date) {
+            dates.add(progress[key].date.split('T')[0]);
         }
     }
     
-    // Calculate percentages
-    const progressPercent = Math.round((completedExercises / totalExercises) * 100);
-    const averageScore = completedExercises > 0 ? Math.round(totalScore / completedExercises) : 0;
+    // Simple streak calculation
+    let streak = 0;
+    let checkDate = new Date();
     
-    // Update UI
-    document.getElementById('totalExercises').textContent = totalExercises;
-    document.getElementById('completedExercises').textContent = completedExercises;
-    document.getElementById('averageScore').textContent = `${averageScore}%`;
+    for (let i = 0; i < 30; i++) {
+        const dateStr = checkDate.toISOString().split('T')[0];
+        if (dates.has(dateStr)) {
+            streak++;
+            checkDate.setDate(checkDate.getDate() - 1);
+        } else if (i > 0) {
+            break;
+        } else {
+            checkDate.setDate(checkDate.getDate() - 1);
+        }
+    }
     
-    // Update progress bar
-    const progressBar = document.getElementById('progressBar');
-    const progressText = document.getElementById('progressText');
-    const progressMessage = document.getElementById('progressMessage');
+    return streak;
+}
+
+// Show Hint
+function showHint() {
+    if (!currentExercise || !currentChapter) {
+        showToast('Info', 'Pehle exercise select karein!', 'warning');
+        return;
+    }
     
-    progressBar.style.width = `${progressPercent}%`;
-    progressBar.setAttribute('aria-valuenow', progressPercent);
-    progressText.textContent = `${progressPercent}%`;
+    const exercise = exerciseDB[currentChapter].exercises[currentExercise];
+    const hint = exercise.hint || 'Dhyan se shorthand dekhen aur har stroke pehchanen.';
     
-    if (progressPercent === 100) {
-        progressMessage.textContent = '🎉 Badhai ho! Saari exercises complete ho gayi hain!';
-    } else if (progressPercent >= 50) {
-        progressMessage.textContent = `${completedExercises}/${totalExercises} exercises complete. Aadhe se zyada ho gaya!`;
-    } else {
-        progressMessage.textContent = `${completedExercises}/${totalExercises} exercises complete. Aur practice karein!`;
+    showToast('💡 Hint', hint, 'info');
+}
+
+// Clear Answer
+function clearAnswer() {
+    document.getElementById('userAnswer').value = '';
+    document.getElementById('wordCount').textContent = '0';
+    
+    if (currentChapter && currentExercise) {
+        localStorage.removeItem(`draft_${currentChapter}_${currentExercise}`);
     }
 }
 
-// Initialize on page load
-window.addEventListener('DOMContentLoaded', function() {
-    updateOverallProgress();
+// Next Exercise
+function nextExercise() {
+    if (!currentChapter) return;
     
-    // Add keyboard shortcut for checking answer (Ctrl+Enter)
-    document.getElementById('userInput').addEventListener('keydown', function(e) {
-        if (e.ctrlKey && e.key === 'Enter') {
-            checkAnswer();
-        }
-    });
+    const exercises = exerciseDB[currentChapter].exercises;
+    const exNums = Object.keys(exercises).sort((a, b) => parseInt(a) - parseInt(b));
+    const currentIndex = exNums.indexOf(currentExercise);
+    
+    if (currentIndex < exNums.length - 1) {
+        const nextEx = exNums[currentIndex + 1];
+        
+        // Simulate click on next exercise
+        document.querySelectorAll('.exercise-item')[currentIndex + 1]?.click();
+    } else {
+        showToast('🎉 Complete!', 'Is chapter ki saari exercises complete ho gayi!', 'success');
+    }
+}
+
+// Retry Exercise
+function retryExercise() {
+    document.getElementById('userAnswer').value = '';
+    document.getElementById('wordCount').textContent = '0';
+    document.getElementById('resultsCard').style.display = 'none';
+    document.getElementById('userAnswer').focus();
+}
+
+// Back to List
+function backToList() {
+    document.getElementById('noExercise').style.display = 'block';
+    document.getElementById('exerciseImage').style.display = 'none';
+    document.getElementById('answerCard').style.display = 'none';
+    document.getElementById('resultsCard').style.display = 'none';
+    currentExercise = null;
+}
+
+// Zoom Functions
+function zoomIn() {
+    if (zoomLevel < 4) {
+        zoomLevel++;
+        updateZoom();
+    }
+}
+
+function zoomOut() {
+    if (zoomLevel > 1) {
+        zoomLevel--;
+        updateZoom();
+    }
+}
+
+function updateZoom() {
+    const img = document.getElementById('shorthandImg');
+    img.className = 'img-fluid shorthand-img zoom-level-' + zoomLevel;
+}
+
+// Fullscreen
+function toggleFullscreen() {
+    const img = document.getElementById('shorthandImg');
+    
+    if (!document.fullscreenElement) {
+        const overlay = document.createElement('div');
+        overlay.className = 'fullscreen-overlay';
+        overlay.innerHTML = `
+            <span class="close-fullscreen" onclick="closeFullscreen()">&times;</span>
+            <img src="${img.src}" alt="Shorthand">
+        `;
+        overlay.onclick = function(e) {
+            if (e.target === overlay) closeFullscreen();
+        };
+        document.body.appendChild(overlay);
+    }
+}
+
+function closeFullscreen() {
+    const overlay = document.querySelector('.fullscreen-overlay');
+    if (overlay) overlay.remove();
+}
+
+// Add Exercise (Admin)
+function addExercise() {
+    const chapter = document.getElementById('adminChapter').value;
+    const exNum = document.getElementById('adminExNum').value;
+    const answerText = document.getElementById('adminAnswer').value;
+    const imageInput = document.getElementById('adminImage');
+    
+    if (!answerText.trim()) {
+        showToast('Error', 'Answer words daalein!', 'danger');
+        return;
+    }
+    
+    const answers = answerText.split(',').map(w => w.trim().toLowerCase()).filter(w => w);
+    
+    if (!exerciseDB[chapter]) {
+        exerciseDB[chapter] = {
+            name: `Chapter ${chapter}`,
+            exercises: {}
+        };
+    }
+    
+    // Handle image
+    if (imageInput.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            exerciseDB[chapter].exercises[exNum] = {
+                answer: answers,
+                hint: `Chapter ${chapter} Exercise ${exNum}`,
+                image: e.target.result // Base64 image
+            };
+            saveDatabase();
+            showToast('✅ Success', 'Exercise saved with image!', 'success');
+            loadExerciseList();
+        };
+        reader.readAsDataURL(imageInput.files[0]);
+    } else {
+        exerciseDB[chapter].exercises[exNum] = {
+            answer: answers,
+            hint: `Chapter ${chapter} Exercise ${exNum}`,
+            image: `images/exercises/chapter${chapter}/ex${exNum}.png`
+        };
+        saveDatabase();
+        showToast('✅ Success', 'Exercise saved! Image path set.', 'success');
+        loadExerciseList();
+    }
+    
+    // Clear form
+    document.getElementById('adminAnswer').value = '';
+    document.getElementById('adminImage').value = '';
+}
+
+// Scroll to Admin Section
+function scrollToAdmin() {
+    document.getElementById('adminSection').classList.add('show');
+    document.getElementById('adminSection').scrollIntoView({ behavior: 'smooth' });
+}
+
+// Show Toast
+function showToast(title, message, type = 'info') {
+    const toast = document.getElementById('toast');
+    const toastTitle = document.getElementById('toastTitle');
+    const toastMessage = document.getElementById('toastMessage');
+    
+    toastTitle.textContent = title;
+    toastMessage.textContent = message;
+    
+    toast.className = `toast bg-${type === 'danger' ? 'danger' : type === 'success' ? 'success' : type === 'warning' ? 'warning' : 'info'} text-white`;
+    
+    const bsToast = new bootstrap.Toast(toast);
+    bsToast.show();
+}
+
+// Load Saved Progress
+function loadSavedProgress() {
+    const lastChapter = localStorage.getItem('lastChapter');
+    if (lastChapter) {
+        document.getElementById('chapterSelect').value = lastChapter;
+        loadExerciseList();
+    }
+}
+
+// Save last chapter
+document.getElementById('chapterSelect').addEventListener('change', function() {
+    localStorage.setItem('lastChapter', this.value);
 });
 
-// Auto-save draft
-let autoSaveInterval;
-function startAutoSave() {
-    autoSaveInterval = setInterval(() => {
-        const userInput = document.getElementById('userInput').value;
-        if (userInput && currentChapter && currentExercise) {
-            localStorage.setItem(`draft_${currentChapter}_${currentExercise}`, userInput);
-        }
-    }, 10000); // Every 10 seconds
-}
-
-// Load draft if exists
-function loadDraft() {
-    if (currentChapter && currentExercise) {
-        const draft = localStorage.getItem(`draft_${currentChapter}_${currentExercise}`);
-        if (draft) {
-            const loadDraftConfirm = confirm('Aapka pichla draft saved hai. Use load karein?');
-            if (loadDraftConfirm) {
-                document.getElementById('userInput').value = draft;
-            }
-        }
+// Keyboard shortcuts
+document.addEventListener('keydown', function(e) {
+    // Ctrl + Enter = Check Answer
+    if (e.ctrlKey && e.key === 'Enter') {
+        e.preventDefault();
+        checkAnswer();
     }
-}
+    
+    // Escape = Close fullscreen
+    if (e.key === 'Escape') {
+        closeFullscreen();
+    }
+});
