@@ -1,0 +1,210 @@
+/* Custom Styles for Pitman Shorthand Module */
+
+:root {
+    --primary-color: #0d6efd;
+    --success-color: #198754;
+    --warning-color: #ffc107;
+    --danger-color: #dc3545;
+    --info-color: #0dcaf0;
+    --dark-color: #212529;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa;
+}
+
+/* Stats Cards */
+.stats-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: none;
+}
+
+.stats-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15) !important;
+}
+
+.stats-card h2 {
+    color: var(--primary-color);
+    font-weight: bold;
+}
+
+/* Original Text Box */
+.original-text-box {
+    border-left: 4px solid var(--primary-color);
+    background: linear-gradient(to right, #f8f9fa, #ffffff);
+}
+
+#exerciseText {
+    font-family: 'Georgia', serif;
+    line-height: 1.8;
+    color: var(--dark-color);
+}
+
+/* User Input */
+#userInput {
+    font-family: 'Courier New', monospace;
+    font-size: 16px;
+    border: 2px solid var(--primary-color);
+    transition: border-color 0.3s ease;
+}
+
+#userInput:focus {
+    border-color: var(--success-color);
+    box-shadow: 0 0 10px rgba(25, 135, 84, 0.3);
+}
+
+/* Results Section */
+#scoreDisplay {
+    animation: scoreAppear 0.5s ease;
+}
+
+@keyframes scoreAppear {
+    from {
+        opacity: 0;
+        transform: scale(0.5);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Mistake Items */
+.mistake-item {
+    padding: 15px;
+    margin: 10px 0;
+    background: #fff3cd;
+    border-left: 5px solid var(--warning-color);
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+
+.mistake-item:hover {
+    background: #ffe69c;
+    transform: translateX(5px);
+}
+
+.correct-word {
+    color: var(--success-color);
+    font-weight: bold;
+}
+
+.wrong-word {
+    color: var(--danger-color);
+    font-weight: bold;
+    text-decoration: line-through;
+}
+
+/* Progress Bar */
+.progress {
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    background: linear-gradient(90deg, var(--primary-color), var(--info-color));
+    transition: width 0.5s ease;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+/* Resource Cards */
+.resource-card {
+    text-align: center;
+    padding: 20px;
+    border-radius: 10px;
+    background: #f8f9fa;
+    transition: all 0.3s ease;
+}
+
+.resource-card:hover {
+    background: #e9ecef;
+    transform: translateY(-3px);
+}
+
+/* Buttons */
+.btn {
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Animations */
+.fade-in {
+    animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .display-4 {
+        font-size: 2rem;
+    }
+    
+    .stats-card h2 {
+        font-size: 1.5rem;
+    }
+    
+    #scoreDisplay {
+        font-size: 2.5rem;
+    }
+}
+
+/* Card Shadows */
+.card {
+    border: none;
+    transition: box-shadow 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+/* Alert Boxes */
+.alert {
+    border-left: 4px solid;
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Loading Spinner */
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid var(--primary-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 20px auto;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
