@@ -53,6 +53,7 @@
             cursor: pointer;
             display: flex;
             flex-direction: column;
+            position: relative;
         }
 
         .exam-card:hover {
@@ -73,6 +74,7 @@
         .goals { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
         .dashboard { background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); }
         .planner21 { background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%); border: 2px solid #fbbf24; }
+        .shorthand { background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); }
 
         .exam-icon { font-size: 50px; margin-bottom: 10px; }
         .exam-header h2 { font-size: 1.6rem; font-weight: bold; }
@@ -115,6 +117,17 @@
             50% { transform: scale(1.1); }
         }
 
+        /* Shorthand Card Animation */
+        .shorthand .exam-icon {
+            filter: drop-shadow(0 0 10px rgba(99, 102, 241, 0.5));
+            animation: write 2s ease-in-out infinite;
+        }
+
+        @keyframes write {
+            0%, 100% { transform: rotate(-5deg); }
+            50% { transform: rotate(5deg); }
+        }
+
         .badge-new {
             position: absolute;
             top: 15px;
@@ -127,6 +140,7 @@
             font-weight: bold;
             text-transform: uppercase;
             animation: glow 1.5s ease-in-out infinite alternate;
+            z-index: 10;
         }
 
         @keyframes glow {
@@ -134,7 +148,11 @@
             to { box-shadow: 0 0 20px #fbbf24, 0 0 30px #fbbf24; }
         }
 
-        .exam-card { position: relative; }
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header h1 { font-size: 2rem; }
+            .exam-grid { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
@@ -146,6 +164,7 @@
         </div>
 
         <div class="exam-grid">
+            <!-- RO/ARO EXAM -->
             <div class="exam-card" onclick="window.location.href='roaro-exam.html'">
                 <div class="exam-header roaro">
                     <div class="exam-icon">📋</div>
@@ -160,6 +179,7 @@
                 </div>
             </div>
 
+            <!-- NTA MOCK TEST -->
             <div class="exam-card" onclick="window.location.href='nta-exam.html'">
                 <div class="exam-header nta">
                     <div class="exam-icon">📝</div>
@@ -174,6 +194,7 @@
                 </div>
             </div>
 
+            <!-- VIKAS PORTAL -->
             <div class="exam-card" onclick="window.location.href='vikas-portal.html'">
                 <div class="exam-header vikas">
                     <div class="exam-icon">🌱</div>
@@ -188,6 +209,7 @@
                 </div>
             </div>
 
+            <!-- GHATNA CHAKRA -->
             <div class="exam-card" onclick="window.location.href='ghatna-chakra.html'">
                 <div class="exam-header ghatna">
                     <div class="exam-icon">📚</div>
@@ -202,6 +224,7 @@
                 </div>
             </div>
 
+            <!-- DAILY GOAL TRACKER -->
             <div class="exam-card" onclick="window.location.href='goal-tracker.html'">
                 <div class="exam-header goals">
                     <div class="exam-icon">🎯</div>
@@ -217,7 +240,7 @@
                 </div>
             </div>
 
-            <!-- ⭐ NEW: AI STUDY DASHBOARD -->
+            <!-- AI STUDY DASHBOARD -->
             <div class="exam-card" onclick="window.location.href='/dashboard'">
                 <div class="exam-header dashboard">
                     <div class="exam-icon">🤖</div>
@@ -233,7 +256,7 @@
                 </div>
             </div>
 
-            <!-- ⭐ NEW: 21-DAY FOCUS PLANNER -->
+            <!-- 21-DAY FOCUS PLANNER -->
             <div class="exam-card" onclick="window.location.href='21-day-planner.html'">
                 <span class="badge-new">🔥 Popular</span>
                 <div class="exam-header planner21">
@@ -249,6 +272,26 @@
                     </ul>
                     <div class="start-btn planner21" style="background: linear-gradient(135deg, #fbbf24, #d97706); color: #000;">
                         Start 21-Day Challenge 🚀
+                    </div>
+                </div>
+            </div>
+
+            <!-- ⭐ NEW: PITMAN SHORTHAND PRACTICE -->
+            <div class="exam-card" onclick="window.location.href='pitman-shorthand/index.html'">
+                <span class="badge-new">✨ New</span>
+                <div class="exam-header shorthand">
+                    <div class="exam-icon">🖊️</div>
+                    <h2>Pitman Shorthand</h2>
+                </div>
+                <div class="exam-body">
+                    <ul class="feature-list">
+                        <li><i class="fas fa-book text-blue-500"></i> Isaac Pitman Exercises</li>
+                        <li><i class="fas fa-keyboard text-green-500"></i> Interactive Practice</li>
+                        <li><i class="fas fa-chart-bar text-purple-500"></i> Progress Tracking</li>
+                        <li><i class="fas fa-check-double text-orange-500"></i> Auto Error Detection</li>
+                    </ul>
+                    <div class="start-btn shorthand" style="background: linear-gradient(135deg, #6366f1, #8b5cf6);">
+                        Start Learning ✍️
                     </div>
                 </div>
             </div>
