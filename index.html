@@ -14,13 +14,241 @@
             min-height: 100vh;
         }
 
+        /* Password Screen Styles */
+        .password-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: all 0.5s ease;
+        }
+
+        .password-overlay.hidden {
+            opacity: 0;
+            visibility: hidden;
+            transform: scale(1.1);
+        }
+
+        .password-box {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 25px;
+            padding: 50px 40px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+            max-width: 420px;
+            width: 90%;
+            animation: floatIn 0.8s ease;
+        }
+
+        @keyframes floatIn {
+            from {
+                opacity: 0;
+                transform: translateY(50px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .lock-icon {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 30px;
+            font-size: 45px;
+            color: white;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.5);
+            animation: pulse-lock 2s infinite;
+        }
+
+        @keyframes pulse-lock {
+            0%, 100% { transform: scale(1); box-shadow: 0 10px 30px rgba(102, 126, 234, 0.5); }
+            50% { transform: scale(1.05); box-shadow: 0 15px 40px rgba(102, 126, 234, 0.7); }
+        }
+
+        .password-box h1 {
+            color: white;
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .password-box p {
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 30px;
+            font-size: 0.95rem;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 18px 55px 18px 20px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1.1rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .input-group input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .input-group input:focus {
+            border-color: #667eea;
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255, 255, 255, 0.6);
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: color 0.3s;
+        }
+
+        .toggle-password:hover {
+            color: white;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 15px;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.5);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .error-message {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid #ef4444;
+            color: #fca5a5;
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+            animation: shake 0.5s ease;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-10px); }
+            40%, 80% { transform: translateX(10px); }
+        }
+
+        .error-message.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .attempts-left {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.85rem;
+            margin-top: 20px;
+        }
+
+        .footer-text {
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 0.8rem;
+            margin-top: 25px;
+        }
+
+        /* Success Animation */
+        .success-animation {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .success-animation.show {
+            display: flex;
+        }
+
+        .checkmark {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #10b981, #059669);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            color: white;
+            animation: pop 0.5s ease;
+            margin-bottom: 20px;
+        }
+
+        @keyframes pop {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .success-text {
+            color: #10b981;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        /* Main Content Hidden Initially */
         .main-container {
             min-height: 100vh;
-            display: flex;
+            display: none;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             padding: 40px 20px;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .main-container.visible {
+            display: flex;
+            opacity: 1;
         }
 
         .header {
@@ -106,7 +334,6 @@
 
         .secure-badge { margin-top: 40px; color: white; opacity: 0.8; }
 
-        /* Special styling for 21-day planner card */
         .planner21 .exam-icon {
             filter: drop-shadow(0 0 10px rgba(251, 191, 36, 0.5));
             animation: pulse 2s infinite;
@@ -117,7 +344,6 @@
             50% { transform: scale(1.1); }
         }
 
-        /* Shorthand Card Animation */
         .shorthand .exam-icon {
             filter: drop-shadow(0 0 10px rgba(99, 102, 241, 0.5));
             animation: write 2s ease-in-out infinite;
@@ -148,16 +374,94 @@
             to { box-shadow: 0 0 20px #fbbf24, 0 0 30px #fbbf24; }
         }
 
-        /* Responsive Design */
         @media (max-width: 768px) {
             .header h1 { font-size: 2rem; }
             .exam-grid { grid-template-columns: 1fr; }
+            .password-box { padding: 40px 25px; }
+            .password-box h1 { font-size: 1.5rem; }
+        }
+
+        /* Particles Background */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float-particle 15s infinite;
+        }
+
+        @keyframes float-particle {
+            0%, 100% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) rotate(720deg);
+                opacity: 0;
+            }
         }
     </style>
 </head>
 <body>
 
-    <div class="main-container">
+    <!-- Password Protection Overlay -->
+    <div class="password-overlay" id="passwordOverlay">
+        <div class="particles" id="particles"></div>
+        <div class="password-box" id="loginForm">
+            <div class="lock-icon">
+                <i class="fas fa-lock"></i>
+            </div>
+            <h1>🔐 Secure Access</h1>
+            <p>कृपया पोर्टल एक्सेस करने के लिए पासवर्ड डालें</p>
+            
+            <div class="error-message" id="errorMessage">
+                <i class="fas fa-exclamation-circle"></i>
+                <span>गलत पासवर्ड! कृपया पुनः प्रयास करें</span>
+            </div>
+            
+            <div class="input-group">
+                <input type="password" id="passwordInput" placeholder="पासवर्ड डालें..." autocomplete="off">
+                <i class="fas fa-eye toggle-password" id="togglePassword"></i>
+            </div>
+            
+            <button class="submit-btn" onclick="verifyPassword()">
+                <i class="fas fa-unlock-alt"></i>
+                Access Portal
+            </button>
+            
+            <p class="attempts-left" id="attemptsLeft">शेष प्रयास: 5</p>
+            <p class="footer-text"><i class="fas fa-shield-alt"></i> Secured by Akash Academy</p>
+        </div>
+
+        <!-- Success Animation -->
+        <div class="success-animation" id="successAnimation">
+            <div class="checkmark">
+                <i class="fas fa-check"></i>
+            </div>
+            <p class="success-text">✓ Access Granted!</p>
+        </div>
+    </div>
+
+    <!-- Main Content (Hidden until password verified) -->
+    <div class="main-container" id="mainContent">
         <div class="header">
             <h1>🎓 Akash Academy</h1>
             <p>Welcome to the Ultimate Exam Portal</p>
@@ -276,7 +580,7 @@
                 </div>
             </div>
 
-            <!-- ⭐ NEW: PITMAN SHORTHAND PRACTICE -->
+            <!-- PITMAN SHORTHAND PRACTICE -->
             <div class="exam-card" onclick="window.location.href='pitman-shorthand/index.html'">
                 <span class="badge-new">✨ New</span>
                 <div class="exam-header shorthand">
@@ -302,6 +606,123 @@
             <i class="fas fa-shield-alt"></i> Secure Exam Portal | 2024-25 Edition
         </div>
     </div>
+
+    <script>
+        // Correct Password
+        const CORRECT_PASSWORD = "R@vi@k@sh447";
+        let attempts = 5;
+        let isLocked = false;
+
+        // Check if already authenticated in this session
+        if (sessionStorage.getItem('authenticated') === 'true') {
+            document.getElementById('passwordOverlay').classList.add('hidden');
+            document.getElementById('mainContent').classList.add('visible');
+        }
+
+        // Create floating particles
+        function createParticles() {
+            const container = document.getElementById('particles');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.width = Math.random() * 10 + 5 + 'px';
+                particle.style.height = particle.style.width;
+                particle.style.animationDelay = Math.random() * 15 + 's';
+                particle.style.animationDuration = Math.random() * 10 + 10 + 's';
+                container.appendChild(particle);
+            }
+        }
+        createParticles();
+
+        // Toggle Password Visibility
+        document.getElementById('togglePassword').addEventListener('click', function() {
+            const input = document.getElementById('passwordInput');
+            if (input.type === 'password') {
+                input.type = 'text';
+                this.classList.remove('fa-eye');
+                this.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                this.classList.remove('fa-eye-slash');
+                this.classList.add('fa-eye');
+            }
+        });
+
+        // Enter key to submit
+        document.getElementById('passwordInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                verifyPassword();
+            }
+        });
+
+        // Password Verification
+        function verifyPassword() {
+            if (isLocked) {
+                alert('बहुत अधिक गलत प्रयास! कृपया बाद में पुनः प्रयास करें।');
+                return;
+            }
+
+            const input = document.getElementById('passwordInput');
+            const errorMessage = document.getElementById('errorMessage');
+            const attemptsLeft = document.getElementById('attemptsLeft');
+
+            if (input.value === CORRECT_PASSWORD) {
+                // Success
+                errorMessage.classList.remove('show');
+                document.getElementById('loginForm').style.display = 'none';
+                document.getElementById('successAnimation').classList.add('show');
+
+                // Store authentication in session
+                sessionStorage.setItem('authenticated', 'true');
+
+                // Redirect to main content after animation
+                setTimeout(() => {
+                    document.getElementById('passwordOverlay').classList.add('hidden');
+                    document.getElementById('mainContent').classList.add('visible');
+                }, 1500);
+            } else {
+                // Wrong Password
+                attempts--;
+                errorMessage.classList.add('show');
+                input.value = '';
+                input.focus();
+                
+                if (attempts > 0) {
+                    attemptsLeft.textContent = `शेष प्रयास: ${attempts}`;
+                    attemptsLeft.style.color = attempts <= 2 ? '#ef4444' : 'rgba(255,255,255,0.5)';
+                } else {
+                    isLocked = true;
+                    attemptsLeft.innerHTML = '<i class="fas fa-ban"></i> अकाउंट लॉक! 5 मिनट बाद प्रयास करें';
+                    attemptsLeft.style.color = '#ef4444';
+                    input.disabled = true;
+
+                    // Unlock after 5 minutes
+                    setTimeout(() => {
+                        isLocked = false;
+                        attempts = 5;
+                        input.disabled = false;
+                        attemptsLeft.textContent = 'शेष प्रयास: 5';
+                        attemptsLeft.style.color = 'rgba(255,255,255,0.5)';
+                        errorMessage.classList.remove('show');
+                    }, 300000); // 5 minutes
+                }
+            }
+        }
+
+        // Prevent right-click and inspect
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+        });
+
+        // Prevent keyboard shortcuts for dev tools
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I') || 
+                (e.ctrlKey && e.shiftKey && e.key === 'J') || (e.ctrlKey && e.key === 'U')) {
+                e.preventDefault();
+            }
+        });
+    </script>
 
 </body>
 </html>
