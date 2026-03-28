@@ -608,16 +608,23 @@
     </div>
 
     <script>
+        // ⚡ CLEAR ALL PREVIOUS STORAGE - Har baar fresh start
+        (function() {
+            // Clear sessionStorage
+            sessionStorage.clear();
+            // Clear localStorage (if any auth data stored)
+            localStorage.removeItem('authenticated');
+            localStorage.removeItem('akash_auth');
+            // Clear any cookies related to auth
+            document.cookie.split(";").forEach(function(c) { 
+                document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); 
+            });
+        })();
+
         // Correct Password
         const CORRECT_PASSWORD = "R@vi@k@sh447";
         let attempts = 5;
         let isLocked = false;
-
-        // Check if already authenticated in this session
-        if (sessionStorage.getItem('authenticated') === 'true') {
-            document.getElementById('passwordOverlay').classList.add('hidden');
-            document.getElementById('mainContent').classList.add('visible');
-        }
 
         // Create floating particles
         function createParticles() {
@@ -634,6 +641,11 @@
             }
         }
         createParticles();
+
+        // Auto focus on password input
+        window.onload = function() {
+            document.getElementById('passwordInput').focus();
+        };
 
         // Toggle Password Visibility
         document.getElementById('togglePassword').addEventListener('click', function() {
@@ -668,13 +680,10 @@
             const attemptsLeft = document.getElementById('attemptsLeft');
 
             if (input.value === CORRECT_PASSWORD) {
-                // Success
+                // Success - NO STORAGE, only show content for this session
                 errorMessage.classList.remove('show');
                 document.getElementById('loginForm').style.display = 'none';
                 document.getElementById('successAnimation').classList.add('show');
-
-                // Store authentication in session
-                sessionStorage.setItem('authenticated', 'true');
 
                 // Redirect to main content after animation
                 setTimeout(() => {
@@ -705,23 +714,33 @@
                         attemptsLeft.textContent = 'शेष प्रयास: 5';
                         attemptsLeft.style.color = 'rgba(255,255,255,0.5)';
                         errorMessage.classList.remove('show');
-                    }, 300000); // 5 minutes
+                    }, 300000);
                 }
             }
         }
 
-        // Prevent right-click and inspect
+        // Prevent right-click
         document.addEventListener('contextmenu', function(e) {
             e.preventDefault();
         });
 
         // Prevent keyboard shortcuts for dev tools
         document.addEventListener('keydown', function(e) {
-            if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I') || 
-                (e.ctrlKey && e.shiftKey && e.key === 'J') || (e.ctrlKey && e.key === 'U')) {
+            if (e.key === 'F12' || 
+                (e.ctrlKey && e.shiftKey && e.key === 'I') || 
+                (e.ctrlKey && e.shiftKey && e.key === 'J') || 
+                (e.ctrlKey && e.key === 'U') ||
+                (e.ctrlKey && e.shiftKey && e.key === 'C')) {
                 e.preventDefault();
             }
         });
+
+        // Prevent view source
+        document.onkeydown = function(e) {
+            if (e.ctrlKey && e.keyCode == 85) {
+                return false;
+            }
+        };
     </script>
 
 </body>
